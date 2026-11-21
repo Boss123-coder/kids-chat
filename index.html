@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeKids Chat - Free Safe Online Chat Rooms</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        forest: {
+                            950: '#0a0f0d',
+                            900: '#111a16',
+                            800: '#1a2721',
+                            700: '#24362e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Atmospheric Misty Forest Background (Inspired by OmgKids Chat screenshot) */
+        body {
+            background-color: #0d1310;
+            background-image: 
+                radial-gradient(circle at 20% 25%, rgba(34, 65, 48, 0.45) 0%, transparent 50%),
+                radial-gradient(circle at 80% 75%, rgba(180, 120, 45, 0.25) 0%, transparent 55%),
+                linear-gradient(180deg, rgba(10, 15, 13, 0.72) 0%, rgba(14, 22, 18, 0.85) 100%),
+                url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Panels */
+        .glass-panel {
+            background: rgba(24, 28, 25, 0.76);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card-warm {
+            background: rgba(42, 38, 29, 0.78);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+        }
+
+        .glass-topbar {
+            background: rgba(16, 19, 18, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg-animate {
+            animation: fadeInSlide 0.22s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col select-none sm:select-auto overflow-hidden">
+
+    <!-- ==================== GLOBAL TOAST NOTIFICATION ==================== -->
+    <div id="toast-container" class="fixed top-16 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-4 sm:px-0"></div>
+
+    <!-- ==================== 1. ENTRY / LOGIN SCREEN ==================== -->
+    <div id="login-screen" class="fixed inset-0 z-40 flex items-center justify-center p-4 overflow-y-auto bg-black/50 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-emerald-500/20 my-auto">
+            <!-- Header -->
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-amber-500 text-white text-2xl shadow-lg mb-3">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <h1 class="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                    SafeKids <span class="text-amber-400">Chat</span>
+                </h1>
+                <p class="text-xs sm:text-sm text-gray-300 mt-1">
+                    Free, safe & moderated online chat rooms for kids & teens
+                </p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="space-y-4">
+                <!-- Nickname -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                        Choose a Nickname
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
+                            <i class="fa-solid fa-user-astronaut"></i>
+                        </span>
+                        <input type="text" id="input-username" maxlength="18" required
+                            placeholder="e.g., StarGamer, PandaKid..."
+                            class="w-full pl-10 pr-4 py-2.5 bg-black/40 border border-white/15 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 text-sm">
+                    </div>
+                </div>
+
+                <!-- Safe Preset Avatar Picker -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                        Pick a Fun Avatar
+                    </label>
+                    <div id="avatar-grid" class="grid grid-cols-6 gap-2">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Starting Room -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                        Select Chat Room
+                    </label>
+                    <select id="input-room" class="w-full px-3.5 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white focus:outline-none focus:border-amber-400 text-sm">
+                        <option value="kids-lounge">🧸 Kids Lounge (Ages 8-12)</option>
+                        <option value="teen-chat">🔥 Teen Chat Room (Ages 13-17)</option>
+                        <option value="gaming-zone">🎮 Gaming & Roblox Zone</option>
+                        <option value="study-hangout">📚 Study & Creative Hangout</option>
+                    </select>
+                </div>
+
+                <!-- Admin Access Section -->
+                <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-amber-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-crown text-amber-400"></i> Admin / Owner Login
+                        </span>
+                        <label class="inline-flex items-center cursor-pointer gap-2">
+                            <input type="checkbox" id="toggle-admin-claim" class="sr-only peer">
+                            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all relative peer-checked:bg-amber-500"></div>
+                            <span class="text-xs text-gray-300 font-medium">Claim Admin</span>
+                        </label>
+                    </div>
+                    <div id="admin-code-box" class="hidden pt-1">
+                        <input type="password" id="input-admin-code" placeholder="Enter Owner Admin Secret Key (Default: ADMIN123)"
+                            class="w-full px-3 py-2 bg-black/50 border border-amber-400/40 rounded-lg text-xs text-amber-200 placeholder-gray-500 focus:outline-none focus:border-amber-400">
+                        <p class="text-[11px] text-amber-200/70 mt-1">
+                            Only the Owner with the secret key gets <strong class="text-amber-300">👑 Admin</strong>. Normal visitors join as regular members until you assign them a rank.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Safety Notice -->
+                <div class="flex items-start gap-2 text-[11px] text-gray-400 bg-white/5 p-2.5 rounded-xl">
+                    <i class="fa-solid fa-shield-halved text-emerald-400 mt-0.5"></i>
+                    <span>Child-Safe Environment: Never share your real name, phone number, school, or passwords. Auto-safety filter is active 24/7.</span>
+                </div>
+
+                <!-- Enter Button -->
+                <button type="submit" id="btn-enter-chat"
+                    class="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-900/40 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2">
+                    <span>Enter Safe Chat</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== 2. TOP NAVIGATION BAR (Matches Screenshot) ==================== -->
+    <header class="glass-topbar h-14 px-3 sm:px-5 flex items-center justify-between z-30 shrink-0">
+        <!-- Left: Sidebar Toggle + Logo + Quick Room Switcher -->
+        <div class="flex items-center gap-2.5 sm:gap-3">
+            <button id="btn-toggle-sidebar" title="Toggle Rooms & Users"
+                class="p-2 rounded-xl hover:bg-white/10 text-gray-200 transition">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-amber-500 flex items-center justify-center text-white font-bold shadow">
+                    <i class="fa-solid fa-shield-cat text-sm"></i>
+                </div>
+                <span class="font-display font-extrabold text-base sm:text-lg tracking-tight text-white hidden xs:inline">
+                    SafeKids<span class="text-amber-400">.chat</span>
+                </span>
+            </div>
+
+            <!-- Room Dropdown Pill -->
+            <div class="relative ml-1 sm:ml-2">
+                <select id="topbar-room-select"
+                    class="appearance-none bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs sm:text-sm font-medium rounded-xl pl-3 pr-8 py-1.5 focus:outline-none focus:border-amber-400 cursor-pointer">
+                    <option value="kids-lounge" class="bg-gray-900">🧸 Kids Lounge</option>
+                    <option value="teen-chat" class="bg-gray-900">🔥 Teen Chat</option>
+                    <option value="gaming-zone" class="bg-gray-900">🎮 Gaming Zone</option>
+                    <option value="study-hangout" class="bg-gray-900">📚 Study Hangout</option>
+                </select>
+                <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            </div>
+        </div>
+
+        <!-- Right: Online Count, Admin Panel Button, Notifications, User Profile -->
+        <div class="flex items-center gap-1.5 sm:gap-2.5">
+            <!-- Online Users Counter Pill -->
+            <button id="btn-online-pill" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/25 transition">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="online-count-badge">1</span>
+                <span class="hidden md:inline">Online</span>
+            </button>
+
+            <!-- ADMIN PANEL BUTTON (Visible only to Admin) -->
+            <button id="btn-open-admin" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-gray-950 font-bold text-xs shadow-md transition">
+                <i class="fa-solid fa-crown"></i>
+                <span class="hidden sm:inline">Admin Panel</span>
+            </button>
+
+            <!-- Safety & Notifications Bell -->
+            <button id="btn-safety-info" title="Community Safety Rules"
+                class="relative p-2 rounded-xl hover:bg-white/10 text-gray-300 hover:text-white transition">
+                <i class="fa-solid fa-bell text-base"></i>
+                <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-400"></span>
+            </button>
+
+            <!-- Current User Badge -->
+            <div id="current-user-pill" class="flex items-center gap-2 pl-2 pr-2.5 py-1 rounded-full bg-white/10 border border-white/15">
+                <span id="header-avatar" class="text-base leading-none">🐼</span>
+                <div class="hidden sm:flex flex-col text-left leading-tight">
+                    <span id="header-username" class="text-xs font-bold text-white max-w-[90px] truncate">Guest</span>
+                    <span id="header-role-label" class="text-[10px] text-emerald-300 font-semibold">Member</span>
+                </div>
+                <button id="btn-logout" title="Leave Chat" class="ml-1 text-gray-400 hover:text-rose-400 text-xs p-1">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== GLOBAL SYSTEM ANNOUNCEMENT BANNER ==================== -->
+    <div id="global-announcement-bar" class="hidden bg-gradient-to-r from-amber-600/90 via-orange-600/90 to-amber-600/90 text-white px-4 py-2 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 z-20 shadow-md border-b border-amber-300/30">
+        <div class="flex items-center gap-2 mx-auto">
+            <span class="px-2 py-0.5 rounded bg-black/30 text-amber-200 font-bold text-[11px] uppercase tracking-wider">
+                <i class="fa-solid fa-bullhorn mr-1"></i> Admin Notice
+            </span>
+            <span id="global-announcement-text">Welcome to SafeKids Chat! Be kind and stay safe.</span>
+        </div>
+        <button id="btn-dismiss-banner" class="text-white/80 hover:text-white text-xs">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <!-- ==================== 3. MAIN WORKSPACE (SIDEBAR + CHAT FEED) ==================== -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- LEFT SIDEBAR: Rooms & Active Users -->
+        <aside id="left-sidebar" class="glass-panel w-72 shrink-0 flex flex-col border-r border-white/10 z-20 absolute md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out">
+            
+            <!-- Rooms Section -->
+            <div class="p-3.5 border-b border-white/10">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                        <i class="fa-solid fa-door-open mr-1 text-amber-400"></i> Chat Rooms
+                    </h2>
+                    <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Free & Safe</span>
+                </div>
+                <div id="sidebar-room-list" class="space-y-1">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Active Online Users Section -->
+            <div class="flex-1 flex flex-col overflow-hidden p-3.5">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                        <i class="fa-solid fa-users mr-1 text-emerald-400"></i> Online Users (<span id="sidebar-online-count">0</span>)
+                    </h2>
+                    <span id="admin-hint-tag" class="hidden text-[10px] text-amber-300">Click user to mod</span>
+                </div>
+                <div id="online-users-list" class="flex-1 overflow-y-auto space-y-1.5 pr-1">
+                    <!-- Populated via Firestore real-time presence -->
+                </div>
+            </div>
+
+            <!-- Sidebar Footer: Quick Admin Status -->
+            <div class="p-3 border-t border-white/10 bg-black/25 text-[11px] text-gray-400 flex items-center justify-between">
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-shield-check text-emerald-400"></i>
+                    Auto-Filter: <strong id="sidebar-filter-status" class="text-emerald-300">ON</strong>
+                </span>
+                <span id="connection-status" class="text-emerald-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live
+                </span>
+            </div>
+        </aside>
+
+        <!-- Backdrop for Mobile Sidebar -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-10 hidden md:hidden"></div>
+
+        <!-- CENTER CHAT AREA -->
+        <main class="flex-1 flex flex-col overflow-hidden relative">
+            
+            <!-- Room Sub-Header -->
+            <div class="px-4 py-2.5 bg-black/30 border-b border-white/10 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <span id="active-room-icon" class="text-xl">🧸</span>
+                    <div>
+                        <h2 id="active-room-title" class="font-display font-bold text-sm sm:text-base text-white leading-tight">
+                            Kids Lounge (Ages 8-12)
+                        </h2>
+                        <p id="active-room-desc" class="text-[11px] text-gray-300">
+                            Friendly chat room for kids to make friends, talk about cartoons, pets & hobbies!
+                        </p>
+                    </div>
+                </div>
+                <div class="hidden sm:flex items-center gap-2">
+                    <span class="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-300">
+                        <i class="fa-solid fa-lock text-emerald-400 mr-1"></i> Moderated
+                    </span>
+                </div>
+            </div>
+
+            <!-- Scrollable Messages Stream -->
+            <div id="chat-messages-container" class="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3">
+                
+                <!-- Pinned Welcome & Directory Card (Styled after OmgKids Chat screenshot card) -->
+                <div class="glass-card-warm rounded-2xl p-4 sm:p-5 max-w-md shadow-xl border border-amber-400/25 mb-4">
+                    <div class="flex items-center gap-2 text-amber-300 font-display font-bold text-sm sm:text-base mb-2.5">
+                        <span>🔥</span>
+                        <span>SafeKids & Teen Chat Directory</span>
+                    </div>
+                    <p class="text-xs text-gray-200 mb-3 leading-relaxed">
+                        Welcome to <strong class="text-amber-300">SafeKids Chat</strong>! Switch rooms anytime from the menu or click a channel below:
+                    </p>
+                    <div class="space-y-1.5 text-xs sm:text-sm font-medium">
+                        <button onclick="window.switchRoom('kids-lounge')" class="w-full text-left flex items-center gap-2 text-amber-300 hover:text-amber-200 hover:underline py-0.5">
+                            <span>💬</span> <span>KidsLounge.SafeKids.chat (Ages 8-12)</span>
+                        </button>
+                        <button onclick="window.switchRoom('teen-chat')" class="w-full text-left flex items-center gap-2 text-amber-300 hover:text-amber-200 hover:underline py-0.5">
+                            <span>💬</span> <span>TeenChatRooms.SafeKids.chat (Ages 13-17)</span>
+                        </button>
+                        <button onclick="window.switchRoom('gaming-zone')" class="w-full text-left flex items-center gap-2 text-amber-300 hover:text-amber-200 hover:underline py-0.5">
+                            <span>🎮</span> <span>GamingZone.SafeKids.chat (Minecraft & Roblox)</span>
+                        </button>
+                        <button onclick="window.switchRoom('study-hangout')" class="w-full text-left flex items-center gap-2 text-amber-300 hover:text-amber-200 hover:underline py-0.5">
+                            <span>🌐</span> <span>StudyHangout.SafeKids.chat (Homework & Art)</span>
+                        </button>
+                    </div>
+                    <div class="mt-3.5 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-gray-300">
+                        <span>🛡️ Rule #1: Be kind & respectful</span>
+                        <span class="text-emerald-400 font-semibold">100% Free</span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Live Messages List -->
+                <div id="live-messages-list" class="space-y-2.5 pb-2">
+                    <!-- Rendered in real-time -->
+                </div>
+            </div>
+
+            <!-- Emoji & Quick Stickers Popover -->
+            <div id="emoji-picker-popover" class="hidden absolute bottom-16 left-3 sm:left-5 z-30 glass-panel rounded-2xl p-3 shadow-2xl border border-white/15 w-72">
+                <div class="text-[11px] font-bold text-gray-400 uppercase mb-2 flex justify-between">
+                    <span>Quick Emojis & Stickers</span>
+                    <button id="close-emoji-picker" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="emoji-grid" class="grid grid-cols-7 gap-1.5 text-xl">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- BOTTOM MESSAGE COMPOSER (Inspired by screenshot's rounded dark bar) -->
+            <div class="p-2.5 sm:p-3.5 bg-black/50 backdrop-blur-md border-t border-white/10 shrink-0">
+                <!-- Muted Warning Banner if user is muted -->
+                <div id="muted-banner" class="hidden mb-2 px-3 py-1.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-200 text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-microphone-slash text-rose-400"></i>
+                    <span>You have been muted by an Admin/Moderator and cannot send messages right now.</span>
+                </div>
+
+                <form id="message-form" class="flex items-center gap-2 max-w-5xl mx-auto">
+                    <!-- Quick Sticker Button -->
+                    <button type="button" id="btn-wave-sticker" title="Send Friendly Wave"
+                        class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 text-amber-300 flex items-center justify-center transition shrink-0">
+                        <i class="fa-solid fa-hand-sparkles"></i>
+                    </button>
+
+                    <!-- Emoji Toggle -->
+                    <button type="button" id="btn-emoji-toggle" title="Emojis"
+                        class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 text-gray-200 flex items-center justify-center transition shrink-0">
+                        <i class="fa-regular fa-face-smile text-lg"></i>
+                    </button>
+
+                    <!-- Text Input Pill -->
+                    <input type="text" id="message-input" maxlength="280" autocomplete="off"
+                        placeholder="Type a friendly message here..."
+                        class="flex-1 bg-white/10 border border-white/15 focus:border-amber-400 focus:bg-black/50 rounded-full px-4 py-2.5 text-sm text-white placeholder-gray-400 focus:outline-none transition">
+
+                    <!-- Send Button -->
+                    <button type="submit" id="btn-send-message"
+                        class="w-10 h-10 sm:w-auto sm:px-5 sm:h-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-gray-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition shrink-0">
+                        <span class="hidden sm:inline">Send</span>
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== 4. ADMIN CONTROL PANEL MODAL ==================== -->
+    <div id="admin-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="glass-panel w-full max-w-2xl rounded-3xl border border-amber-400/30 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 bg-gradient-to-r from-amber-500/20 to-orange-500/10 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500 text-gray-950 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-lg text-white">Admin & Safety Control Center</h3>
+                        <p class="text-xs text-amber-200/80">Manage rooms, users, announcements, and child-safety filters</p>
+                    </div>
+                </div>
+                <button id="btn-close-admin" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto space-y-6">
+                
+                <!-- 1. Global System Announcement -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-bullhorn"></i> Global Room Announcement Banner
+                    </label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="admin-announcement-input" placeholder="e.g., Trivia game starting in 5 minutes!"
+                            class="flex-1 px-3.5 py-2 bg-black/40 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:border-amber-400">
+                        <button id="btn-publish-announcement" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-xs whitespace-nowrap">
+                            Broadcast Banner
+                        </button>
+                        <button id="btn-clear-announcement" class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-gray-300 font-semibold text-xs">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Safety & Room Controls Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Auto-Filter Toggle -->
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-bold text-white">Child-Safe Auto Filter</div>
+                            <div class="text-xs text-gray-400">Blocks bad words, phone numbers & emails</div>
+                        </div>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="admin-toggle-filter" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all relative peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+
+                    <!-- Clear Current Room Chat -->
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-bold text-white">Clear Room Messages</div>
+                            <div class="text-xs text-gray-400">Wipe chat history in active room</div>
+                        </div>
+                        <button id="btn-clear-room-chat" class="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-bold text-xs">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Clear Room
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. Update Admin Secret Code -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-300">
+                        <i class="fa-solid fa-key text-amber-400 mr-1"></i> Update Admin Secret Code
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="admin-new-secret-input" placeholder="New secret code (e.g., MYSECRET99)"
+                            class="flex-1 px-3.5 py-2 bg-black/40 border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:border-amber-400">
+                        <button id="btn-save-secret" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">
+                            Save Code
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-gray-400">Current active code: <span id="current-secret-display" class="text-amber-300 font-mono">ADMIN123</span></p>
+                </div>
+
+                <!-- 4. Assign Ranks to Online Users (Admin Only) -->
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-amber-300">
+                        <i class="fa-solid fa-award mr-1"></i> Assign / Change User Ranks (Online Users)
+                    </h4>
+                    <div id="admin-rank-users-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        <p class="text-xs text-gray-500 italic">No other users online right now.</p>
+                    </div>
+                </div>
+
+                <!-- 5. Muted & Banned Users Management -->
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-gray-300">
+                        <i class="fa-solid fa-user-slash text-rose-400 mr-1"></i> Moderated / Banned Users
+                    </h4>
+                    <div id="admin-moderation-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                        <p class="text-xs text-gray-500 italic">No muted or banned users currently.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 5. USER ACTION POPUP (FOR ADMIN / ROOM MANAGER / MODS) ==================== -->
+    <div id="user-action-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-white/15 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span id="mod-target-avatar" class="text-2xl">🦊</span>
+                    <div>
+                        <h4 id="mod-target-name" class="font-bold text-white text-sm">User Name</h4>
+                        <span id="mod-target-role" class="text-[11px] text-gray-400">Member</span>
+                    </div>
+                </div>
+                <button id="btn-close-user-action" class="text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Admin-Only Rank Assignment Grid -->
+            <div id="admin-rank-picker-section" class="hidden space-y-2">
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-300">
+                    <i class="fa-solid fa-crown mr-1"></i> Assign Rank (Admin Only)
+                </label>
+                <div class="grid grid-cols-2 gap-1.5" id="rank-buttons-grid">
+                    <button type="button" data-rank="room_manager" class="rank-assign-btn py-2 px-2.5 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 border border-teal-400/40 text-teal-200 text-xs font-bold text-left">🛡️ Room Manager</button>
+                    <button type="button" data-rank="moderator" class="rank-assign-btn py-2 px-2.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-sky-200 text-xs font-bold text-left">⚔️ Moderator</button>
+                    <button type="button" data-rank="super_vip" class="rank-assign-btn py-2 px-2.5 rounded-xl bg-fuchsia-500/20 hover:bg-fuchsia-500/30 border border-fuchsia-400/40 text-fuchsia-200 text-xs font-bold text-left">💎✨ Super VIP</button>
+                    <button type="button" data-rank="diamond" class="rank-assign-btn py-2 px-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-200 text-xs font-bold text-left">💠 Diamond</button>
+                    <button type="button" data-rank="vip" class="rank-assign-btn py-2 px-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 text-xs font-bold text-left">⭐ VIP</button>
+                    <button type="button" data-rank="gold" class="rank-assign-btn py-2 px-2.5 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-400/40 text-yellow-200 text-xs font-bold text-left">🥇 Gold</button>
+                    <button type="button" data-rank="bronze" class="rank-assign-btn py-2 px-2.5 rounded-xl bg-orange-600/20 hover:bg-orange-600/30 border border-orange-500/40 text-orange-200 text-xs font-bold text-left">🥉 Bronze</button>
+                    <button type="button" data-rank="member" class="rank-assign-btn py-2 px-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-gray-300 text-xs font-bold text-left">❌ Remove Rank</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-2 pt-1 border-t border-white/10">
+                <button id="act-mute-user" class="w-full py-2.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-microphone-slash"></i> Mute / Unmute User
+                </button>
+                <button id="act-ban-user" class="w-full py-2.5 px-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-ban"></i> Kick & Ban User from Chat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 6. SAFETY RULES MODAL ==================== -->
+    <div id="safety-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 border border-emerald-500/30 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-display font-bold text-lg text-emerald-300 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-heart"></i> SafeKids Community Rules
+                </h3>
+                <button id="btn-close-safety" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <ul class="space-y-2.5 text-xs sm:text-sm text-gray-200">
+                <li class="flex items-start gap-2.5">
+                    <span class="text-emerald-400 font-bold">1.</span>
+                    <span><strong>Protect Your Privacy:</strong> Never share your full name, phone number, home address, school name, or social media handles.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                    <span class="text-emerald-400 font-bold">2.</span>
+                    <span><strong>Be Kind & Positive:</strong> Bullying, mean comments, or bad language are strictly prohibited and automatically filtered.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                    <span class="text-emerald-400 font-bold">3.</span>
+                    <span><strong>Respect Admins & Mods:</strong> Users with a <span class="text-amber-400 font-bold">👑 Admin</span> or <span class="text-sky-400 font-bold">🛡️ Mod</span> badge keep the rooms safe for everyone.</span>
+                </li>
+            </ul>
+            <button id="btn-ack-safety" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">
+                Got It, Let's Chat Safely!
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== FIREBASE & APPLICATION LOGIC ==================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, 
+            onSnapshot, collection, getDocs, serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // -------------------- CONFIGURATION & STATE --------------------
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'safekids-chat-default';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+
+        let app, auth, db;
+        let currentUser = null;
+        let selectedAvatar = '🐼';
+        let activeRoomId = 'kids-lounge';
+        let selectedModTarget = null;
+
+        // Global App Settings synced via Firestore
+        let appSettings = {
+            adminSecret: 'ADMIN123',
+            autoFilter: true,
+            announcement: ''
+        };
+
+        // Complete 8-Tier Rank Definitions (Admin + 7 Assignable Ranks + Member)
+        const RANKS = {
+            admin: {
+                label: 'Admin',
+                icon: '👑',
+                weight: 0,
+                badgeClass: 'bg-gradient-to-r from-amber-500/30 to-red-500/30 border border-amber-400/60 text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.35)]',
+                nameClass: 'text-amber-300 font-extrabold'
+            },
+            room_manager: {
+                label: 'Room Manager',
+                icon: '🛡️',
+                weight: 1,
+                badgeClass: 'bg-teal-500/25 border border-teal-400/50 text-teal-200 shadow-[0_0_8px_rgba(45,212,191,0.25)]',
+                nameClass: 'text-teal-300 font-bold'
+            },
+            moderator: {
+                label: 'Moderator',
+                icon: '⚔️',
+                weight: 2,
+                badgeClass: 'bg-sky-500/25 border border-sky-400/50 text-sky-200 shadow-[0_0_8px_rgba(56,189,248,0.25)]',
+                nameClass: 'text-sky-300 font-bold'
+            },
+            super_vip: {
+                label: 'Super VIP',
+                icon: '💎✨',
+                weight: 3,
+                badgeClass: 'bg-gradient-to-r from-fuchsia-500/30 to-pink-500/30 border border-fuchsia-400/60 text-fuchsia-200 shadow-[0_0_10px_rgba(217,70,239,0.35)]',
+                nameClass: 'text-fuchsia-300 font-bold'
+            },
+            diamond: {
+                label: 'Diamond',
+                icon: '💠',
+                weight: 4,
+                badgeClass: 'bg-cyan-500/25 border border-cyan-400/50 text-cyan-200 shadow-[0_0_8px_rgba(34,211,238,0.3)]',
+                nameClass: 'text-cyan-300 font-bold'
+            },
+            vip: {
+                label: 'VIP',
+                icon: '⭐',
+                weight: 5,
+                badgeClass: 'bg-purple-500/25 border border-purple-400/50 text-purple-200 shadow-[0_0_8px_rgba(168,85,247,0.25)]',
+                nameClass: 'text-purple-300 font-semibold'
+            },
+            gold: {
+                label: 'Gold',
+                icon: '🥇',
+                weight: 6,
+                badgeClass: 'bg-yellow-500/25 border border-yellow-400/50 text-yellow-200',
+                nameClass: 'text-yellow-300 font-semibold'
+            },
+            bronze: {
+                label: 'Bronze',
+                icon: '🥉',
+                weight: 7,
+                badgeClass: 'bg-orange-600/25 border border-orange-500/50 text-orange-200',
+                nameClass: 'text-orange-300 font-semibold'
+            },
+            member: {
+                label: 'Member',
+                icon: '',
+                weight: 8,
+                badgeClass: '',
+                nameClass: 'text-gray-200 font-bold'
+            }
+        };
+
+        function getRankMeta(roleKey) {
+            return RANKS[roleKey] || RANKS.member;
+        }
+
+        function renderRankBadgeHTML(roleKey, compact = false) {
+            const meta = getRankMeta(roleKey);
+            if (!meta || roleKey === 'member') return '';
+            const sizeCls = compact ? 'px-1.5 py-0.5 text-[9px]' : 'px-2 py-0.5 text-[10px]';
+            return `<span class="inline-flex items-center gap-1 rounded-md font-bold tracking-wide ${sizeCls} ${meta.badgeClass}">${meta.icon} ${meta.label}</span>`;
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return 'Just now';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Child Safety Message Sanitizer
+        function sanitizeChildSafeMessage(rawText) {
+            if (!appSettings.autoFilter) return { clean: rawText, blockedReason: null };
+
+            let text = rawText.trim();
+
+            // 1. Block phone numbers (7+ digits)
+            const phoneRegex = /(\+?\d[\d\s\-().]{6,}\d)/g;
+            if (phoneRegex.test(text)) {
+                return { clean: null, blockedReason: 'Safety Alert: Sharing phone numbers is blocked to protect kids!' };
+            }
+
+            // 2. Block email addresses
+            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+            if (emailRegex.test(text)) {
+                return { clean: null, blockedReason: 'Safety Alert: Sharing email addresses is blocked for your safety!' };
+            }
+
+            // 3. Censor inappropriate words
+            let censored = text;
+            for (const word of BLOCKED_WORDS) {
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                if (regex.test(censored)) {
+                    censored = censored.replace(regex, '***');
+                }
+            }
+
+            return { clean: censored, blockedReason: null };
+        }
+
+        // -------------------- INITIALIZE STATIC UI --------------------
+        function initStaticPickers() {
+            // Avatar Grid
+            const avatarGrid = document.getElementById('avatar-grid');
+            avatarGrid.innerHTML = SAFE_AVATARS.map(av => `
+                <button type="button" data-avatar="${av}"
+                    class="avatar-opt h-10 rounded-xl bg-white/5 hover:bg-white/15 border ${av === selectedAvatar ? 'border-amber-400 bg-amber-500/20 scale-105' : 'border-white/10'} text-xl flex items-center justify-center transition">
+                    ${av}
+                </button>
+            `).join('');
+
+            avatarGrid.querySelectorAll('.avatar-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectedAvatar = btn.dataset.avatar;
+                    avatarGrid.querySelectorAll('.avatar-opt').forEach(b => {
+                        b.classList.remove('border-amber-400', 'bg-amber-500/20', 'scale-105');
+                        b.classList.add('border-white/10');
+                    });
+                    btn.classList.add('border-amber-400', 'bg-amber-500/20', 'scale-105');
+                    btn.classList.remove('border-white/10');
+                });
+            });
+
+            // Emoji Grid
+            const emojiGrid = document.getElementById('emoji-grid');
+            emojiGrid.innerHTML = QUICK_EMOJIS.map(em => `
+                <button type="button" class="emoji-btn p-1.5 rounded-lg hover:bg-white/15 transition text-center">${em}</button>
+            `).join('');
+
+            emojiGrid.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const input = document.getElementById('message-input');
+                    input.value += btn.textContent;
+                    input.focus();
+                });
+            });
+
+            // Render Sidebar Room List
+            renderSidebarRooms();
+        }
+
+        function renderSidebarRooms() {
+            const list = document.getElementById('sidebar-room-list');
+            list.innerHTML = ROOMS.map(r => {
+                const isActive = r.id === activeRoomId;
+                return `
+                    <button onclick="window.switchRoom('${r.id}')"
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition ${isActive ? 'bg-amber-500/20 border border-amber-400/40 text-white' : 'hover:bg-white/10 text-gray-300 border border-transparent'}">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-base">${r.icon}</span>
+                            <div>
+                                <div class="text-xs font-bold leading-tight">${r.name}</div>
+                                <div class="text-[10px] text-gray-400">${r.age}</div>
+                            </div>
+                        </div>
+                        ${isActive ? '<span class="w-2 h-2 rounded-full bg-amber-400"></span>' : ''}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // -------------------- FIREBASE INITIALIZATION --------------------
+        async function initFirebase() {
+            if (!firebaseConfig) {
+                showToast('Running in offline preview mode.', 'warning');
+                return;
+            }
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+
+            // RULE 3: Auth before queries
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.error('Auth error:', err);
+                showToast('Authentication error. Please refresh.', 'danger');
+            }
+
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) return;
+                setupRealtimeListeners(user);
+            });
+        }
+
+        // -------------------- FIRESTORE REAL-TIME LISTENERS --------------------
+        let unsubMessages = null;
+
+        function setupRealtimeListeners(authUser) {
+            // 1. Listen to Global Settings (Admin Secret, AutoFilter, Announcement, FirstAdmin)
+            const settingsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global');
+            onSnapshot(settingsDocRef, (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    appSettings = { ...appSettings, ...data };
+                } else {
+                    // Initialize default global settings if first time
+                    setDoc(settingsDocRef, appSettings, { merge: true }).catch(() => {});
+                }
+                applySettingsToUI();
+            }, (err) => console.error('Settings snapshot error:', err));
+
+            // 2. Listen to User Moderation Roles & Bans
+            const modColRef = collection(db, 'artifacts', appId, 'public', 'data', 'moderation');
+            onSnapshot(modColRef, (snapshot) => {
+                userModerationMap = {};
+                snapshot.forEach(d => {
+                    userModerationMap[d.id] = d.data();
+                });
+                syncCurrentUserRoleAndStatus();
+                renderOnlineUsers();
+                renderAdminModerationList();
+                renderAdminRankUsersList();
+            }, (err) => console.error('Moderation snapshot error:', err));
+
+            // 3. Listen to Online Presence
+            const presenceColRef = collection(db, 'artifacts', appId, 'public', 'data', 'presence');
+            onSnapshot(presenceColRef, (snapshot) => {
+                onlineUsersMap = {};
+                const now = Date.now();
+                snapshot.forEach(d => {
+                    const u = d.data();
+                    // Consider users active within last 10 minutes
+                    if (!u.lastSeen || (now - u.lastSeen) < 600000) {
+                        onlineUsersMap[d.id] = u;
+                    }
+                });
+                renderOnlineUsers();
+                renderAdminRankUsersList();
+            }, (err) => console.error('Presence snapshot error:', err));
+
+            // 4. Listen to Active Room Messages
+            subscribeToRoomMessages(activeRoomId);
+        }
+
+        function subscribeToRoomMessages(roomId) {
+            if (unsubMessages) unsubMessages();
+            if (!db || !auth.currentUser) return;
+
+            const msgsColRef = collection(db, 'artifacts', appId, 'public', 'data', `messages_${roomId}`);
+            unsubMessages = onSnapshot(msgsColRef, (snapshot) => {
+                const msgs = [];
+                snapshot.forEach(d => {
+                    msgs.push({ id: d.id, ...d.data() });
+                });
+                // RULE 2: Sort in JavaScript memory instead of Firestore orderBy()
+                msgs.sort((a, b) => (a.createdAtMs || 0) - (b.createdAtMs || 0));
+                renderMessages(msgs);
+            }, (err) => console.error('Messages snapshot error:', err));
+        }
+
+        // -------------------- APPLY SETTINGS & ROLES --------------------
+        function applySettingsToUI() {
+            // Announcement Banner
+            const bar = document.getElementById('global-announcement-bar');
+            const textEl = document.getElementById('global-announcement-text');
+            if (appSettings.announcement && appSettings.announcement.trim() !== '') {
+                textEl.textContent = appSettings.announcement;
+                bar.classList.remove('hidden');
+            } else {
+                bar.classList.add('hidden');
+            }
+
+            // Filter status indicators
+            document.getElementById('sidebar-filter-status').textContent = appSettings.autoFilter ? 'ON' : 'OFF';
+            document.getElementById('sidebar-filter-status').className = appSettings.autoFilter ? 'text-emerald-300' : 'text-rose-400';
+            document.getElementById('admin-toggle-filter').checked = !!appSettings.autoFilter;
+            document.getElementById('current-secret-display').textContent = appSettings.adminSecret || 'ADMIN123';
+        }
+
+        function syncCurrentUserRoleAndStatus() {
+            if (!currentUser) return;
+            const modRecord = userModerationMap[currentUser.uid] || {};
+
+            // Check if banned
+            if (modRecord.banned) {
+                showToast('You have been banned from this chat room by the Admin.', 'danger');
+                logoutUser();
+                return;
+            }
+
+            // Update Role
+            if (modRecord.role) {
+                currentUser.role = modRecord.role;
+            }
+            currentUser.muted = !!modRecord.muted;
+
+            // Update Header UI
+            const isAdmin = currentUser.role === 'admin';
+            const isStaff = ['admin', 'room_manager', 'moderator'].includes(currentUser.role);
+            const rankMeta = getRankMeta(currentUser.role);
+
+            const roleLabel = document.getElementById('header-role-label');
+            if (currentUser.role !== 'member') {
+                roleLabel.innerHTML = `${rankMeta.icon} ${rankMeta.label}`;
+                roleLabel.className = `text-[10px] ${rankMeta.nameClass}`;
+            } else {
+                roleLabel.textContent = 'Member';
+                roleLabel.className = 'text-[10px] text-emerald-300 font-semibold';
+            }
+
+            if (isAdmin) {
+                document.getElementById('btn-open-admin').classList.remove('hidden');
+                document.getElementById('btn-open-admin').classList.add('flex');
+            } else {
+                document.getElementById('btn-open-admin').classList.add('hidden');
+                document.getElementById('btn-open-admin').classList.remove('flex');
+            }
+
+            if (isStaff) {
+                document.getElementById('admin-hint-tag').classList.remove('hidden');
+                document.getElementById('admin-hint-tag').textContent = isAdmin ? 'Click user for Rank/Mod' : 'Click user to mod';
+            } else {
+                document.getElementById('admin-hint-tag').classList.add('hidden');
+            }
+
+            // Muted State
+            const mutedBanner = document.getElementById('muted-banner');
+            const msgInput = document.getElementById('message-input');
+            const sendBtn = document.getElementById('btn-send-message');
+            if (currentUser.muted && !isAdmin) {
+                mutedBanner.classList.remove('hidden');
+                msgInput.disabled = true;
+                sendBtn.disabled = true;
+            } else {
+                mutedBanner.classList.add('hidden');
+                msgInput.disabled = false;
+                sendBtn.disabled = false;
+            }
+        }
+
+        // -------------------- RENDER ONLINE USERS --------------------
+        function renderOnlineUsers() {
+            const listEl = document.getElementById('online-users-list');
+            const users = Object.values(onlineUsersMap);
+            
+            document.getElementById('online-count-badge').textContent = users.length || 1;
+            document.getElementById('sidebar-online-count').textContent = users.length || 1;
+
+            const canModerate = currentUser && ['admin', 'room_manager', 'moderator'].includes(currentUser.role);
+
+            // Sort by Rank Hierarchy (Admin -> Room Manager -> Moderator -> Super VIP -> Diamond -> VIP -> Gold -> Bronze -> Member)
+            users.sort((a, b) => {
+                const rA = (userModerationMap[a.uid]?.role) || a.role || 'member';
+                const rB = (userModerationMap[b.uid]?.role) || b.role || 'member';
+                return getRankMeta(rA).weight - getRankMeta(rB).weight;
+            });
+
+            listEl.innerHTML = users.map(u => {
+                const modInfo = userModerationMap[u.uid] || {};
+                const role = modInfo.role || u.role || 'member';
+                const rankMeta = getRankMeta(role);
+                const isMuted = !!modInfo.muted;
+                const isMe = currentUser && u.uid === currentUser.uid;
+                const badgeHTML = renderRankBadgeHTML(role, true);
+
+                return `
+                    <div onclick="${canModerate && !isMe ? `window.openUserActionModal('${u.uid}')` : ''}"
+                        class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 ${canModerate && !isMe ? 'hover:bg-white/15 cursor-pointer' : ''} transition">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-lg shrink-0">${escapeHTML(u.avatar || '🐼')}</span>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs truncate ${rankMeta.nameClass}">${escapeHTML(u.username)}</span>
+                                    ${isMe ? '<span class="text-[9px] text-gray-400">(You)</span>' : ''}
+                                </div>
+                                <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                    ${badgeHTML}
+                                    ${isMuted ? '<span class="text-[9px] text-rose-400 font-bold"><i class="fa-solid fa-microphone-slash"></i> Muted</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // -------------------- RENDER CHAT MESSAGES --------------------
+        function renderMessages(messages) {
+            const container = document.getElementById('live-messages-list');
+            const scrollWrapper = document.getElementById('chat-messages-container');
+            const isStaff = currentUser && ['admin', 'room_manager', 'moderator'].includes(currentUser.role);
+
+            container.innerHTML = messages.map(m => {
+                // System Announcement / Event Message
+                if (m.type === 'system') {
+                    return `
+                        <div class="flex justify-center my-2 msg-animate">
+                            <div class="px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs flex items-center gap-2">
+                                <i class="fa-solid fa-sparkles text-amber-400"></i>
+                                <span>${escapeHTML(m.text)}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const isMe = currentUser && m.uid === currentUser.uid;
+                const liveRole = (userModerationMap[m.uid]?.role) || m.role || 'member';
+                const rankMeta = getRankMeta(liveRole);
+                const roleBadge = renderRankBadgeHTML(liveRole, false);
+
+                return `
+                    <div class="group flex items-start gap-2.5 ${isMe ? 'flex-row-reverse' : ''} msg-animate">
+                        <!-- Avatar -->
+                        <div class="w-9 h-9 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-lg shrink-0 shadow">
+                            ${escapeHTML(m.avatar || '🐼')}
+                        </div>
+
+                        <!-- Bubble -->
+                        <div class="max-w-[80%] sm:max-w-[70%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                            <div class="flex items-center gap-1.5 mb-1 px-1 flex-wrap">
+                                <span class="text-xs ${rankMeta.nameClass}">
+                                    ${escapeHTML(m.username)}
+                                </span>
+                                ${roleBadge}
+                                <span class="text-[10px] text-gray-400">${formatTime(m.createdAtMs)}</span>
+                            </div>
+
+                            <div class="relative px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-md ${
+                                isMe 
+                                    ? 'bg-gradient-to-br from-emerald-600/90 to-teal-700/90 text-white rounded-tr-sm border border-emerald-400/30' 
+                                    : liveRole === 'admin'
+                                        ? 'glass-card-warm text-amber-50 rounded-tl-sm'
+                                        : 'glass-panel text-gray-100 rounded-tl-sm'
+                            }">
+                                <span>${escapeHTML(m.text)}</span>
+
+                                <!-- Staff Delete Message Button -->
+                                ${isStaff ? `
+                                    <button onclick="window.deleteMessage('${m.id}')" title="Delete Message"
+                                        class="opacity-0 group-hover:opacity-100 transition-opacity ml-2 text-rose-300 hover:text-rose-200 text-xs">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Auto-scroll to bottom
+            scrollWrapper.scrollTop = scrollWrapper.scrollHeight;
+        }
+
+        // -------------------- LOGIN & ROOM SWITCHING --------------------
+        document.getElementById('toggle-admin-claim').addEventListener('change', (e) => {
+            const box = document.getElementById('admin-code-box');
+            if (e.target.checked) {
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!auth || !auth.currentUser) {
+                showToast('Connecting to chat server, please wait...', 'info');
+                return;
+            }
+
+            const rawName = document.getElementById('input-username').value.trim();
+            const safeNameCheck = sanitizeChildSafeMessage(rawName);
+            if (!rawName || safeNameCheck.blockedReason) {
+                showToast(safeNameCheck.blockedReason || 'Please enter a valid nickname.', 'warning');
+                return;
+            }
+
+            const uid = auth.currentUser.uid;
+            const existingMod = userModerationMap[uid] || {};
+
+            if (existingMod.banned) {
+                showToast('This account is banned from SafeKids Chat.', 'danger');
+                return;
+            }
+
+            const chosenRoom = document.getElementById('input-room').value;
+            const wantsAdmin = document.getElementById('toggle-admin-claim').checked;
+            const enteredCode = document.getElementById('input-admin-code').value.trim();
+
+            // Default is 'member' (or whatever rank Admin previously assigned to this user)
+            // Normal visitors NEVER get Admin automatically!
+            let assignedRole = (existingMod.role && existingMod.role !== 'admin') ? existingMod.role : 'member';
+
+            // ONLY the creator with the exact Secret Admin Key becomes Admin
+            if (wantsAdmin) {
+                if (enteredCode === (appSettings.adminSecret || 'ADMIN123')) {
+                    assignedRole = 'admin';
+                    showToast('Welcome Owner! Full Admin & Rank Control unlocked.', 'success');
+                } else {
+                    showToast('Wrong Admin Secret Key! Access denied.', 'danger');
+                    return;
+                }
+            }
+
+            currentUser = {
+                uid,
+                username: safeNameCheck.clean,
+                avatar: selectedAvatar,
+                role: assignedRole,
+                muted: !!existingMod.muted
+            };
+
+            // Save Moderation / Role Record
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'moderation', uid), {
+                uid,
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                role: assignedRole,
+                muted: currentUser.muted,
+                banned: false
+            }, { merge: true });
+
+            // Register Presence
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'presence', uid), {
+                uid,
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                role: assignedRole,
+                room: chosenRoom,
+                lastSeen: Date.now()
+            });
+
+            // Update Header UI
+            document.getElementById('header-avatar').textContent = currentUser.avatar;
+            document.getElementById('header-username').textContent = currentUser.username;
+            syncCurrentUserRoleAndStatus();
+
+            // Hide Login Screen
+            document.getElementById('login-screen').classList.add('hidden');
+
+            // Switch to chosen room & post join message
+            await window.switchRoom(chosenRoom, true);
+        });
+
+        window.switchRoom = async function(roomId, isInitialJoin = false) {
+            const roomObj = ROOMS.find(r => r.id === roomId) || ROOMS[0];
+            activeRoomId = roomObj.id;
+
+            // Update UI headers & dropdowns
+            document.getElementById('topbar-room-select').value = activeRoomId;
+            document.getElementById('active-room-icon').textContent = roomObj.icon;
+            document.getElementById('active-room-title').textContent = `${roomObj.name} (${roomObj.age})`;
+            document.getElementById('active-room-desc').textContent = roomObj.desc;
+            renderSidebarRooms();
+
+            // Close mobile sidebar if open
+            closeMobileSidebar();
+
+            // Subscribe to new room messages
+            subscribeToRoomMessages(activeRoomId);
+
+            if (currentUser && db) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'presence', currentUser.uid), {
+                    room: activeRoomId,
+                    lastSeen: Date.now()
+                }, { merge: true });
+
+                // Post friendly join notice
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', `messages_${activeRoomId}`), {
+                    type: 'system',
+                    text: `${currentUser.avatar} ${currentUser.username} ${currentUser.role === 'admin' ? '(Admin 👑) ' : ''}joined ${roomObj.name}!`,
+                    createdAtMs: Date.now()
+                });
+            }
+        };
+
+        document.getElementById('topbar-room-select').addEventListener('change', (e) => {
+            window.switchRoom(e.target.value);
+        });
+
+        // -------------------- SENDING MESSAGES --------------------
+        document.getElementById('message-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || !db) return;
+
+            if (currentUser.muted && currentUser.role !== 'admin') {
+                showToast('You are currently muted.', 'warning');
+                return;
+            }
+
+            const input = document.getElementById('message-input');
+            const rawText = input.value.trim();
+            if (!rawText) return;
+
+            // Run Child-Safety Filter
+            const check = sanitizeChildSafeMessage(rawText);
+            if (check.blockedReason) {
+                showToast(check.blockedReason, 'danger');
+                return;
+            }
+
+            input.value = '';
+            document.getElementById('emoji-picker-popover').classList.add('hidden');
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', `messages_${activeRoomId}`), {
+                    type: 'chat',
+                    uid: currentUser.uid,
+                    username: currentUser.username,
+                    avatar: currentUser.avatar,
+                    role: currentUser.role,
+                    text: check.clean,
+                    createdAtMs: Date.now()
+                });
+
+                // Refresh presence timestamp
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'presence', currentUser.uid), {
+                    lastSeen: Date.now()
+                }, { merge: true });
+            } catch (err) {
+                console.error('Send error:', err);
+                showToast('Could not send message. Try again.', 'danger');
+            }
+        });
+
+        // Friendly Wave Quick Button
+        document.getElementById('btn-wave-sticker').addEventListener('click', async () => {
+            if (!currentUser || !db) return;
+            if (currentUser.muted && currentUser.role !== 'admin') return;
+
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', `messages_${activeRoomId}`), {
+                type: 'chat',
+                uid: currentUser.uid,
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                role: currentUser.role,
+                text: `👋 Hey everyone! *waves happily*`,
+                createdAtMs: Date.now()
+            });
+        });
+
+        // -------------------- ADMIN & MODERATION ACTIONS --------------------
+        window.deleteMessage = async function(msgId) {
+            if (!currentUser || !['admin', 'room_manager', 'moderator'].includes(currentUser.role)) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', `messages_${activeRoomId}`, msgId));
+                showToast('Message removed by staff.', 'info');
+            } catch (err) {
+                console.error('Delete msg error:', err);
+            }
+        };
+
+        window.openUserActionModal = function(targetUid) {
+            if (!currentUser || !['admin', 'room_manager', 'moderator'].includes(currentUser.role)) return;
+            const targetUser = onlineUsersMap[targetUid] || userModerationMap[targetUid];
+            if (!targetUser) return;
+
+            const modData = userModerationMap[targetUid] || {};
+            const targetRole = modData.role || targetUser.role || 'member';
+
+            // Prevent Room Managers / Moderators from moderating the Owner Admin
+            if (targetRole === 'admin' && currentUser.role !== 'admin') {
+                showToast('You cannot moderate the Owner Admin.', 'warning');
+                return;
+            }
+
+            selectedModTarget = targetUid;
+            const rankMeta = getRankMeta(targetRole);
+
+            document.getElementById('mod-target-avatar').textContent = targetUser.avatar || '🐼';
+            document.getElementById('mod-target-name').textContent = targetUser.username;
+            document.getElementById('mod-target-role').textContent = `Current Rank: ${rankMeta.icon} ${rankMeta.label} ${modData.muted ? '• MUTED' : ''}`;
+
+            // ONLY the Admin sees the Rank Assignment section
+            const rankSection = document.getElementById('admin-rank-picker-section');
+            if (currentUser.role === 'admin') {
+                rankSection.classList.remove('hidden');
+            } else {
+                rankSection.classList.add('hidden');
+            }
+
+            const modal = document.getElementById('user-action-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        document.getElementById('btn-close-user-action').addEventListener('click', () => {
+            const modal = document.getElementById('user-action-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        });
+
+        // Assign Custom Rank Function (Admin Only)
+        window.assignUserRank = async function(targetUid, newRole) {
+            if (!currentUser || currentUser.role !== 'admin' || !targetUid) return;
+            const existing = userModerationMap[targetUid] || onlineUsersMap[targetUid] || {};
+            const rankMeta = getRankMeta(newRole);
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'moderation', targetUid), {
+                uid: targetUid,
+                username: existing.username || 'User',
+                avatar: existing.avatar || '🐼',
+                role: newRole
+            }, { merge: true });
+
+            if (onlineUsersMap[targetUid]) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'presence', targetUid), {
+                    role: newRole
+                }, { merge: true }).catch(() => {});
+            }
+
+            // Announce rank promotion in the active chat room
+            if (newRole !== 'member') {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', `messages_${activeRoomId}`), {
+                    type: 'system',
+                    text: `🎉 Admin ${currentUser.username} promoted ${existing.username || 'User'} to ${rankMeta.icon} ${rankMeta.label}!`,
+                    createdAtMs: Date.now()
+                });
+            }
+
+            showToast(`${existing.username || 'User'} is now ${rankMeta.icon} ${rankMeta.label}!`, 'success');
+        };
+
+        // Bind Rank Buttons inside User Action Modal
+        document.querySelectorAll('.rank-assign-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (!selectedModTarget) return;
+                const chosenRank = btn.dataset.rank;
+                await window.assignUserRank(selectedModTarget, chosenRank);
+                document.getElementById('btn-close-user-action').click();
+            });
+        });
+
+        // Render Online Users Rank Manager inside Admin Panel
+        function renderAdminRankUsersList() {
+            const container = document.getElementById('admin-rank-users-list');
+            if (!container) return;
+
+            const users = Object.values(onlineUsersMap).filter(u => !currentUser || u.uid !== currentUser.uid);
+            if (users.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic">No other users online right now. Share your link so friends can join!</p>`;
+                return;
+            }
+
+            container.innerHTML = users.map(u => {
+                const modInfo = userModerationMap[u.uid] || {};
+                const currentRole = modInfo.role || u.role || 'member';
+                return `
+                    <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-black/40 border border-white/10">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-lg">${escapeHTML(u.avatar || '🐼')}</span>
+                            <span class="text-xs font-bold text-white truncate">${escapeHTML(u.username)}</span>
+                        </div>
+                        <select onchange="window.assignUserRank('${u.uid}', this.value)"
+                            class="bg-gray-900 border border-amber-400/40 text-amber-200 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-amber-400 cursor-pointer">
+                            <option value="member" ${currentRole === 'member' ? 'selected' : ''}>Member (No Rank)</option>
+                            <option value="room_manager" ${currentRole === 'room_manager' ? 'selected' : ''}>🛡️ Room Manager</option>
+                            <option value="moderator" ${currentRole === 'moderator' ? 'selected' : ''}>⚔️ Moderator</option>
+                            <option value="super_vip" ${currentRole === 'super_vip' ? 'selected' : ''}>💎✨ Super VIP</option>
+                            <option value="diamond" ${currentRole === 'diamond' ? 'selected' : ''}>💠 Diamond</option>
+                            <option value="vip" ${currentRole === 'vip' ? 'selected' : ''}>⭐ VIP</option>
+                            <option value="gold" ${currentRole === 'gold' ? 'selected' : ''}>🥇 Gold</option>
+                            <option value="bronze" ${currentRole === 'bronze' ? 'selected' : ''}>🥉 Bronze</option>
+                        </select>
+                    </div>
+                `;
+            }).join('');
+        }
+        };
+
+        window.openUserActionModal = function(targetUid) {
+            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'mod')) return;
+            const targetUser = onlineUsersMap[targetUid] || userModerationMap[targetUid];
+            if (!targetUser) return;
+
+            selectedModTarget = targetUid;
+            const modData = userModerationMap[targetUid] || {};
+            const role = modData.role || targetUser.role || 'member';
+
+            document.getElementById('mod-target-avatar').textContent = targetUser.avatar || '🐼';
+            document.getElementById('mod-target-name').textContent = targetUser.username;
+            document.getElementById('mod-target-role').textContent = `Role: ${role.toUpperCase()} ${modData.muted ? '• MUTED' : ''}`;
+
+            // Only full Admin can promote to Mod
+            document.getElementById('act-promote-mod').style.display = currentUser.role === 'admin' ? 'flex' : 'none';
+
+            const modal = document.getElementById('user-action-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        document.getElementById('btn-close-user-action').addEventListener('click', () => {
+            const modal = document.getElementById('user-action-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        });
+
+        // Promote/Demote Mod
+        document.getElementById('act-promote-mod').addEventListener('click', async () => {
+            if (!selectedModTarget || currentUser.role !== 'admin') return;
+            const existing = userModerationMap[selectedModTarget] || onlineUsersMap[selectedModTarget] || {};
+            const newRole = existing.role === 'mod' ? 'member' : 'mod';
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'moderation', selectedModTarget), {
+                uid: selectedModTarget,
+                username: existing.username || 'User',
+                avatar: existing.avatar || '🐼',
+                role: newRole
+            }, { merge: true });
+
+            showToast(`${existing.username} is now a ${newRole.toUpperCase()}!`, 'success');
+            document.getElementById('btn-close-user-action').click();
+        });
+
+        // Mute / Unmute User
+        document.getElementById('act-mute-user').addEventListener('click', async () => {
+            if (!selectedModTarget) return;
+            const existing = userModerationMap[selectedModTarget] || onlineUsersMap[selectedModTarget] || {};
+            const newMuted = !existing.muted;
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'moderation', selectedModTarget), {
+                uid: selectedModTarget,
+                username: existing.username || 'User',
+                avatar: existing.avatar || '🐼',
+                muted: newMuted
+            }, { merge: true });
+
+            showToast(`${existing.username} has been ${newMuted ? 'muted' : 'unmuted'}.`, 'warning');
+            document.getElementById('btn-close-user-action').click();
+        });
+
+        // Kick & Ban User
+        document.getElementById('act-ban-user').addEventListener('click', async () => {
+            if (!selectedModTarget) return;
+            const existing = userModerationMap[selectedModTarget] || onlineUsersMap[selectedModTarget] || {};
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'moderation', selectedModTarget), {
+                uid: selectedModTarget,
+                username: existing.username || 'User',
+                avatar: existing.avatar || '🐼',
+                banned: true
+            }, { merge: true });
+
+            // Remove from presence
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'presence', selectedModTarget)).catch(() => {});
+
+            showToast(`${existing.username} has been kicked & banned.`, 'danger');
+            document.getElementById('btn-close-user-action').click();
+        });
+
+        // Admin Panel Modal Controls
+        document.getElementById('btn-open-admin').addEventListener('click', () => {
+            const modal = document.getElementById('admin-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        });
+
+        document.getElementById('btn-close-admin').addEventListener('click', () => {
+            const modal = document.getElementById('admin-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        });
+
+        // Broadcast Announcement
+        document.getElementById('btn-publish-announcement').addEventListener('click', async () => {
+            if (currentUser?.role !== 'admin') return;
+            const text = document.getElementById('admin-announcement-input').value.trim();
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), {
+                announcement: text
+            }, { merge: true });
+            showToast('Global announcement updated!', 'success');
+        });
+
+        document.getElementById('btn-clear-announcement').addEventListener('click', async () => {
+            if (currentUser?.role !== 'admin') return;
+            document.getElementById('admin-announcement-input').value = '';
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), {
+                announcement: ''
+            }, { merge: true });
+            showToast('Announcement cleared.', 'info');
+        });
+
+        // Toggle Auto-Filter
+        document.getElementById('admin-toggle-filter').addEventListener('change', async (e) => {
+            if (currentUser?.role !== 'admin') return;
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), {
+                autoFilter: e.target.checked
+            }, { merge: true });
+            showToast(`Child-Safe Auto Filter turned ${e.target.checked ? 'ON' : 'OFF'}.`, 'info');
+        });
+
+        // Clear Current Room Chat
+        document.getElementById('btn-clear-room-chat').addEventListener('click', async () => {
+            if (currentUser?.role !== 'admin') return;
+            const colRef = collection(db, 'artifacts', appId, 'public', 'data', `messages_${activeRoomId}`);
+            const snap = await getDocs(colRef);
+            const promises = [];
+            snap.forEach(d => promises.push(deleteDoc(d.ref)));
+            await Promise.all(promises);
+
+            await addDoc(colRef, {
+                type: 'system',
+                text: `🧹 Chat history was cleared by Admin ${currentUser.username}.`,
+                createdAtMs: Date.now()
+            });
+            showToast('Room chat cleared!', 'success');
+        });
+
+        // Save New Admin Secret Code
+        document.getElementById('btn-save-secret').addEventListener('click', async () => {
+            if (currentUser?.role !== 'admin') return;
+            const newCode = document.getElementById('admin-new-secret-input').value.trim();
+            if (newCode.length < 4) {
+                showToast('Secret code must be at least 4 characters.', 'warning');
+                return;
+            }
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), {
+                adminSecret: newCode
+            }, { merge: true });
+            document.getElementById('admin-new-secret-input').value = '';
+            showToast('Admin Secret Code updated!', 'success');
+        });
+
+        // Render Moderated / Banned Users List inside Admin Panel
+        function renderAdminModerationList() {
+            const container = document.getElementById('admin-moderation-list');
+            const list = Object.values(userModerationMap).filter(u => u.banned || u.muted);
+
+            if (list.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic">No muted or banned users currently.</p>`;
+                return;
+            }
+
+            container.innerHTML = list.map(u => `
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-white/10">
+                    <div class="flex items-center gap-2">
+                        <span>${escapeHTML(u.avatar || '🐼')}</span>
+                        <div>
+                            <div class="text-xs font-bold text-white">${escapeHTML(u.username || u.uid)}</div>
+                            <div class="text-[10px] text-rose-400 font-semibold">
+                                ${u.banned ? 'BANNED' : ''} ${u.muted ? 'MUTED' : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="window.unbanAndUnmuteUser('${u.uid}')"
+                        class="px-3 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-200 text-xs font-bold">
+                        Restore Access
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        window.unbanAndUnmuteUser = async function(targetUid) {
+            if (currentUser?.role !== 'admin') return;
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'moderation', targetUid), {
+                banned: false,
+                muted: false
+            }, { merge: true });
+            showToast('User access restored!', 'success');
+        };
+
+        // -------------------- MISC UI INTERACTIONS --------------------
+        // Mobile Sidebar Toggle
+        const sidebar = document.getElementById('left-sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+
+        function openMobileSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            backdrop.classList.remove('hidden');
+        }
+        function closeMobileSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            backdrop.classList.add('hidden');
+        }
+
+        document.getElementById('btn-toggle-sidebar').addEventListener('click', () => {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openMobileSidebar();
+            } else {
+                closeMobileSidebar();
+            }
+        });
+        document.getElementById('btn-online-pill').addEventListener('click', openMobileSidebar);
+        backdrop.addEventListener('click', closeMobileSidebar);
+
+        // Emoji Popover
+        document.getElementById('btn-emoji-toggle').addEventListener('click', () => {
+            document.getElementById('emoji-picker-popover').classList.toggle('hidden');
+        });
+        document.getElementById('close-emoji-picker').addEventListener('click', () => {
+            document.getElementById('emoji-picker-popover').classList.add('hidden');
+        });
+
+        // Safety Rules Modal
+        document.getElementById('btn-safety-info').addEventListener('click', () => {
+            const m = document.getElementById('safety-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        });
+        const closeSafety = () => {
+            const m = document.getElementById('safety-modal');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        };
+        document.getElementById('btn-close-safety').addEventListener('click', closeSafety);
+        document.getElementById('btn-ack-safety').addEventListener('click', closeSafety);
+
+        // Dismiss Announcement Banner
+        document.getElementById('btn-dismiss-banner').addEventListener('click', () => {
+            document.getElementById('global-announcement-bar').classList.add('hidden');
+        });
+
+        // Logout
+        async function logoutUser() {
+            if (currentUser && db) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'presence', currentUser.uid)).catch(() => {});
+            }
+            currentUser = null;
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+        document.getElementById('btn-logout').addEventListener('click', logoutUser);
+
+        // Boot App
+        initStaticPickers();
+        initFirebase();
+    </script>
+</body>
+</html>
