@@ -3,605 +3,2409 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SafeKids Chat — Live Rooms & Admin Ranks</title>
+  <title>SafeKids Chat — Live Rooms, Wall, DMs & Admin Ranks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 20% 15%, rgba(16, 185, 129, 0.16), transparent 45%),
-        radial-gradient(circle at 80% 85%, rgba(245, 158, 11, 0.14), transparent 45%),
-        linear-gradient(160deg, #0b1914 0%, #10241c 50%, #091310 100%);
-      color: #ecfdf5;
+    :root {
+      --rail-bg: #161a22;
+      --topbar-bg: #181c25;
+      --canvas-bg: #1e222b;
+      --hex-stroke: rgba(255, 255, 255, 0.038);
+      --hex-fill: rgba(0, 0, 0, 0.14);
+      --panel-bg: #232834;
+      --panel-elevated: #282e3c;
+      --bubble-bg: #2a303d;
+      --bubble-self: #263849;
+      --quote-bg: #323949;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent: #3b82f6;
+      --accent-warm: #f59e0b;
+      --online-green: #4ade80;
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
     }
+
+    body[data-theme="dark-hex"] {
+      --rail-bg: #161a22;
+      --topbar-bg: #181c25;
+      --canvas-bg: #1e222b;
+      --panel-bg: #232834;
+      --panel-elevated: #282e3c;
+      --bubble-bg: #2a303d;
+      --bubble-self: #25394b;
+      --quote-bg: #323949;
+      --accent: #3b82f6;
+    }
+
+    body[data-theme="misty-forest"] {
+      --rail-bg: #111916;
+      --topbar-bg: #141e1a;
+      --canvas-bg: #18241f;
+      --panel-bg: #1e2c26;
+      --panel-elevated: #24352e;
+      --bubble-bg: #23332c;
+      --bubble-self: #1e3b30;
+      --quote-bg: #2b3f36;
+      --accent: #10b981;
+    }
+
+    body[data-theme="midnight-neon"] {
+      --rail-bg: #13111c;
+      --topbar-bg: #171422;
+      --canvas-bg: #1c1829;
+      --panel-bg: #231e33;
+      --panel-elevated: #2a243d;
+      --bubble-bg: #29233b;
+      --bubble-self: #33244d;
+      --quote-bg: #352d4c;
+      --accent: #a855f7;
+    }
+
+    body[data-theme="cyber-slate"] {
+      --rail-bg: #0f172a;
+      --topbar-bg: #131c31;
+      --canvas-bg: #172136;
+      --panel-bg: #1e293b;
+      --panel-elevated: #263349;
+      --bubble-bg: #243146;
+      --bubble-self: #1d3b53;
+      --quote-bg: #2d3c54;
+      --accent: #06b6d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--canvas-bg);
+      color: var(--text-primary);
+    }
+
     .hidden { display: none !important; }
 
-    /* Entry Card */
-    .entry-wrap {
-      min-height: 100vh;
+    /* Hexagon Tiled Chat Background matching screenshot */
+    .hex-canvas {
+      background-color: var(--canvas-bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1.2'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='rgba(0,0,0,0.22)' stroke-width='1.2'/%3E%3C/svg%3E");
+      background-size: 56px 100px;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+
+    /* Entry / Login Screen */
+    .entry-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 18px;
+      padding: 16px;
+      overflow-y: auto;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15), transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.12), transparent 45%),
+        rgba(15, 18, 25, 0.92);
+      backdrop-filter: blur(10px);
     }
-    .entry-card {
+
+    .entry-box {
       width: 100%;
-      max-width: 440px;
-      background: rgba(12, 26, 20, 0.88);
-      border: 1px solid rgba(110, 231, 183, 0.22);
-      backdrop-filter: blur(14px);
-      border-radius: 22px;
-      padding: 26px 22px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
-    }
-    .brand-header { text-align: center; margin-bottom: 20px; }
-    .brand-icon {
-      width: 54px; height: 54px; margin: 0 auto 10px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #10b981, #f59e0b);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px; color: #062016; font-weight: 800;
-    }
-    .brand-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
-    .brand-title span { color: #fbbf24; }
-    .brand-sub { font-size: 13px; color: #a7f3d0; opacity: 0.85; margin-top: 4px; }
-
-    .field-group { margin-bottom: 15px; }
-    .field-label {
-      display: block; font-size: 11px; font-weight: 700;
-      letter-spacing: 0.8px; color: #9ca3af; margin-bottom: 7px; text-transform: uppercase;
-    }
-    .input-box, .select-box {
-      width: 100%; padding: 12px 14px; border-radius: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: #fff; font-size: 14px; outline: none;
-    }
-    .input-box:focus, .select-box:focus { border-color: #10b981; }
-    .select-box option { background: #0f241c; color: #fff; }
-
-    .avatar-grid {
-      display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
-    }
-    .avatar-btn {
-      padding: 9px 0; border-radius: 11px; font-size: 20px; cursor: pointer;
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12);
-      transition: 0.15s;
-    }
-    .avatar-btn.active {
-      background: rgba(16, 185, 129, 0.25); border-color: #34d399; transform: scale(1.05);
+      max-width: 450px;
+      background: #1d222d;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 24px 22px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+      max-height: 94vh;
+      overflow-y: auto;
     }
 
-    .admin-box {
+    .entry-top {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .entry-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      margin: 0 auto 10px;
+      background: linear-gradient(135deg, #2563eb, #10b981);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+    }
+
+    .entry-top h1 {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .entry-top h1 span { color: #fbbf24; }
+    .entry-top p { font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; }
+
+    .f-group { margin-bottom: 13px; }
+    .f-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+
+    .f-input, .f-select {
+      width: 100%;
+      padding: 10px 13px;
+      border-radius: 11px;
+      background: #131720;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    .f-input:focus, .f-select:focus { border-color: var(--accent); }
+
+    .avatar-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar-preview-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      background: #282e3d;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .avatar-preview-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-presets {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      flex: 1;
+    }
+
+    .av-chip {
+      height: 34px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #141821;
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    .av-chip.active {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .admin-toggle-card {
+      padding: 11px 13px;
+      border-radius: 12px;
       background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      border-radius: 14px; padding: 12px 14px; margin-bottom: 14px;
-    }
-    .admin-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .admin-title { font-size: 13px; font-weight: 700; color: #fbbf24; }
-    .toggle-wrap { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #fde68a; }
-    .secret-wrap { margin-top: 10px; }
-
-    .safety-note {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      border-radius: 12px; padding: 10px 12px;
-      font-size: 12px; color: #d1fae5; line-height: 1.45; margin-bottom: 16px;
-    }
-    .btn-primary {
-      width: 100%; padding: 13px 16px; border: none; border-radius: 13px;
-      background: linear-gradient(90deg, #10b981, #059669);
-      color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
-    }
-    .btn-primary:hover { filter: brightness(1.08); }
-    .error-msg { color: #fca5a5; font-size: 12px; margin-top: 8px; min-height: 16px; }
-
-    /* Chat App Layout */
-    .app-shell { display: flex; flex-direction: column; height: 100vh; }
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-      padding: 10px 16px; background: rgba(9, 20, 16, 0.92);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .topbar-left { display: flex; align-items: center; gap: 10px; }
-    .room-badge {
-      background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(52, 211, 153, 0.4);
-      padding: 5px 11px; border-radius: 999px; font-size: 13px; font-weight: 700; color: #a7f3d0;
-    }
-    .topbar-actions { display: flex; align-items: center; gap: 8px; }
-    .btn-sm {
-      padding: 7px 12px; border-radius: 9px; border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(255, 255, 255, 0.08); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer;
-    }
-    .btn-admin {
-      background: rgba(245, 158, 11, 0.2); border-color: #fbbf24; color: #fde68a;
+      border: 1px solid rgba(245, 158, 11, 0.32);
+      margin-bottom: 13px;
     }
 
-    .main-grid {
-      flex: 1; display: grid; grid-template-columns: 240px 1fr; min-height: 0;
+    .btn-full {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
     }
+
+    .btn-full:hover { filter: brightness(1.08); }
+
+    /* App Shell Layout */
+    .app-shell {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Header Bar (Matches screenshot top bar) */
+    .top-header {
+      height: 50px;
+      background: var(--topbar-bg);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 35;
+      flex-shrink: 0;
+    }
+
+    .top-left, .top-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.14s ease;
+    }
+
+    .nav-icon-btn:hover { background: rgba(255, 255, 255, 0.08); }
+
+    .badge-dot {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-avatar-trigger {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      background: #2b313f;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      overflow: visible;
+    }
+
+    .top-avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-avatar-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .online-status-dot {
+      position: absolute;
+      bottom: -1px;
+      left: -1px;
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      background: #22c55e;
+      border: 2px solid var(--topbar-bg);
+    }
+
+    /* Profile Dropdown Menu (Exact replica of screenshot dropdown!) */
+    .profile-dropdown {
+      position: absolute;
+      top: 52px;
+      right: 12px;
+      width: 268px;
+      background: #232936;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+      z-index: 55;
+      overflow: hidden;
+    }
+
+    .pd-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .pd-user-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .pd-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #363e4f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .pd-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .pd-role-line {
+      font-size: 11px;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pd-name {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pd-edit-link {
+      font-size: 11.5px;
+      color: #93c5fd;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 2px;
+    }
+
+    .pd-edit-link:hover { text-decoration: underline; }
+
+    .pd-check-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #65a30d;
+      color: #fff;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pd-item {
+      width: 100%;
+      padding: 12px 16px;
+      background: transparent;
+      border: none;
+      color: #f3f4f6;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.14s ease;
+    }
+
+    .pd-item:hover { background: rgba(255, 255, 255, 0.06); }
+
+    .pd-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pd-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      margin: 4px 0;
+    }
+
+    /* Main Content Container */
+    .main-area {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      position: relative;
+    }
+
+    /* Left Vertical Icon Rail (Matches screenshot left sidebar) */
+    .left-rail {
+      width: 52px;
+      background: var(--rail-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      gap: 8px;
+      flex-shrink: 0;
+      z-index: 25;
+    }
+
+    .rail-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .rail-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .rail-btn.active {
+      background: var(--panel-elevated);
+      color: #fff;
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+
+    /* Slide-out Drawer for Rooms / Wall / News / Trending / Leaderboard */
+    .feature-drawer {
+      width: 280px;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 22;
+    }
+
     @media (max-width: 768px) {
-      .main-grid { grid-template-columns: 1fr; }
-      .sidebar { display: none; }
+      .feature-drawer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 52px;
+        box-shadow: 16px 0 40px rgba(0, 0, 0, 0.6);
+      }
     }
 
-    .sidebar {
-      background: rgba(10, 22, 17, 0.78);
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 14px; overflow-y: auto;
-    }
-    .side-heading {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      color: #9ca3af; letter-spacing: 0.7px; margin-bottom: 10px;
-    }
-    .room-item {
-      padding: 9px 11px; border-radius: 10px; cursor: pointer;
-      font-size: 13px; margin-bottom: 6px; color: #d1fae5;
-    }
-    .room-item.active, .room-item:hover {
-      background: rgba(16, 185, 129, 0.18); color: #fff;
-    }
-    .user-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
-      padding: 8px 9px; border-radius: 10px; background: rgba(255, 255, 255, 0.04);
-      margin-bottom: 7px; font-size: 13px;
+    .drawer-head {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13.5px;
+      font-weight: 800;
     }
 
-    /* Rank Badges */
-    .rank-badge {
-      display: inline-block; padding: 2px 7px; border-radius: 999px;
-      font-size: 10px; font-weight: 800; letter-spacing: 0.3px;
-    }
-    .r-Admin { background: #ef4444; color: #fff; }
-    .r-Room\ Manager { background: #8b5cf6; color: #fff; }
-    .r-Moderator { background: #06b6d4; color: #062026; }
-    .r-Super\ VIP { background: linear-gradient(90deg, #ec4899, #f59e0b); color: #fff; }
-    .r-Diamond { background: #38bdf8; color: #05202e; }
-    .r-VIP { background: #f59e0b; color: #1f1300; }
-    .r-Gold { background: #eab308; color: #1f1800; }
-    .r-Bronze { background: #b45309; color: #fff7ed; }
-    .r-Member { background: rgba(255,255,255,0.12); color: #d1d5db; }
-
-    .chat-col { display: flex; flex-direction: column; min-height: 0; }
-    .notice-bar {
-      background: rgba(245, 158, 11, 0.15); border-bottom: 1px solid rgba(245, 158, 11, 0.3);
-      padding: 8px 16px; font-size: 12px; color: #fde68a;
-    }
-    .messages-area {
-      flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px;
-    }
-    .msg-card {
-      max-width: 78%; padding: 10px 13px; border-radius: 14px;
-      background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.09);
-    }
-    .msg-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 4px; font-size: 12px; }
-    .msg-text { font-size: 14px; line-height: 1.45; color: #f9fafb; word-break: break-word; }
-
-    .composer {
-      display: flex; gap: 8px; padding: 12px 16px;
-      background: rgba(9, 20, 16, 0.92); border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .btn-send {
-      padding: 0 18px; border-radius: 12px; border: none;
-      background: #10b981; color: #fff; font-weight: 700; cursor: pointer;
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
     }
 
-    /* Admin Modal */
+    /* Chat Stream Area */
+    .chat-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+    }
+
+    /* Top Topic / Announcement Banner matching screenshot top card */
+    .room-topic-bar {
+      background: #f8fafc;
+      color: #0f172a;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      flex-shrink: 0;
+    }
+
+    .topic-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .topic-title {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .topic-room-pill {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* Chat Stream Messages */
+    .chat-stream {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .cody-msg {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      position: relative;
+    }
+
+    .cody-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: #2f3646;
+      border: 2px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .cody-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .cody-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cody-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .cody-user-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .cody-username {
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Glowing Rank Styles matching screenshot (`lucas123`, `wheelzz`, `natttt`, `cute ginny`) */
+    .name-Admin {
+      color: #fde047;
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.9), 0 0 14px rgba(245, 158, 11, 0.7);
+    }
+    .name-Room\ Manager {
+      color: #c4b5fd;
+      text-shadow: 0 0 8px rgba(139, 92, 246, 0.85);
+    }
+    .name-Moderator {
+      color: #7dd3fc;
+      text-shadow: 0 0 8px rgba(14, 165, 233, 0.85);
+    }
+    .name-Super\ VIP {
+      color: #fff;
+      text-shadow: 0 0 6px #ec4899, 0 0 12px #f43f5e;
+    }
+    .name-Diamond {
+      color: #67e8f9;
+      text-shadow: 0 0 8px rgba(34, 211, 238, 0.85);
+    }
+    .name-VIP {
+      color: #fff;
+      text-shadow: 0 0 6px #ef4444, 0 0 12px #f59e0b;
+    }
+    .name-Gold {
+      color: #fde047;
+      text-shadow: 0 0 7px rgba(234, 179, 8, 0.75);
+    }
+    .name-Bronze {
+      color: #fdba74;
+    }
+    .name-Member {
+      color: #9ca3af;
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    .rank-tag {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e5e7eb;
+    }
+
+    .cody-time {
+      font-size: 11px;
+      color: #9ca3af;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Quoted Reply Box matching screenshot */
+    .quote-box {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--quote-bg);
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin-bottom: 5px;
+      max-width: 100%;
+      border-left: 3px solid var(--accent);
+    }
+
+    .quote-author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #e5e7eb;
+    }
+
+    .quote-mini-av {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #1f2430;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      overflow: hidden;
+    }
+
+    .quote-mini-av img { width: 100%; height: 100%; object-fit: cover; }
+
+    .quote-snippet {
+      font-size: 12px;
+      color: #cbd5e1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 300px;
+    }
+
+    /* Message Bubble */
+    .cody-bubble {
+      display: inline-block;
+      background: var(--bubble-bg);
+      color: #f3f4f6;
+      padding: 9px 14px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      line-height: 1.45;
+      max-width: 88%;
+      word-break: break-word;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+    }
+
+    .cody-msg.self .cody-bubble {
+      background: var(--bubble-self);
+    }
+
+    .chat-attached-img {
+      display: block;
+      max-width: 240px;
+      max-height: 220px;
+      border-radius: 10px;
+      margin-top: 6px;
+      cursor: zoom-in;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .msg-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .mini-act-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #9ca3af;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .mini-act-btn:hover {
+      background: rgba(255, 255, 255, 0.13);
+      color: #fff;
+    }
+
+    .reaction-pill {
+      background: rgba(59, 130, 246, 0.18);
+      border: 1px solid rgba(59, 130, 246, 0.38);
+      color: #e0f2fe;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    /* Floating Sticker / Quick Reaction Dock matching screenshot bottom-left card */
+    .floating-sticker-dock {
+      position: absolute;
+      bottom: 62px;
+      left: 14px;
+      background: #2b313e;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+      z-index: 30;
+    }
+
+    .sticker-dock-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      border: none;
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.12s ease, background 0.12s ease;
+    }
+
+    .sticker-dock-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: scale(1.1);
+    }
+
+    /* Plus (+) Attachment Menu */
+    .plus-menu {
+      position: absolute;
+      bottom: 62px;
+      left: 14px;
+      width: 215px;
+      background: #232936;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 6px;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.6);
+      z-index: 32;
+    }
+
+    .plus-item {
+      width: 100%;
+      padding: 9px 11px;
+      border: none;
+      border-radius: 9px;
+      background: transparent;
+      color: #f3f4f6;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .plus-item:hover { background: rgba(255, 255, 255, 0.08); }
+
+    /* Reply Preview Strip above input */
+    .reply-strip {
+      background: #252b38;
+      border-top: 1px solid var(--border-color);
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    /* Bottom Composer Bar matching screenshot */
+    .bottom-bar {
+      height: 54px;
+      background: var(--topbar-bg);
+      border-top: 1px solid var(--border-color);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .composer-circle-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .composer-circle-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .type-pill {
+      flex: 1;
+      height: 38px;
+      border-radius: 999px;
+      background: #252a34;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0 16px;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    .type-pill:focus { border-color: var(--accent); }
+
+    .send-arrow-btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Right Online Users & DM Drawer */
+    .right-drawer {
+      width: 265px;
+      background: var(--panel-bg);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 22;
+    }
+
+    @media (max-width: 960px) {
+      .right-drawer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        box-shadow: -16px 0 40px rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    .user-list-item {
+      padding: 8px 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      margin-bottom: 4px;
+    }
+
+    .user-list-item:hover { background: rgba(255, 255, 255, 0.07); }
+
+    /* Sub-footer bar matching bottom strip of screenshot */
+    .sub-footer {
+      height: 34px;
+      background: #13171f;
+      border-top: 1px solid var(--border-color);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+
+    /* Modals */
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.72);
-      display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 70;
     }
-    .modal-card {
-      width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto;
-      background: #10221b; border: 1px solid rgba(251, 191, 36, 0.35);
-      border-radius: 18px; padding: 20px;
+
+    .modal-panel {
+      width: 100%;
+      max-width: 470px;
+      max-height: 86vh;
+      overflow-y: auto;
+      background: #222733;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
     }
-    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .assign-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 13px;
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .toast-box {
+      position: fixed;
+      top: 58px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      z-index: 90;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
     }
   </style>
 </head>
-<body>
+<body data-theme="dark-hex">
 
-  <!-- ENTRY SCREEN -->
-  <div id="entryScreen" class="entry-wrap">
-    <div class="entry-card">
-      <div class="brand-header">
-        <div class="brand-icon">💬</div>
-        <div class="brand-title">SafeKids <span>Chat</span></div>
-        <div class="brand-sub">Free, safe & moderated online chat rooms for kids & teens</div>
+  <div id="toastContainer"></div>
+  <input id="picFileInput" type="file" accept="image/*" class="hidden" />
+  <input id="avatarFileInput" type="file" accept="image/*" class="hidden" />
+
+  <!-- ENTRY / LOGIN SCREEN -->
+  <div id="entryScreen" class="entry-screen">
+    <div class="entry-box">
+      <div class="entry-top">
+        <div class="entry-badge">💬</div>
+        <h1>SafeKids <span>Chat</span></h1>
+        <p>Live rooms, picture sharing, private DMs, wall posts &amp; Admin ranks</p>
       </div>
 
-      <div class="field-group">
-        <label class="field-label" for="nickInput">Choose a Nickname</label>
-        <input id="nickInput" class="input-box" type="text" maxlength="20" placeholder="e.g., Rqzv, StarGamer..." />
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Pick a Fun Avatar</label>
-        <div id="avatarGrid" class="avatar-grid"></div>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label" for="roomSelect">Select Chat Room</label>
-        <select id="roomSelect" class="select-box">
-          <option value="Kids Lounge (Ages 8-12)">🧸 Kids Lounge (Ages 8-12)</option>
-          <option value="Teen Chat (Ages 13-17)">🎮 Teen Chat (Ages 13-17)</option>
-          <option value="Gaming & Esports">⚡ Gaming & Esports</option>
-          <option value="Chill & Study">📚 Chill & Study</option>
-        </select>
-      </div>
-
-      <div class="admin-box">
-        <div class="admin-row">
-          <span class="admin-title">👑 Admin / Owner Login</span>
-          <label class="toggle-wrap">
-            <input id="claimAdminToggle" type="checkbox" />
-            <span>Claim Admin</span>
-          </label>
+      <form id="loginForm">
+        <div class="f-group">
+          <label class="f-label" for="loginNick">Choose Nickname</label>
+          <input id="loginNick" class="f-input" type="text" maxlength="18" required placeholder="e.g., Op User, lucas123, StarKid..." />
         </div>
-        <div id="secretKeyWrap" class="secret-wrap hidden">
-          <input id="adminKeyInput" class="input-box" type="password" placeholder="Enter Admin Secret Key (default: ADMIN123)" />
+
+        <div class="f-group">
+          <label class="f-label">Avatar or Custom Photo</label>
+          <div class="avatar-picker-row">
+            <div id="entryAvatarPreview" class="avatar-preview-circle">🦊</div>
+            <div id="entryAvatarPresets" class="avatar-presets"></div>
+            <button id="uploadEntryAvatarBtn" type="button" class="mini-act-btn" style="padding: 8px 10px;">📷 Photo</button>
+          </div>
         </div>
-      </div>
 
-      <div class="safety-note">
-        🛡️ <strong>Child-Safe Environment:</strong> Never share your real name, phone number, school, or passwords. Auto-safety filter is active 24/7.
-      </div>
+        <div class="f-group">
+          <label class="f-label" for="loginRoom">Select Chat Room</label>
+          <select id="loginRoom" class="f-select"></select>
+        </div>
 
-      <button id="enterChatBtn" class="btn-primary" type="button">Enter Safe Chat →</button>
-      <div id="entryError" class="error-msg"></div>
+        <div class="admin-toggle-card">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-size: 12.5px; font-weight: 700; color: #fde68a;">👑 Admin / Owner Login</span>
+            <label style="display:flex; align-items:center; gap:6px; font-size:12px; cursor:pointer;">
+              <input id="adminClaimCheck" type="checkbox" style="accent-color:#f59e0b; width:15px; height:15px;" />
+              <span>Claim Admin</span>
+            </label>
+          </div>
+          <div id="adminKeyBox" class="hidden" style="margin-top: 9px;">
+            <input id="adminSecretField" class="f-input" type="password" placeholder="Enter Admin Secret Key (Default: ADMIN123)" />
+          </div>
+        </div>
+
+        <button class="btn-full" type="submit">Enter Safe Chat →</button>
+        <div id="loginError" style="color:#fca5a5; font-size:12px; margin-top:8px; min-height:16px;"></div>
+      </form>
     </div>
   </div>
 
-  <!-- CHAT SCREEN -->
-  <div id="chatScreen" class="app-shell hidden">
-    <header class="topbar">
-      <div class="topbar-left">
-        <strong>SafeKids Chat</strong>
-        <span id="currentRoomBadge" class="room-badge">🧸 Kids Lounge (Ages 8-12)</span>
+  <!-- MAIN CHAT APPLICATION -->
+  <div id="appShell" class="app-shell hidden">
+
+    <!-- Top Navigation Bar (Matches screenshot top header) -->
+    <header class="top-header">
+      <div class="top-left">
+        <button id="hamburgerBtn" class="nav-icon-btn" type="button" title="Toggle Navigation Drawer">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <strong style="font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; letter-spacing:-0.02em;">SafeKids<span style="color:#fbbf24;">Chat</span></strong>
       </div>
-      <div class="topbar-actions">
-        <span id="meBadge" class="rank-badge r-Member">Member</span>
-        <button id="openAdminBtn" class="btn-sm btn-admin hidden" type="button">👑 Admin Panel</button>
-        <button id="leaveBtn" class="btn-sm" type="button">Exit</button>
+
+      <div class="top-right">
+        <!-- Friend Requests / DMs icon -->
+        <button id="topFriendsBtn" class="nav-icon-btn" type="button" title="Friends & Private Messages">
+          <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span id="dmBadgeCount" class="badge-dot hidden">0</span>
+        </button>
+
+        <!-- Notifications Bell -->
+        <button id="topNotifBtn" class="nav-icon-btn" type="button" title="Notifications">
+          <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 002 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          <span id="notifDot" class="badge-dot">1</span>
+        </button>
+
+        <!-- Profile Avatar with Green Dot -->
+        <button id="profileMenuTrigger" class="top-avatar-trigger" type="button" title="Account Menu">
+          <div id="topAvatarInner" class="top-avatar-inner">🦊</div>
+          <span class="online-status-dot"></span>
+        </button>
       </div>
     </header>
 
-    <div class="main-grid">
-      <aside class="sidebar">
-        <div class="side-heading">Chat Rooms</div>
-        <div id="roomList"></div>
+    <!-- Profile Dropdown Menu (Matches screenshot dropdown: User, Nickname, Edit profile, Chat options >, Wallet, Logout) -->
+    <div id="profileDropdown" class="profile-dropdown hidden">
+      <div class="pd-header">
+        <div class="pd-user-left">
+          <div id="pdAvatar" class="pd-avatar">🦊</div>
+          <div style="min-width:0;">
+            <div class="pd-role-line">
+              <span>👤</span>
+              <span id="pdRoleText">User</span>
+            </div>
+            <div id="pdNicknameText" class="pd-name">Op User</div>
+            <button id="openEditProfileBtn" class="pd-edit-link" type="button">Edit profile</button>
+          </div>
+        </div>
+        <div class="pd-check-circle" title="Online">✓</div>
+      </div>
 
-        <div class="side-heading" style="margin-top: 18px;">Active Users</div>
-        <div id="userList"></div>
+      <button id="openChatOptionsBtn" class="pd-item" type="button">
+        <span class="pd-item-left">
+          <span>⚙️</span>
+          <span>Chat options</span>
+        </span>
+        <span style="color:#9ca3af;">›</span>
+      </button>
+
+      <button id="openWalletBtn" class="pd-item" type="button">
+        <span class="pd-item-left">
+          <span>💳</span>
+          <span>Wallet</span>
+        </span>
+        <span id="pdCoinPill" style="font-size:11.5px; color:#fbbf24; font-weight:800;">150 🪙</span>
+      </button>
+
+      <button id="openAdminPanelMenuBtn" class="pd-item hidden" type="button" style="color:#fde047;">
+        <span class="pd-item-left">
+          <span>👑</span>
+          <span>Admin Panel</span>
+        </span>
+        <span>›</span>
+      </button>
+
+      <div class="pd-divider"></div>
+
+      <button id="logoutMenuBtn" class="pd-item" type="button">
+        <span class="pd-item-left">
+          <span>↪️</span>
+          <span>Logout</span>
+        </span>
+      </button>
+    </div>
+
+    <!-- Main Split Body -->
+    <div class="main-area">
+
+      <!-- Left Vertical Icon Rail (Home, Feed/RSS, Social Wall, Trending Fire, Rules/Directory, Leaderboard Medal) -->
+      <nav class="left-rail">
+        <button class="rail-btn active" data-tab="rooms" type="button" title="Chat Rooms">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </button>
+        <button class="rail-btn" data-tab="wall" type="button" title="Social Wall & Status Feed">
+          <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1Z"/></svg>
+        </button>
+        <button class="rail-btn" data-tab="dms" type="button" title="Private Messages (DMs)">
+          <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        </button>
+        <button class="rail-btn" data-tab="trending" type="button" title="Trending Topics & Gifts">
+          <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
+        </button>
+        <button class="rail-btn" data-tab="rules" type="button" title="Safe Chat Rules & Ranks">
+          <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+        </button>
+        <button class="rail-btn" data-tab="leaderboard" type="button" title="Top Active Leaderboard">
+          <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z"/></svg>
+        </button>
+      </nav>
+
+      <!-- Left Expandable Drawer -->
+      <aside id="featureDrawer" class="feature-drawer">
+        <div class="drawer-head">
+          <span id="drawerTitle">Chat Rooms</span>
+          <button id="closeDrawerBtn" class="mini-act-btn" type="button">✕</button>
+        </div>
+        <div id="drawerContent" class="drawer-body"></div>
       </aside>
 
-      <section class="chat-col">
-        <div id="announcementBar" class="notice-bar">
-          📢 Welcome! Only the Admin can assign Room Manager, Moderator, Super VIP, Diamond, VIP, Gold, and Bronze ranks.
+      <!-- Center Chat Stage -->
+      <section class="chat-stage hex-canvas">
+        <!-- Top Topic Header Card matching screenshot white header -->
+        <div class="room-topic-bar">
+          <div style="min-width:0;">
+            <div id="topicSubtitle" class="topic-sub">SafeKids Entertainment • Live Moderated</div>
+            <div id="topicHeadline" class="topic-title">Best Kids &amp; Teen Hangout Room</div>
+          </div>
+          <span id="activeRoomBadge" class="topic-room-pill">🧸 Kids Lounge</span>
         </div>
-        <div id="messagesArea" class="messages-area"></div>
-        <form id="msgForm" class="composer">
-          <input id="msgInput" class="input-box" type="text" maxlength="250" placeholder="Type a safe message..." autocomplete="off" />
-          <button class="btn-send" type="submit">Send</button>
+
+        <!-- Chat Messages Stream -->
+        <div id="chatStream" class="chat-stream"></div>
+
+        <!-- Floating Quick Sticker / Reaction Dock (Matches screenshot bottom-left 🏆 # 🔥 dock) -->
+        <div id="stickerDock" class="floating-sticker-dock hidden">
+          <button class="sticker-dock-btn" data-quick-sticker="🏆" type="button" title="Trophy">🏆</button>
+          <button class="sticker-dock-btn" data-quick-sticker="#*" type="button" title="Hashtag Tag" style="font-weight:900; font-size:18px; color:#0f172a;">#*</button>
+          <button class="sticker-dock-btn" data-quick-sticker="🔥" type="button" title="Fire">🔥</button>
+          <button class="sticker-dock-btn" data-quick-sticker="❤️" type="button" title="Heart">❤️</button>
+          <button class="sticker-dock-btn" data-quick-sticker="😂" type="button" title="Laugh">😂</button>
+          <button class="sticker-dock-btn" data-quick-sticker="👑" type="button" title="Crown">👑</button>
+        </div>
+
+        <!-- Plus (+) Attachment Menu -->
+        <div id="plusMenu" class="plus-menu hidden">
+          <button id="menuUploadPicBtn" class="plus-item" type="button">
+            <span>🖼️</span>
+            <span>Send Picture / Photo</span>
+          </button>
+          <button id="menuOpenDoodleBtn" class="plus-item" type="button">
+            <span>🎨</span>
+            <span>Draw &amp; Send Doodle</span>
+          </button>
+          <button id="menuStickerDockBtn" class="plus-item" type="button">
+            <span>🏆</span>
+            <span>Quick Stickers (🏆 🔥)</span>
+          </button>
+          <button id="menuSendGiftBtn" class="plus-item" type="button">
+            <span>🎁</span>
+            <span>Send Virtual Gift</span>
+          </button>
+        </div>
+
+        <!-- Reply Quote Banner -->
+        <div id="replyBar" class="reply-strip hidden">
+          <span id="replyPreviewText">Replying to user...</span>
+          <button id="cancelReplyBtn" class="mini-act-btn" type="button">✕ Cancel</button>
+        </div>
+
+        <!-- Bottom Composer Bar (Matches screenshot: + | Emoji | Type here...) -->
+        <form id="chatComposerForm" class="bottom-bar">
+          <button id="plusBtn" class="composer-circle-btn" type="button" title="Attach Picture, Draw or Stickers">+</button>
+          <button id="emojiToggleBtn" class="composer-circle-btn" type="button" title="Emojis & Stickers">😊</button>
+          <input id="chatInput" class="type-pill" type="text" maxlength="280" autocomplete="off" placeholder="Type here..." />
+          <button class="send-arrow-btn" type="submit">Send ➤</button>
         </form>
       </section>
+
+      <!-- Right Online Users & Staff Drawer -->
+      <aside id="rightDrawer" class="right-drawer hidden">
+        <div class="drawer-head">
+          <span>Online Users (<span id="onlineUsersCount">1</span>)</span>
+          <button id="closeRightDrawerBtn" class="mini-act-btn" type="button">✕</button>
+        </div>
+        <div id="rightUsersList" class="drawer-body"></div>
+      </aside>
+    </div>
+
+    <!-- Bottom Status Strip (Matches screenshot bottom bar) -->
+    <footer class="sub-footer">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="color:#4ade80;">● Live</span>
+        <span id="footerRoomLabel">Kids Lounge</span>
+      </div>
+      <button id="toggleRightUsersBtn" class="mini-act-btn" type="button" title="Online Users List">
+        ☰ Online (<span id="footerOnlineCount">1</span>)
+      </button>
+    </footer>
+  </div>
+
+  <!-- MODAL: EDIT PROFILE -->
+  <div id="editProfileModal" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h3 style="font-size:16px; font-weight:800;">✏️ Edit Profile</h3>
+        <button class="mini-act-btn" data-close-modal="editProfileModal" type="button">✕</button>
+      </div>
+      <div class="f-group">
+        <label class="f-label">Nickname</label>
+        <input id="editNickInput" class="f-input" type="text" maxlength="18" />
+      </div>
+      <div class="f-group">
+        <label class="f-label">Bio / Status Mood</label>
+        <input id="editBioInput" class="f-input" type="text" maxlength="60" placeholder="Chilling in SafeKids Chat!" />
+      </div>
+      <div class="f-group">
+        <label class="f-label">Profile Picture</label>
+        <button id="changeAvatarPhotoBtn" class="mini-act-btn" style="padding:8px 12px;" type="button">📷 Upload New Profile Picture</button>
+      </div>
+      <button id="saveProfileBtn" class="btn-full" type="button">Save Profile Changes</button>
     </div>
   </div>
 
-  <!-- ADMIN PANEL MODAL -->
-  <div id="adminModal" class="modal-backdrop hidden">
-    <div class="modal-card">
+  <!-- MODAL: CHAT OPTIONS (Themes, Sound, Compact) -->
+  <div id="chatOptionsModal" class="modal-backdrop hidden">
+    <div class="modal-panel">
       <div class="modal-head">
-        <h3>👑 Admin Rank & Room Control</h3>
-        <button id="closeAdminBtn" class="btn-sm" type="button">✕</button>
+        <h3 style="font-size:16px; font-weight:800;">⚙️ Chat Options &amp; Themes</h3>
+        <button class="mini-act-btn" data-close-modal="chatOptionsModal" type="button">✕</button>
+      </div>
+      <div class="f-group">
+        <label class="f-label">Choose Chat Theme</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button type="button" class="mini-act-btn" style="padding:10px; border-radius:10px;" data-set-theme="dark-hex">⬡ Dark Hexagon</button>
+          <button type="button" class="mini-act-btn" style="padding:10px; border-radius:10px;" data-set-theme="misty-forest">🌲 Misty Forest</button>
+          <button type="button" class="mini-act-btn" style="padding:10px; border-radius:10px;" data-set-theme="midnight-neon">🌌 Midnight Neon</button>
+          <button type="button" class="mini-act-btn" style="padding:10px; border-radius:10px;" data-set-theme="cyber-slate">💠 Cyber Slate</button>
+        </div>
+      </div>
+      <div class="f-group" style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#181c24; border-radius:10px;">
+        <span style="font-size:13px; font-weight:600;">Message Sound Effects</span>
+        <input id="soundToggleCheck" type="checkbox" checked style="width:16px; height:16px; accent-color:#3b82f6;" />
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: WALLET & VIRTUAL GIFTS -->
+  <div id="walletModal" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h3 style="font-size:16px; font-weight:800;">💳 Wallet &amp; Gift Shop</h3>
+        <button class="mini-act-btn" data-close-modal="walletModal" type="button">✕</button>
+      </div>
+      <div style="padding:14px; border-radius:12px; background:linear-gradient(135deg,#1e3a8a,#065f46); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:11px; opacity:0.85;">YOUR BALANCE</div>
+          <div id="walletBalanceText" style="font-size:24px; font-weight:800;">150 Coins 🪙</div>
+        </div>
+        <button id="claimDailyBonusBtn" class="mini-act-btn" style="background:#fbbf24; color:#111827; font-weight:800; padding:7px 12px;" type="button">+50 Daily Bonus</button>
+      </div>
+      <label class="f-label">Send a Gift into Current Room</label>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+        <button type="button" class="mini-act-btn" style="padding:10px; border-radius:10px;" data-gift="🏆 Golden Trophy|25">🏆 Trophy (25)</button>
+        <button type="button" class="mini-act-btn" style="padding:10px; border-radius:10px;" data-gift="💎 Blue Diamond|50">💎 Diamond (50)</button>
+        <button type="button" class="mini-act-btn" style="padding:10px; border-radius:10px;" data-gift="👑 Royal Crown|80">👑 Crown (80)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DOODLE / DRAW PAD -->
+  <div id="doodleModal" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h3 style="font-size:16px; font-weight:800;">🎨 Draw &amp; Send Picture</h3>
+        <button class="mini-act-btn" data-close-modal="doodleModal" type="button">✕</button>
+      </div>
+      <canvas id="doodleCanvas" width="420" height="240" style="width:100%; background:#11151c; border-radius:12px; border:1px solid rgba(255,255,255,0.14); touch-action:none;"></canvas>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; gap:8px;">
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="mini-act-btn" data-brush="#38bdf8">🔵</button>
+          <button type="button" class="mini-act-btn" data-brush="#facc15">🟡</button>
+          <button type="button" class="mini-act-btn" data-brush="#f43f5e">🔴</button>
+          <button type="button" class="mini-act-btn" data-brush="#4ade80">🟢</button>
+          <button id="clearDoodleBtn" type="button" class="mini-act-btn">Clear</button>
+        </div>
+        <button id="sendDoodleBtn" type="button" class="send-arrow-btn">Send Drawing ➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADMIN PANEL & RANK MANAGER -->
+  <div id="adminPanelModal" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h3 style="font-size:16px; font-weight:800; color:#fde047;">👑 Admin Control Panel</h3>
+        <button class="mini-act-btn" data-close-modal="adminPanelModal" type="button">✕</button>
       </div>
 
-      <div class="field-group">
-        <label class="field-label">Change Admin Secret Key</label>
-        <div style="display:flex; gap:8px;">
-          <input id="newSecretInput" class="input-box" type="text" placeholder="New secret password" />
-          <button id="saveSecretBtn" class="btn-sm btn-admin" type="button">Save</button>
+      <div class="f-group">
+        <label class="f-label">Room Headline Banner</label>
+        <div style="display:flex; gap:6px;">
+          <input id="adminTopicInput" class="f-input" type="text" placeholder="Set room headline..." />
+          <button id="saveTopicBtn" class="send-arrow-btn" type="button">Update</button>
         </div>
       </div>
 
-      <div class="field-group">
-        <label class="field-label">Global Announcement</label>
-        <div style="display:flex; gap:8px;">
-          <input id="announceInput" class="input-box" type="text" placeholder="Write room announcement..." />
-          <button id="saveAnnounceBtn" class="btn-sm btn-admin" type="button">Post</button>
+      <div class="f-group">
+        <label class="f-label">Change Admin Secret Key</label>
+        <div style="display:flex; gap:6px;">
+          <input id="adminNewKeyInput" class="f-input" type="text" placeholder="New secret password" />
+          <button id="saveAdminKeyBtn" class="send-arrow-btn" type="button">Save</button>
         </div>
       </div>
 
-      <div class="field-group">
-        <label class="field-label">Assign Ranks to Users</label>
-        <div id="rankAssignList"></div>
+      <div class="f-group">
+        <label class="f-label">Assign User Ranks (Only Admin Can Set Ranks)</label>
+        <div id="adminUserRankList"></div>
       </div>
 
-      <button id="clearRoomBtn" class="btn-sm" style="width:100%; background:rgba(239,68,68,0.2); border-color:#f87171;" type="button">
-        🗑️ Clear Current Room Messages
-      </button>
+      <button id="adminClearRoomBtn" class="btn-full" style="background:#dc2626; margin-top:8px;" type="button">🗑️ Clear Current Room Chat</button>
+    </div>
+  </div>
+
+  <!-- IMAGE LIGHTBOX -->
+  <div id="lightboxModal" class="modal-backdrop hidden">
+    <div style="position:relative; max-width:92vw; max-height:90vh;">
+      <img id="lightboxImg" src="" alt="Preview" style="max-width:92vw; max-height:86vh; border-radius:14px; border:2px solid rgba(255,255,255,0.2);" />
+      <button class="mini-act-btn" data-close-modal="lightboxModal" style="position:absolute; top:10px; right:10px; background:#000; color:#fff; padding:6px 10px;" type="button">✕ Close</button>
     </div>
   </div>
 
   <script>
-    const AVATARS = ["🐼", "🦊", "🐯", "🐸", "🦄", "🐲", "⚡", "🎯", "🎧", "🌟", "🛡️", "🔥"];
-    const RANKS = ["Member", "Bronze", "Gold", "VIP", "Diamond", "Super VIP", "Moderator", "Room Manager"];
+    (function () {
+      const DB_KEY = "safekids_cody_clone_v1";
+      const SYNC_CHANNEL = "safekids_cody_sync_v1";
 
-    const state = {
-      avatar: AVATARS[0],
-      user: null,
-      adminSecret: localStorage.getItem("skc_admin_key") || "ADMIN123",
-      announcement: localStorage.getItem("skc_announce") || "Welcome! Only the Admin can assign Room Manager, Moderator, Super VIP, Diamond, VIP, Gold, and Bronze ranks.",
-      ranks: JSON.parse(localStorage.getItem("skc_ranks") || "{}"),
-      messagesByRoom: JSON.parse(localStorage.getItem("skc_msgs") || "{}"),
-      onlineUsers: JSON.parse(localStorage.getItem("skc_users") || "[]")
-    };
+      const ROOMS = [
+        { id: "kids-lounge", icon: "🧸", name: "Kids Lounge", sub: "SafeKids Entertainment", topic: "Best Kids & Teen Hangout Room" },
+        { id: "teen-chat", icon: "🔥", name: "Teen Chat", sub: "Music & Pop Culture", topic: "Best HipHop Artists & Trending Vibes" },
+        { id: "gaming-hub", icon: "🎮", name: "Gaming Hub", sub: "Esports & Co-op", topic: "Squad Up & Share Your Best Game Clips" },
+        { id: "art-studio", icon: "🎨", name: "Art & Doodles", sub: "Creative Corner", topic: "Share Your Drawings, Memes & Photos" }
+      ];
 
-    const entryScreen = document.getElementById("entryScreen");
-    const chatScreen = document.getElementById("chatScreen");
-    const avatarGrid = document.getElementById("avatarGrid");
-    const claimAdminToggle = document.getElementById("claimAdminToggle");
-    const secretKeyWrap = document.getElementById("secretKeyWrap");
-    const adminKeyInput = document.getElementById("adminKeyInput");
-    const nickInput = document.getElementById("nickInput");
-    const roomSelect = document.getElementById("roomSelect");
-    const entryError = document.getElementById("entryError");
+      const AVATARS = ["🦊", "🐼", "🐯", "🐸", "🦄", "🐺", "🐻", "🦉", "🐲", "🌟", "🎧", "🔥"];
+      const RANKS = ["Member", "Bronze", "Gold", "VIP", "Diamond", "Super VIP", "Moderator", "Room Manager"];
 
-    function renderAvatars() {
-      avatarGrid.innerHTML = "";
-      AVATARS.forEach(emoji => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "avatar-btn" + (state.avatar === emoji ? " active" : "");
-        btn.textContent = emoji;
-        btn.onclick = () => {
-          state.avatar = emoji;
-          renderAvatars();
+      function rankIcon(rank) {
+        const map = {
+          "Admin": "👑",
+          "Room Manager": "🛡️",
+          "Moderator": "⚔️",
+          "Super VIP": "💎",
+          "Diamond": "💠",
+          "VIP": "⭐",
+          "Gold": "🥇",
+          "Bronze": "🥉",
+          "Member": ""
         };
-        avatarGrid.appendChild(btn);
-      });
-    }
-
-    claimAdminToggle.addEventListener("change", () => {
-      secretKeyWrap.classList.toggle("hidden", !claimAdminToggle.checked);
-      entryError.textContent = "";
-    });
-
-    function getUserRank(name) {
-      if (state.ranks[name]) return state.ranks[name];
-      return "Member";
-    }
-
-    function saveAll() {
-      localStorage.setItem("skc_admin_key", state.adminSecret);
-      localStorage.setItem("skc_announce", state.announcement);
-      localStorage.setItem("skc_ranks", JSON.stringify(state.ranks));
-      localStorage.setItem("skc_msgs", JSON.stringify(state.messagesByRoom));
-      localStorage.setItem("skc_users", JSON.stringify(state.onlineUsers));
-    }
-
-    function isSafeText(text) {
-      const hasPhone = /\b\d{7,}\b/.test(text);
-      const hasEmail = /\S+@\S+\.\S+/.test(text);
-      return !hasPhone && !hasEmail;
-    }
-
-    document.getElementById("enterChatBtn").addEventListener("click", () => {
-      const nick = nickInput.value.trim();
-      if (!nick) {
-        entryError.textContent = "Please enter a nickname first.";
-        return;
+        return map[rank] || "";
       }
 
-      let isAdmin = false;
-      if (claimAdminToggle.checked) {
-        if (adminKeyInput.value !== state.adminSecret) {
-          entryError.textContent = "Invalid Admin Secret Key! Default key is ADMIN123.";
+      function defaultDB() {
+        return {
+          adminSecret: "ADMIN123",
+          theme: "dark-hex",
+          sound: true,
+          topicOverride: "",
+          ranks: {},
+          muted: {},
+          banned: {},
+          users: {},
+          wallets: {},
+          wallPosts: [
+            { id: "w1", author: "SafeKids Bot", avatar: "🤖", rank: "Admin", text: "Welcome to the Social Wall! Post updates, share thoughts, or send pictures in chat.", likes: 4, ts: Date.now() - 120000 }
+          ],
+          dms: {},
+          messages: {
+            "kids-lounge": [
+              { id: "m1", sender: "lucas123", avatar: "🐼", rank: "Moderator", text: "hey everyone welcome to the room!", ts: Date.now() - 180000 },
+              { id: "m2", sender: "wheelzz", avatar: "🐯", rank: "VIP", text: "lucas123 hold on, check out the new sticker dock & picture upload!", ts: Date.now() - 120000 }
+            ],
+            "teen-chat": [
+              { id: "m3", sender: "natttt", avatar: "🦊", rank: "Diamond", text: "this is why music makes every chat room better", ts: Date.now() - 90000 }
+            ],
+            "gaming-hub": [],
+            "art-studio": []
+          }
+        };
+      }
+
+      let db = loadDB();
+      let currentUser = null; // { name, avatar, room, isAdmin, bio }
+      let entryAvatar = AVATARS[0];
+      let activeLeftTab = "rooms";
+      let activeDmPartner = null;
+      let replyTarget = null; // { id, sender, avatar, text }
+      let bc = null;
+
+      try {
+        if ("BroadcastChannel" in window) {
+          bc = new BroadcastChannel(SYNC_CHANNEL);
+          bc.onmessage = () => {
+            db = loadDB();
+            applyTheme(db.theme);
+            if (currentUser) renderWorkspace();
+          };
+        }
+      } catch (_) {}
+
+      window.addEventListener("storage", (e) => {
+        if (e.key === DB_KEY) {
+          db = loadDB();
+          applyTheme(db.theme);
+          if (currentUser) renderWorkspace();
+        }
+      });
+
+      function loadDB() {
+        try {
+          const raw = localStorage.getItem(DB_KEY);
+          if (!raw) return defaultDB();
+          return Object.assign(defaultDB(), JSON.parse(raw));
+        } catch (_) {
+          return defaultDB();
+        }
+      }
+
+      function saveDB(broadcast = true) {
+        try { localStorage.setItem(DB_KEY, JSON.stringify(db)); } catch (_) {}
+        if (broadcast && bc) {
+          try { bc.postMessage({ ts: Date.now() }); } catch (_) {}
+        }
+      }
+
+      function toast(msg) {
+        const wrap = document.getElementById("toastContainer");
+        const el = document.createElement("div");
+        el.className = "toast-box";
+        el.textContent = msg;
+        wrap.appendChild(el);
+        setTimeout(() => el.remove(), 2600);
+      }
+
+      function esc(str) {
+        return String(str || "").replace(/[&<>"']/g, ch => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[ch]));
+      }
+
+      function renderAvatarHtml(av) {
+        if (typeof av === "string" && av.startsWith("data:image")) {
+          return `<img src="${av}" alt="avatar" />`;
+        }
+        return esc(av || "🦊");
+      }
+
+      function getUserRank(name, isAdminFlag = false) {
+        if (isAdminFlag) return "Admin";
+        const r = db.ranks[name];
+        if (!r || r === "Admin") return "Member";
+        return r;
+      }
+
+      function formatShortTime(ts) {
+        const d = new Date(ts || Date.now());
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const hh = String(d.getHours()).padStart(2, "0");
+        const min = String(d.getMinutes()).padStart(2, "0");
+        return `${dd}/${mm} ${hh}:${min}`;
+      }
+
+      function applyTheme(t) {
+        document.body.setAttribute("data-theme", t || "dark-hex");
+        db.theme = t || "dark-hex";
+      }
+
+      // Initialize Entry Screen
+      function initEntry() {
+        const presets = document.getElementById("entryAvatarPresets");
+        presets.innerHTML = AVATARS.slice(0, 6).map(av => `
+          <button type="button" class="av-chip ${entryAvatar === av ? "active" : ""}" data-av="${av}">${av}</button>
+        `).join("");
+        presets.querySelectorAll(".av-chip").forEach(btn => {
+          btn.addEventListener("click", () => {
+            entryAvatar = btn.dataset.av;
+            document.getElementById("entryAvatarPreview").innerHTML = renderAvatarHtml(entryAvatar);
+            initEntry();
+          });
+        });
+
+        const roomSel = document.getElementById("loginRoom");
+        roomSel.innerHTML = ROOMS.map(r => `<option value="${r.id}">${r.icon} ${r.name}</option>`).join("");
+      }
+
+      document.getElementById("uploadEntryAvatarBtn").addEventListener("click", () => {
+        document.getElementById("avatarFileInput").click();
+      });
+
+      document.getElementById("avatarFileInput").addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          entryAvatar = reader.result;
+          document.getElementById("entryAvatarPreview").innerHTML = renderAvatarHtml(entryAvatar);
+          if (currentUser) {
+            currentUser.avatar = entryAvatar;
+            if (db.users[currentUser.name]) db.users[currentUser.name].avatar = entryAvatar;
+            saveDB(true);
+            renderWorkspace();
+            toast("Profile picture updated!");
+          }
+        };
+        reader.readAsDataURL(file);
+        e.target.value = "";
+      });
+
+      document.getElementById("adminClaimCheck").addEventListener("change", (e) => {
+        document.getElementById("adminKeyBox").classList.toggle("hidden", !e.target.checked);
+      });
+
+      document.getElementById("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        db = loadDB();
+        const nick = document.getElementById("loginNick").value.trim();
+        const err = document.getElementById("loginError");
+        if (!nick) { err.textContent = "Please enter a nickname."; return; }
+        if (db.banned[nick]) { err.textContent = "This account is banned."; return; }
+
+        const claimAdmin = document.getElementById("adminClaimCheck").checked;
+        const secretVal = document.getElementById("adminSecretField").value;
+        let isAdmin = false;
+
+        if (claimAdmin) {
+          if (secretVal !== db.adminSecret) {
+            err.textContent = "Invalid Admin Secret Key! Default is ADMIN123.";
+            return;
+          }
+          isAdmin = true;
+          db.ranks[nick] = "Admin";
+        } else if (db.ranks[nick] === "Admin") {
+          db.ranks[nick] = "Member";
+        }
+
+        const room = document.getElementById("loginRoom").value || "kids-lounge";
+        currentUser = {
+          name: nick,
+          avatar: entryAvatar,
+          room,
+          isAdmin,
+          bio: "Hanging out on SafeKids Chat!"
+        };
+
+        db.users[nick] = {
+          name: nick,
+          avatar: entryAvatar,
+          room,
+          isAdmin,
+          bio: currentUser.bio,
+          lastSeen: Date.now()
+        };
+        if (typeof db.wallets[nick] !== "number") db.wallets[nick] = 150;
+
+        saveDB(true);
+        err.textContent = "";
+        document.getElementById("entryScreen").classList.add("hidden");
+        document.getElementById("appShell").classList.remove("hidden");
+        renderWorkspace();
+      });
+
+      // Render Complete Workspace
+      function renderWorkspace() {
+        if (!currentUser) return;
+        if (db.banned[currentUser.name]) {
+          logoutUser();
+          toast("You have been banned by the Admin.");
           return;
         }
-        isAdmin = true;
+
+        const rank = getUserRank(currentUser.name, currentUser.isAdmin);
+        const roomObj = ROOMS.find(r => r.id === currentUser.room) || ROOMS[0];
+
+        // Top Bar & Profile Dropdown
+        document.getElementById("topAvatarInner").innerHTML = renderAvatarHtml(currentUser.avatar);
+        document.getElementById("pdAvatar").innerHTML = renderAvatarHtml(currentUser.avatar);
+        document.getElementById("pdRoleText").textContent = rank;
+        document.getElementById("pdNicknameText").textContent = currentUser.name;
+        document.getElementById("pdCoinPill").textContent = `${db.wallets[currentUser.name] || 0} 🪙`;
+        document.getElementById("openAdminPanelMenuBtn").classList.toggle("hidden", !currentUser.isAdmin);
+
+        // Topic Header Card
+        document.getElementById("topicSubtitle").textContent = roomObj.sub;
+        document.getElementById("topicHeadline").textContent = db.topicOverride || roomObj.topic;
+        document.getElementById("activeRoomBadge").textContent = `${roomObj.icon} ${roomObj.name}`;
+        document.getElementById("footerRoomLabel").textContent = roomObj.name;
+
+        renderLeftDrawer();
+        renderChatStream();
+        renderRightUsers();
       }
 
-      const room = roomSelect.value;
-      state.user = { name: nick, avatar: state.avatar, room, isAdmin };
-
-      if (isAdmin) {
-        state.ranks[nick] = "Admin";
-      } else if (state.ranks[nick] === "Admin") {
-        state.ranks[nick] = "Member";
-      }
-
-      state.onlineUsers = state.onlineUsers.filter(u => u.name !== nick);
-      state.onlineUsers.push(state.user);
-
-      saveAll();
-      entryError.textContent = "";
-      entryScreen.classList.add("hidden");
-      chatScreen.classList.remove("hidden");
-      renderChatUI();
-    });
-
-    function renderChatUI() {
-      if (!state.user) return;
-      document.getElementById("currentRoomBadge").textContent = state.user.room;
-      document.getElementById("announcementBar").textContent = "📢 " + state.announcement;
-
-      const myRank = state.user.isAdmin ? "Admin" : getUserRank(state.user.name);
-      const meBadge = document.getElementById("meBadge");
-      meBadge.textContent = myRank;
-      meBadge.className = "rank-badge r-" + myRank;
-
-      document.getElementById("openAdminBtn").classList.toggle("hidden", !state.user.isAdmin);
-
-      renderRooms();
-      renderUsers();
-      renderMessages();
-    }
-
-    function renderRooms() {
-      const roomList = document.getElementById("roomList");
-      roomList.innerHTML = "";
-      Array.from(roomSelect.options).forEach(opt => {
-        const div = document.createElement("div");
-        div.className = "room-item" + (opt.value === state.user.room ? " active" : "");
-        div.textContent = opt.textContent;
-        div.onclick = () => {
-          state.user.room = opt.value;
-          state.onlineUsers = state.onlineUsers.map(u => u.name === state.user.name ? state.user : u);
-          saveAll();
-          renderChatUI();
-        };
-        roomList.appendChild(div);
-      });
-    }
-
-    function renderUsers() {
-      const userList = document.getElementById("userList");
-      userList.innerHTML = "";
-      state.onlineUsers.forEach(u => {
-        const rank = u.isAdmin ? "Admin" : getUserRank(u.name);
-        const row = document.createElement("div");
-        row.className = "user-row";
-        row.innerHTML = `<span>${u.avatar} <strong>${u.name}</strong></span><span class="rank-badge r-${rank}">${rank}</span>`;
-        userList.appendChild(row);
-      });
-    }
-
-    function renderMessages() {
-      const area = document.getElementById("messagesArea");
-      area.innerHTML = "";
-      const list = state.messagesByRoom[state.user.room] || [];
-      list.forEach(m => {
-        const rank = m.isAdmin ? "Admin" : getUserRank(m.sender);
-        const card = document.createElement("div");
-        card.className = "msg-card";
-        card.innerHTML = `
-          <div class="msg-meta">
-            <span>${m.avatar}</span>
-            <strong>${m.sender}</strong>
-            <span class="rank-badge r-${rank}">${rank}</span>
-            <span style="opacity:0.6; font-size:11px;">${m.time}</span>
-          </div>
-          <div class="msg-text">${m.text}</div>
-        `;
-        area.appendChild(card);
-      });
-      area.scrollTop = area.scrollHeight;
-    }
-
-    document.getElementById("msgForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const input = document.getElementById("msgInput");
-      const text = input.value.trim();
-      if (!text || !state.user) return;
-      if (!isSafeText(text)) {
-        alert("For safety, phone numbers and emails are blocked.");
-        return;
-      }
-
-      const room = state.user.room;
-      state.messagesByRoom[room] = state.messagesByRoom[room] || [];
-      state.messagesByRoom[room].push({
-        sender: state.user.name,
-        avatar: state.user.avatar,
-        isAdmin: state.user.isAdmin,
-        text,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-      });
-
-      input.value = "";
-      saveAll();
-      renderMessages();
-    });
-
-    // Admin Modal Controls
-    const adminModal = document.getElementById("adminModal");
-    document.getElementById("openAdminBtn").addEventListener("click", () => {
-      if (!state.user || !state.user.isAdmin) return;
-      document.getElementById("announceInput").value = state.announcement;
-      renderRankAssignList();
-      adminModal.classList.remove("hidden");
-    });
-
-    document.getElementById("closeAdminBtn").addEventListener("click", () => {
-      adminModal.classList.add("hidden");
-    });
-
-    document.getElementById("saveSecretBtn").addEventListener("click", () => {
-      const val = document.getElementById("newSecretInput").value.trim();
-      if (val.length < 4) {
-        alert("Secret key must be at least 4 characters.");
-        return;
-      }
-      state.adminSecret = val;
-      document.getElementById("newSecretInput").value = "";
-      saveAll();
-      alert("Admin Secret Key updated!");
-    });
-
-    document.getElementById("saveAnnounceBtn").addEventListener("click", () => {
-      const val = document.getElementById("announceInput").value.trim();
-      if (!val) return;
-      state.announcement = val;
-      saveAll();
-      renderChatUI();
-    });
-
-    document.getElementById("clearRoomBtn").addEventListener("click", () => {
-      state.messagesByRoom[state.user.room] = [];
-      saveAll();
-      renderMessages();
-    });
-
-    function renderRankAssignList() {
-      const wrap = document.getElementById("rankAssignList");
-      wrap.innerHTML = "";
-      const targets = state.onlineUsers.filter(u => u.name !== state.user.name);
-      if (targets.length === 0) {
-        wrap.innerHTML = `<div style="font-size:12px; opacity:0.75;">No other active users yet.</div>`;
-        return;
-      }
-      targets.forEach(u => {
-        const row = document.createElement("div");
-        row.className = "assign-row";
-        const sel = document.createElement("select");
-        sel.className = "select-box";
-        sel.style.width = "160px";
-        sel.style.padding = "6px 8px";
-        RANKS.forEach(r => {
-          const op = document.createElement("option");
-          op.value = r;
-          op.textContent = r;
-          if (getUserRank(u.name) === r) op.selected = true;
-          sel.appendChild(op);
+      // Left Rail & Drawer Tabs
+      document.querySelectorAll(".rail-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".rail-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          activeLeftTab = btn.dataset.tab;
+          document.getElementById("featureDrawer").classList.remove("hidden");
+          renderLeftDrawer();
         });
-        sel.onchange = () => {
-          state.ranks[u.name] = sel.value;
-          saveAll();
-          renderUsers();
-          renderMessages();
-        };
-        row.innerHTML = `<span>${u.avatar} <strong>${u.name}</strong></span>`;
-        row.appendChild(sel);
-        wrap.appendChild(row);
       });
-    }
 
-    document.getElementById("leaveBtn").addEventListener("click", () => {
-      if (state.user) {
-        state.onlineUsers = state.onlineUsers.filter(u => u.name !== state.user.name);
-        saveAll();
+      document.getElementById("hamburgerBtn").addEventListener("click", () => {
+        document.getElementById("featureDrawer").classList.toggle("hidden");
+      });
+
+      document.getElementById("closeDrawerBtn").addEventListener("click", () => {
+        document.getElementById("featureDrawer").classList.add("hidden");
+      });
+
+      function renderLeftDrawer() {
+        const titleEl = document.getElementById("drawerTitle");
+        const bodyEl = document.getElementById("drawerContent");
+
+        if (activeLeftTab === "rooms") {
+          titleEl.textContent = "🏠 Chat Rooms";
+          bodyEl.innerHTML = ROOMS.map(r => `
+            <div class="user-list-item" style="background:${r.id === currentUser.room ? "rgba(59,130,246,0.22)" : "rgba(255,255,255,0.04)"}; border:1px solid ${r.id === currentUser.room ? "rgba(59,130,246,0.45)" : "transparent"};" data-switch-room="${r.id}">
+              <div>
+                <div style="font-size:13px; font-weight:700;">${r.icon} ${esc(r.name)}</div>
+                <div style="font-size:11px; color:#9ca3af;">${esc(r.topic)}</div>
+              </div>
+              <span style="font-size:11px; color:#4ade80;">●</span>
+            </div>
+          `).join("");
+          bodyEl.querySelectorAll("[data-switch-room]").forEach(el => {
+            el.addEventListener("click", () => {
+              currentUser.room = el.dataset.switchRoom;
+              if (db.users[currentUser.name]) db.users[currentUser.name].room = currentUser.room;
+              replyTarget = null;
+              document.getElementById("replyBar").classList.add("hidden");
+              saveDB(true);
+              renderWorkspace();
+            });
+          });
+        } else if (activeLeftTab === "wall") {
+          titleEl.textContent = "📰 Social Wall & Feed";
+          bodyEl.innerHTML = `
+            <div style="margin-bottom:12px;">
+              <textarea id="wallPostInput" class="f-input" rows="2" placeholder="Share a status update on the wall..."></textarea>
+              <button id="publishWallBtn" class="send-arrow-btn" style="width:100%; margin-top:6px;" type="button">Post to Wall</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${(db.wallPosts || []).map(p => `
+                <div style="padding:10px; border-radius:11px; background:#1a1e28; border:1px solid rgba(255,255,255,0.08);">
+                  <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                    <span>${renderAvatarHtml(p.avatar)}</span>
+                    <strong style="font-size:12px;">${esc(p.author)}</strong>
+                    <span class="rank-tag">${esc(p.rank)}</span>
+                  </div>
+                  <div style="font-size:12.5px; color:#e5e7eb; margin-bottom:6px;">${esc(p.text)}</div>
+                  <button type="button" class="mini-act-btn" data-like-wall="${p.id}">❤️ ${p.likes || 0}</button>
+                </div>
+              `).join("")}
+            </div>
+          `;
+          document.getElementById("publishWallBtn").addEventListener("click", () => {
+            const val = document.getElementById("wallPostInput").value.trim();
+            if (!val) return;
+            db.wallPosts.unshift({
+              id: "wp_" + Date.now(),
+              author: currentUser.name,
+              avatar: currentUser.avatar,
+              rank: getUserRank(currentUser.name, currentUser.isAdmin),
+              text: val,
+              likes: 1,
+              ts: Date.now()
+            });
+            saveDB(true);
+            renderLeftDrawer();
+            toast("Posted to Social Wall!");
+          });
+          bodyEl.querySelectorAll("[data-like-wall]").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const post = db.wallPosts.find(x => x.id === btn.dataset.likeWall);
+              if (post) { post.likes = (post.likes || 0) + 1; saveDB(true); renderLeftDrawer(); }
+            });
+          });
+        } else if (activeLeftTab === "dms") {
+          titleEl.textContent = "💌 Private Messages (DMs)";
+          const otherUsers = Object.values(db.users).filter(u => u.name !== currentUser.name && !db.banned[u.name]);
+          if (!activeDmPartner && otherUsers.length > 0) activeDmPartner = otherUsers[0].name;
+
+          const threadKey = activeDmPartner ? [currentUser.name, activeDmPartner].sort().join("::") : "";
+          const msgs = threadKey ? (db.dms[threadKey] || []) : [];
+
+          bodyEl.innerHTML = `
+            <div style="margin-bottom:10px;">
+              <label class="f-label">Select User to Message</label>
+              <select id="dmUserSelect" class="f-select">
+                ${otherUsers.length === 0 ? `<option value="">No other users online yet</option>` : otherUsers.map(u => `<option value="${esc(u.name)}" ${u.name === activeDmPartner ? "selected" : ""}>${esc(u.name)}</option>`).join("")}
+              </select>
+            </div>
+            <div style="height:240px; overflow-y:auto; background:#161a22; border-radius:10px; padding:8px; margin-bottom:8px; display:flex; flex-direction:column; gap:6px;">
+              ${msgs.length === 0 ? `<div style="font-size:11.5px; color:#9ca3af; text-align:center; margin-top:40px;">Start a private 1-on-1 conversation!</div>` : msgs.map(m => `
+                <div style="padding:6px 9px; border-radius:9px; background:${m.from === currentUser.name ? "#25394b" : "#262c38"}; font-size:12px;">
+                  <strong>${esc(m.from)}:</strong> ${esc(m.text)}
+                </div>
+              `).join("")}
+            </div>
+            <div style="display:flex; gap:6px;">
+              <input id="dmTextInput" class="f-input" type="text" placeholder="Private message..." />
+              <button id="sendDmBtn" class="send-arrow-btn" type="button">➤</button>
+            </div>
+          `;
+          const sel = document.getElementById("dmUserSelect");
+          if (sel) {
+            sel.addEventListener("change", () => { activeDmPartner = sel.value; renderLeftDrawer(); });
+          }
+          document.getElementById("sendDmBtn").addEventListener("click", () => {
+            if (!activeDmPartner) { toast("Open another tab or wait for a user to join!"); return; }
+            const txt = document.getElementById("dmTextInput").value.trim();
+            if (!txt) return;
+            const k = [currentUser.name, activeDmPartner].sort().join("::");
+            db.dms[k] = db.dms[k] || [];
+            db.dms[k].push({ from: currentUser.name, text: txt, ts: Date.now() });
+            saveDB(true);
+            renderLeftDrawer();
+          });
+        } else if (activeLeftTab === "trending") {
+          titleEl.textContent = "🔥 Trending & Stickers";
+          bodyEl.innerHTML = `
+            <p style="font-size:12px; color:#9ca3af; margin-bottom:10px;">Tap any quick reaction sticker to drop it straight into the active chat room:</p>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+              ${["🏆", "#*", "🔥", "👑", "💎", "🚀", "🎮", "❤️", "😂"].map(st => `
+                <button type="button" class="sticker-dock-btn" style="width:100%; height:48px;" data-send-st="${st}">${st}</button>
+              `).join("")}
+            </div>
+          `;
+          bodyEl.querySelectorAll("[data-send-st]").forEach(b => {
+            b.addEventListener("click", () => sendMessage({ text: b.dataset.sendSt }));
+          });
+        } else if (activeLeftTab === "rules") {
+          titleEl.textContent = "📖 Safe Chat Rules & Ranks";
+          bodyEl.innerHTML = `
+            <div style="font-size:12.5px; line-height:1.55; color:#d1d5db; display:flex; flex-direction:column; gap:10px;">
+              <div style="padding:10px; background:#181c24; border-radius:10px;">
+                <strong>🛡️ Child-Safe Protection:</strong> Never share personal phone numbers, home addresses, or passwords.
+              </div>
+              <div style="padding:10px; background:#181c24; border-radius:10px;">
+                <strong>👑 Exclusive Rank Hierarchy:</strong><br/>
+                Admin → Room Manager → Moderator → Super VIP → Diamond → VIP → Gold → Bronze → Member.
+              </div>
+            </div>
+          `;
+        } else if (activeLeftTab === "leaderboard") {
+          titleEl.textContent = "🏅 Top Active Members";
+          const allUsers = Object.values(db.users).filter(u => !db.banned[u.name]);
+          bodyEl.innerHTML = allUsers.map((u, idx) => `
+            <div class="user-list-item" style="background:#181c24;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <strong style="color:#fbbf24;">#${idx + 1}</strong>
+                <span>${renderAvatarHtml(u.avatar)}</span>
+                <span style="font-size:12.5px; font-weight:700;">${esc(u.name)}</span>
+              </div>
+              <span style="font-size:11px; color:#fbbf24;">${db.wallets[u.name] || 150} 🪙</span>
+            </div>
+          `).join("");
+        }
       }
-      state.user = null;
-      chatScreen.classList.add("hidden");
-      entryScreen.classList.remove("hidden");
-    });
 
-    renderAvatars();
+      // Render Chat Messages Stream (CodyChat / OmgKids look)
+      function renderChatStream() {
+        const stream = document.getElementById("chatStream");
+        const list = db.messages[currentUser.room] || [];
+        const myRank = getUserRank(currentUser.name, currentUser.isAdmin);
+        const canModerate = currentUser.isAdmin || myRank === "Room Manager" || myRank === "Moderator";
+
+        stream.innerHTML = list.map(m => {
+          const liveRank = getUserRank(m.sender, m.isAdmin);
+          const ic = rankIcon(liveRank);
+          const isSelf = m.sender === currentUser.name;
+          const reactions = m.reactions || {};
+          const reactionPills = Object.entries(reactions).map(([em, count]) => `
+            <button type="button" class="reaction-pill" data-react-id="${m.id}" data-react-em="${em}">${em} ${count}</button>
+          `).join("");
+
+          return `
+            <div class="cody-msg ${isSelf ? "self" : ""}">
+              <div class="cody-avatar" data-user-action="${esc(m.sender)}">${renderAvatarHtml(m.avatar)}</div>
+              <div class="cody-content">
+                <div class="cody-header">
+                  <div class="cody-user-meta">
+                    ${ic ? `<span style="font-size:12px;">${ic}</span>` : ""}
+                    <span class="cody-username name-${liveRank}" data-user-action="${esc(m.sender)}">${esc(m.sender)}</span>
+                    ${liveRank !== "Member" ? `<span class="rank-tag">${esc(liveRank)}</span>` : ""}
+                  </div>
+                  <span class="cody-time">${formatShortTime(m.ts)}</span>
+                </div>
+
+                ${m.replyTo ? `
+                  <div class="quote-box">
+                    <div class="quote-author">
+                      <span class="quote-mini-av">${renderAvatarHtml(m.replyTo.avatar)}</span>
+                      <span>${esc(m.replyTo.sender)}</span>
+                    </div>
+                    <div class="quote-snippet">${esc(m.replyTo.text || "📷 Picture")}</div>
+                  </div>
+                ` : ""}
+
+                <div>
+                  <div class="cody-bubble">
+                    ${m.text ? `<div>${esc(m.text)}</div>` : ""}
+                    ${m.image ? `<img src="${m.image}" class="chat-attached-img" data-zoom-img="${m.image}" alt="Shared picture" />` : ""}
+                  </div>
+                </div>
+
+                <div class="msg-actions-row">
+                  <button type="button" class="mini-act-btn" data-reply-id="${m.id}">↩ Reply</button>
+                  <button type="button" class="mini-act-btn" data-react-id="${m.id}" data-react-em="🔥">🔥</button>
+                  <button type="button" class="mini-act-btn" data-react-id="${m.id}" data-react-em="🏆">🏆</button>
+                  ${reactionPills}
+                  ${canModerate ? `<button type="button" class="mini-act-btn" style="color:#fca5a5;" data-del-msg="${m.id}">🗑</button>` : ""}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        // Reply buttons
+        stream.querySelectorAll("[data-reply-id]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const target = list.find(x => x.id === btn.dataset.replyId);
+            if (!target) return;
+            replyTarget = {
+              id: target.id,
+              sender: target.sender,
+              avatar: target.avatar,
+              text: target.text || "📷 Picture"
+            };
+            document.getElementById("replyPreviewText").textContent = `Replying to ${target.sender}: "${replyTarget.text.slice(0, 42)}"`;
+            document.getElementById("replyBar").classList.remove("hidden");
+            document.getElementById("chatInput").focus();
+          });
+        });
+
+        // Reaction buttons
+        stream.querySelectorAll("[data-react-id]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const msg = list.find(x => x.id === btn.dataset.reactId);
+            if (!msg) return;
+            msg.reactions = msg.reactions || {};
+            const em = btn.dataset.reactEm;
+            msg.reactions[em] = (msg.reactions[em] || 0) + 1;
+            saveDB(true);
+            renderChatStream();
+          });
+        });
+
+        // Delete buttons
+        stream.querySelectorAll("[data-del-msg]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            db.messages[currentUser.room] = list.filter(x => x.id !== btn.dataset.delMsg);
+            saveDB(true);
+            renderChatStream();
+          });
+        });
+
+        // Image Lightbox Zoom
+        stream.querySelectorAll("[data-zoom-img]").forEach(img => {
+          img.addEventListener("click", () => {
+            document.getElementById("lightboxImg").src = img.dataset.zoomImg;
+            document.getElementById("lightboxModal").classList.remove("hidden");
+          });
+        });
+
+        // Click username/avatar to DM or Admin Rank
+        stream.querySelectorAll("[data-user-action]").forEach(el => {
+          el.addEventListener("click", () => {
+            const uname = el.dataset.userAction;
+            if (!uname || uname === currentUser.name) return;
+            if (currentUser.isAdmin) {
+              openAdminPanel();
+            } else {
+              activeLeftTab = "dms";
+              activeDmPartner = uname;
+              document.getElementById("featureDrawer").classList.remove("hidden");
+              renderLeftDrawer();
+            }
+          });
+        });
+
+        stream.scrollTop = stream.scrollHeight;
+      }
+
+      function renderRightUsers() {
+        const users = Object.values(db.users).filter(u => !db.banned[u.name]);
+        document.getElementById("onlineUsersCount").textContent = users.length;
+        document.getElementById("footerOnlineCount").textContent = users.length;
+
+        const list = document.getElementById("rightUsersList");
+        list.innerHTML = users.map(u => {
+          const r = getUserRank(u.name, u.isAdmin);
+          return `
+            <div class="user-list-item" data-dm-user="${esc(u.name)}">
+              <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                <div class="cody-avatar" style="width:32px; height:32px; font-size:16px;">${renderAvatarHtml(u.avatar)}</div>
+                <div style="min-width:0;">
+                  <div class="cody-username name-${r}" style="font-size:12.5px;">${rankIcon(r)} ${esc(u.name)}</div>
+                  <div style="font-size:10.5px; color:#9ca3af;">${esc(r)}</div>
+                </div>
+              </div>
+              <span style="color:#22c55e; font-size:10px;">●</span>
+            </div>
+          `;
+        }).join("");
+
+        list.querySelectorAll("[data-dm-user]").forEach(item => {
+          item.addEventListener("click", () => {
+            const target = item.dataset.dmUser;
+            if (target === currentUser.name) return;
+            activeLeftTab = "dms";
+            activeDmPartner = target;
+            document.getElementById("featureDrawer").classList.remove("hidden");
+            renderLeftDrawer();
+          });
+        });
+      }
+
+      // Send Message Helper
+      function sendMessage({ text = "", image = "" }) {
+        if (!currentUser) return;
+        if (db.muted[currentUser.name] && !currentUser.isAdmin) {
+          toast("You are muted by an Admin.");
+          return;
+        }
+        if (!text && !image) return;
+
+        // Block raw phone numbers & emails for child safety
+        if (text && (/\b\d{7,}\b/.test(text) || /\S+@\S+\.\S+/.test(text))) {
+          toast("Safety Filter: Phone numbers and emails are blocked.");
+          return;
+        }
+
+        const room = currentUser.room;
+        db.messages[room] = db.messages[room] || [];
+        db.messages[room].push({
+          id: "msg_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          sender: currentUser.name,
+          avatar: currentUser.avatar,
+          isAdmin: currentUser.isAdmin,
+          text,
+          image,
+          replyTo: replyTarget ? { ...replyTarget } : null,
+          reactions: {},
+          ts: Date.now()
+        });
+
+        // Earn 2 coins per message
+        db.wallets[currentUser.name] = (db.wallets[currentUser.name] || 150) + 2;
+
+        replyTarget = null;
+        document.getElementById("replyBar").classList.add("hidden");
+        saveDB(true);
+        renderWorkspace();
+      }
+
+      document.getElementById("chatComposerForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const inp = document.getElementById("chatInput");
+        const val = inp.value.trim();
+        if (!val) return;
+        inp.value = "";
+        sendMessage({ text: val });
+      });
+
+      document.getElementById("cancelReplyBtn").addEventListener("click", () => {
+        replyTarget = null;
+        document.getElementById("replyBar").classList.add("hidden");
+      });
+
+      // Plus (+) Menu, Picture Upload & Sticker Dock
+      const plusMenu = document.getElementById("plusMenu");
+      const stickerDock = document.getElementById("stickerDock");
+
+      document.getElementById("plusBtn").addEventListener("click", () => {
+        stickerDock.classList.add("hidden");
+        plusMenu.classList.toggle("hidden");
+      });
+
+      document.getElementById("emojiToggleBtn").addEventListener("click", () => {
+        plusMenu.classList.add("hidden");
+        stickerDock.classList.toggle("hidden");
+      });
+
+      document.querySelectorAll("[data-quick-sticker]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          stickerDock.classList.add("hidden");
+          sendMessage({ text: btn.dataset.quickSticker });
+        });
+      });
+
+      document.getElementById("menuStickerDockBtn").addEventListener("click", () => {
+        plusMenu.classList.add("hidden");
+        stickerDock.classList.remove("hidden");
+      });
+
+      document.getElementById("menuUploadPicBtn").addEventListener("click", () => {
+        plusMenu.classList.add("hidden");
+        document.getElementById("picFileInput").click();
+      });
+
+      document.getElementById("picFileInput").addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          sendMessage({ text: document.getElementById("chatInput").value.trim(), image: reader.result });
+          document.getElementById("chatInput").value = "";
+          toast("Picture sent!");
+        };
+        reader.readAsDataURL(file);
+        e.target.value = "";
+      });
+
+      // Doodle Pad
+      const doodleCanvas = document.getElementById("doodleCanvas");
+      const ctx = doodleCanvas.getContext("2d");
+      let drawing = false;
+      ctx.strokeStyle = "#38bdf8";
+      ctx.lineWidth = 4;
+      ctx.lineCap = "round";
+
+      function getPos(e) {
+        const rect = doodleCanvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * (doodleCanvas.width / rect.width),
+          y: (clientY - rect.top) * (doodleCanvas.height / rect.height)
+        };
+      }
+
+      doodleCanvas.addEventListener("pointerdown", (e) => {
+        drawing = true;
+        const p = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+      });
+      doodleCanvas.addEventListener("pointermove", (e) => {
+        if (!drawing) return;
+        const p = getPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      });
+      window.addEventListener("pointerup", () => { drawing = false; });
+
+      document.querySelectorAll("[data-brush]").forEach(btn => {
+        btn.addEventListener("click", () => { ctx.strokeStyle = btn.dataset.brush; });
+      });
+      document.getElementById("clearDoodleBtn").addEventListener("click", () => {
+        ctx.clearRect(0, 0, doodleCanvas.width, doodleCanvas.height);
+      });
+      document.getElementById("menuOpenDoodleBtn").addEventListener("click", () => {
+        plusMenu.classList.add("hidden");
+        document.getElementById("doodleModal").classList.remove("hidden");
+      });
+      document.getElementById("sendDoodleBtn").addEventListener("click", () => {
+        const dataUrl = doodleCanvas.toDataURL("image/png");
+        document.getElementById("doodleModal").classList.add("hidden");
+        ctx.clearRect(0, 0, doodleCanvas.width, doodleCanvas.height);
+        sendMessage({ text: "🎨 Shared a custom doodle!", image: dataUrl });
+      });
+
+      // Top Profile Dropdown & Modals
+      const profileDropdown = document.getElementById("profileDropdown");
+      document.getElementById("profileMenuTrigger").addEventListener("click", (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.toggle("hidden");
+      });
+      document.addEventListener("click", (e) => {
+        if (!profileDropdown.contains(e.target) && e.target.id !== "profileMenuTrigger") {
+          profileDropdown.classList.add("hidden");
+        }
+      });
+
+      document.getElementById("openEditProfileBtn").addEventListener("click", () => {
+        profileDropdown.classList.add("hidden");
+        document.getElementById("editNickInput").value = currentUser.name;
+        document.getElementById("editBioInput").value = currentUser.bio || "";
+        document.getElementById("editProfileModal").classList.remove("hidden");
+      });
+
+      document.getElementById("changeAvatarPhotoBtn").addEventListener("click", () => {
+        document.getElementById("avatarFileInput").click();
+      });
+
+      document.getElementById("saveProfileBtn").addEventListener("click", () => {
+        const newNick = document.getElementById("editNickInput").value.trim();
+        const newBio = document.getElementById("editBioInput").value.trim();
+        if (newNick && newNick !== currentUser.name) {
+          const oldName = currentUser.name;
+          delete db.users[oldName];
+          if (db.ranks[oldName]) { db.ranks[newNick] = db.ranks[oldName]; delete db.ranks[oldName]; }
+          db.wallets[newNick] = db.wallets[oldName] || 150;
+          currentUser.name = newNick;
+        }
+        currentUser.bio = newBio;
+        db.users[currentUser.name] = {
+          name: currentUser.name,
+          avatar: currentUser.avatar,
+          room: currentUser.room,
+          isAdmin: currentUser.isAdmin,
+          bio: newBio,
+          lastSeen: Date.now()
+        };
+        saveDB(true);
+        document.getElementById("editProfileModal").classList.add("hidden");
+        renderWorkspace();
+        toast("Profile updated!");
+      });
+
+      document.getElementById("openChatOptionsBtn").addEventListener("click", () => {
+        profileDropdown.classList.add("hidden");
+        document.getElementById("chatOptionsModal").classList.remove("hidden");
+      });
+
+      document.querySelectorAll("[data-set-theme]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          applyTheme(btn.dataset.setTheme);
+          saveDB(true);
+          toast(`Theme: ${btn.textContent}`);
+        });
+      });
+
+      // Wallet & Virtual Gifts
+      function openWalletModal() {
+        profileDropdown.classList.add("hidden");
+        plusMenu.classList.add("hidden");
+        document.getElementById("walletBalanceText").textContent = `${db.wallets[currentUser.name] || 0} Coins 🪙`;
+        document.getElementById("walletModal").classList.remove("hidden");
+      }
+      document.getElementById("openWalletBtn").addEventListener("click", openWalletModal);
+      document.getElementById("menuSendGiftBtn").addEventListener("click", openWalletModal);
+
+      document.getElementById("claimDailyBonusBtn").addEventListener("click", () => {
+        db.wallets[currentUser.name] = (db.wallets[currentUser.name] || 0) + 50;
+        saveDB(true);
+        document.getElementById("walletBalanceText").textContent = `${db.wallets[currentUser.name]} Coins 🪙`;
+        renderWorkspace();
+        toast("+50 Coins added to Wallet!");
+      });
+
+      document.querySelectorAll("[data-gift]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const [label, costStr] = btn.dataset.gift.split("|");
+          const cost = Number(costStr);
+          const bal = db.wallets[currentUser.name] || 0;
+          if (bal < cost) { toast("Not enough coins!"); return; }
+          db.wallets[currentUser.name] = bal - cost;
+          document.getElementById("walletModal").classList.add("hidden");
+          sendMessage({ text: `🎁 Sent a ${label} to the room!` });
+        });
+      });
+
+      // Admin Panel & Exclusive Rank Control
+      function openAdminPanel() {
+        if (!currentUser || !currentUser.isAdmin) return;
+        profileDropdown.classList.add("hidden");
+        document.getElementById("adminTopicInput").value = db.topicOverride || "";
+        const list = document.getElementById("adminUserRankList");
+        const others = Object.values(db.users).filter(u => u.name !== currentUser.name);
+
+        if (others.length === 0) {
+          list.innerHTML = `<div style="font-size:12px; color:#9ca3af;">No other users online yet. Open this link in another tab or share it to assign ranks.</div>`;
+        } else {
+          list.innerHTML = others.map(u => {
+            const cur = getUserRank(u.name, u.isAdmin);
+            const opts = RANKS.map(r => `<option value="${r}" ${cur === r ? "selected" : ""}>${r}</option>`).join("");
+            return `
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
+                <span style="font-size:12.5px; font-weight:700;">${esc(u.name)}</span>
+                <div style="display:flex; gap:5px;">
+                  <select class="f-select" data-rank-user="${esc(u.name)}" style="padding:5px 8px; font-size:11.5px; width:130px;">${opts}</select>
+                  <button type="button" class="mini-act-btn" data-mute-user="${esc(u.name)}">${db.muted[u.name] ? "Unmute" : "Mute"}</button>
+                  <button type="button" class="mini-act-btn" style="color:#fca5a5;" data-ban-user="${esc(u.name)}">Ban</button>
+                </div>
+              </div>
+            `;
+          }).join("");
+
+          list.querySelectorAll("[data-rank-user]").forEach(sel => {
+            sel.addEventListener("change", () => {
+              const target = sel.dataset.rankUser;
+              db.ranks[target] = sel.value;
+              if (db.users[target]) db.users[target].isAdmin = false;
+              saveDB(true);
+              renderWorkspace();
+              toast(`${target} is now ${sel.value}`);
+            });
+          });
+          list.querySelectorAll("[data-mute-user]").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const target = btn.dataset.muteUser;
+              db.muted[target] = !db.muted[target];
+              saveDB(true);
+              openAdminPanel();
+              toast(`${target} ${db.muted[target] ? "muted" : "unmuted"}`);
+            });
+          });
+          list.querySelectorAll("[data-ban-user]").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const target = btn.dataset.banUser;
+              db.banned[target] = true;
+              delete db.users[target];
+              saveDB(true);
+              openAdminPanel();
+              renderWorkspace();
+              toast(`${target} banned`);
+            });
+          });
+        }
+        document.getElementById("adminPanelModal").classList.remove("hidden");
+      }
+
+      document.getElementById("openAdminPanelMenuBtn").addEventListener("click", openAdminPanel);
+
+      document.getElementById("saveTopicBtn").addEventListener("click", () => {
+        if (!currentUser || !currentUser.isAdmin) return;
+        db.topicOverride = document.getElementById("adminTopicInput").value.trim();
+        saveDB(true);
+        renderWorkspace();
+        toast("Room headline updated!");
+      });
+
+      document.getElementById("saveAdminKeyBtn").addEventListener("click", () => {
+        if (!currentUser || !currentUser.isAdmin) return;
+        const k = document.getElementById("adminNewKeyInput").value.trim();
+        if (k.length < 4) { toast("Secret key must be at least 4 characters."); return; }
+        db.adminSecret = k;
+        document.getElementById("adminNewKeyInput").value = "";
+        saveDB(true);
+        toast("Admin Secret Key updated!");
+      });
+
+      document.getElementById("adminClearRoomBtn").addEventListener("click", () => {
+        if (!currentUser || !currentUser.isAdmin) return;
+        db.messages[currentUser.room] = [];
+        saveDB(true);
+        renderChatStream();
+        toast("Current room cleared!");
+      });
+
+      // Right Users Drawer & Top Icons
+      document.getElementById("toggleRightUsersBtn").addEventListener("click", () => {
+        document.getElementById("rightDrawer").classList.toggle("hidden");
+      });
+      document.getElementById("closeRightDrawerBtn").addEventListener("click", () => {
+        document.getElementById("rightDrawer").classList.add("hidden");
+      });
+      document.getElementById("topFriendsBtn").addEventListener("click", () => {
+        activeLeftTab = "dms";
+        document.getElementById("featureDrawer").classList.remove("hidden");
+        renderLeftDrawer();
+      });
+      document.getElementById("topNotifBtn").addEventListener("click", () => {
+        document.getElementById("notifDot").classList.add("hidden");
+        toast("All caught up! No new alerts.");
+      });
+
+      // Close Modals
+      document.querySelectorAll("[data-close-modal]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.getElementById(btn.dataset.closeModal).classList.add("hidden");
+        });
+      });
+
+      // Logout
+      function logoutUser() {
+        if (currentUser) {
+          delete db.users[currentUser.name];
+          saveDB(true);
+        }
+        currentUser = null;
+        profileDropdown.classList.add("hidden");
+        document.getElementById("appShell").classList.add("hidden");
+        document.getElementById("entryScreen").classList.remove("hidden");
+      }
+      document.getElementById("logoutMenuBtn").addEventListener("click", logoutUser);
+
+      applyTheme(db.theme);
+      initEntry();
+    })();
   </script>
 </body>
 </html>
