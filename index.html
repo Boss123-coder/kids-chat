@@ -3,638 +3,439 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SafeKids Chat — All-World Meme Search & Admin Guard</title>
+  <title>SafeKids Chat</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-    body { min-height: 100vh; background: #171a21; color: #f3f4f6; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+    body { background: #14171f; color: #f3f4f6; height: 100vh; display: flex; flex-direction: column; }
     .hidden { display: none !important; }
 
     /* Entry */
-    .entry-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
-    .entry-card {
-      width: 100%; max-width: 420px;
-      background: #202530; border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 16px; padding: 20px;
-    }
-    .title { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 14px; }
-    .title span { color: #fbbf24; }
-    .lbl { display: block; font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin: 10px 0 5px; }
-    .inp, .sel {
-      width: 100%; padding: 9px 12px; border-radius: 9px;
-      background: #141820; border: 1px solid rgba(255,255,255,0.14); color: #fff; font-size: 13px;
-    }
-    .sel option { background: #202530; color: #fff; }
-    .av-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
-    .av-btn {
-      padding: 7px 0; border-radius: 8px; font-size: 18px;
-      background: #141820; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
-    }
-    .av-btn.active { border-color: #10b981; background: rgba(16,185,129,0.22); }
-    .admin-box {
-      margin-top: 12px; padding: 10px 12px; border-radius: 10px;
-      background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.35);
-    }
-    .admin-top { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: #fbbf24; }
-    .btn-main {
-      width: 100%; margin-top: 14px; padding: 11px; border: none; border-radius: 10px;
-      background: #10b981; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
-    }
+    .entry { margin: auto; width: 100%; max-width: 380px; background: #1e232e; padding: 20px; border-radius: 14px; border: 1px solid #2d3546; }
+    .entry h2 { text-align: center; margin-bottom: 14px; font-size: 20px; }
+    .entry h2 span { color: #fbbf24; }
+    label { display: block; font-size: 11px; color: #9ca3af; margin: 10px 0 4px; text-transform: uppercase; }
+    input, select { width: 100%; padding: 9px 11px; border-radius: 8px; border: 1px solid #374151; background: #12151c; color: #fff; font-size: 13px; }
+    .avs { display: flex; justify-content: space-between; gap: 6px; }
+    .av { flex: 1; padding: 7px 0; border-radius: 8px; border: 1px solid #374151; background: #12151c; font-size: 18px; cursor: pointer; }
+    .av.on { border-color: #10b981; background: #064e3b; }
+    .adm { margin-top: 12px; padding: 10px; border-radius: 8px; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); }
+    .adm-top { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #fbbf24; font-weight: 700; }
+    .btn { width: 100%; margin-top: 14px; padding: 10px; border: none; border-radius: 8px; background: #10b981; color: #fff; font-weight: 700; cursor: pointer; }
     .err { color: #f87171; font-size: 12px; margin-top: 8px; min-height: 16px; }
 
     /* Chat */
-    .shell { display: flex; flex-direction: column; height: 100vh; }
-    .top {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
-      padding: 8px 12px; background: #12151b; border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .pill {
-      padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
-    }
-    .btn-s {
-      padding: 5px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.07); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer;
-    }
-    .btn-gold { background: rgba(251,191,36,0.2); border-color: #fbbf24; color: #fde68a; }
-    .btn-red { background: rgba(239,68,68,0.2); border-color: #f87171; color: #fca5a5; }
-    .btn-grn { background: rgba(16,185,129,0.2); border-color: #34d399; color: #6ee7b7; }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 12px; background: #0f1218; border-bottom: 1px solid #262d3d; font-size: 12px; }
+    .badge { padding: 3px 8px; border-radius: 99px; background: #1f2937; border: 1px solid #374151; font-weight: 700; }
+    .sbtn { padding: 5px 9px; border-radius: 7px; border: 1px solid #374151; background: #1f2937; color: #fff; font-size: 12px; cursor: pointer; }
+    .sbtn.gold { border-color: #fbbf24; color: #fde68a; background: rgba(251,191,36,0.15); }
+    .sbtn.red { border-color: #f87171; color: #fca5a5; background: rgba(239,68,68,0.15); }
+    .sbtn.grn { border-color: #34d399; color: #6ee7b7; background: rgba(16,185,129,0.15); }
 
-    .body-grid { flex: 1; display: grid; grid-template-columns: 230px 1fr; min-height: 0; }
-    @media (max-width: 760px) {
-      .body-grid { grid-template-columns: 1fr; }
-      .side { display: none; }
-    }
-    .side { background: #151921; border-right: 1px solid rgba(255,255,255,0.08); padding: 10px; overflow-y: auto; }
-    .side-h { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 8px; }
-    .u-card { padding: 8px; border-radius: 9px; background: #1e232e; margin-bottom: 8px; font-size: 12px; }
-    .muted { font-size: 10px; color: #9ca3af; margin-top: 3px; word-break: break-all; }
+    .main { flex: 1; display: grid; grid-template-columns: 200px 1fr; min-height: 0; }
+    @media (max-width: 700px) { .main { grid-template-columns: 1fr; } .side { display: none; } }
+    .side { background: #12151d; border-right: 1px solid #262d3d; padding: 10px; overflow-y: auto; font-size: 12px; }
+    .u-item { padding: 7px; border-radius: 8px; background: #1a1f2b; margin-bottom: 7px; }
+    .sub { font-size: 10px; color: #9ca3af; margin-top: 2px; word-break: break-all; }
 
-    .chat-main { position: relative; display: flex; flex-direction: column; min-height: 0; background: #1a1e27; }
+    .col { position: relative; display: flex; flex-direction: column; min-height: 0; }
     .msgs { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .msg { padding: 9px 11px; border-radius: 10px; background: #232834; border: 1px solid rgba(255,255,255,0.07); }
-    .msg-h { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-bottom: 4px; }
-    .msg-t { font-size: 13px; line-height: 1.4; word-break: break-word; }
-    .msg-img { max-width: 240px; max-height: 190px; border-radius: 8px; margin-top: 6px; display: block; }
-    .yt { width: 100%; max-width: 320px; height: 180px; border: none; border-radius: 8px; margin-top: 6px; display: block; }
+    .m { background: #1c212c; border: 1px solid #2a3142; border-radius: 10px; padding: 8px 10px; font-size: 13px; }
+    .m-top { display: flex; gap: 6px; align-items: center; font-size: 11px; margin-bottom: 4px; color: #d1d5db; }
+    .m img { max-width: 200px; max-height: 160px; border-radius: 8px; margin-top: 6px; display: block; }
+    .m iframe { width: 100%; max-width: 290px; height: 165px; border: none; border-radius: 8px; margin-top: 6px; display: block; }
 
-    .dock {
-      position: absolute; bottom: 56px; left: 12px; width: 370px; max-width: calc(100% - 24px);
-      background: #242936; border: 1px solid rgba(255,255,255,0.16); border-radius: 12px; padding: 10px; z-index: 25;
-    }
-    .m-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px;
-      max-height: 190px; overflow-y: auto;
-    }
-    .m-box { background: #181c26; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 4px; text-align: center; font-size: 10px; cursor: pointer; }
-    .m-box img { width: 100%; height: 60px; object-fit: cover; border-radius: 5px; display: block; margin-bottom: 3px; }
+    .tools { position: absolute; bottom: 52px; left: 10px; width: 320px; max-width: calc(100% - 20px); background: #1e232e; border: 1px solid #374151; border-radius: 10px; padding: 10px; z-index: 20; }
+    .m-res { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 6px; max-height: 150px; overflow-y: auto; }
+    .m-card { background: #12151c; border: 1px solid #2d3546; border-radius: 6px; padding: 3px; text-align: center; font-size: 10px; cursor: pointer; }
+    .m-card img { width: 100%; height: 48px; object-fit: cover; border-radius: 4px; display: block; }
 
-    .bar { display: flex; gap: 8px; padding: 9px 12px; background: #12151b; border-top: 1px solid rgba(255,255,255,0.1); }
+    .foot { display: flex; gap: 6px; padding: 8px 10px; background: #0f1218; border-top: 1px solid #262d3d; }
 
-    .modal-bg {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.72);
-      display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 50;
-    }
-    .modal-c {
-      width: 100%; max-width: 520px; max-height: 84vh; overflow-y: auto;
-      background: #1e232e; border: 1px solid rgba(251,191,36,0.35); border-radius: 14px; padding: 16px;
-    }
-    .m-row {
-      display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
-      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 12px;
-    }
+    .pop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 40; }
+    .pop-box { width: 100%; max-width: 460px; max-height: 80vh; overflow-y: auto; background: #1c212c; border: 1px solid #374151; border-radius: 12px; padding: 14px; }
+    .mod-line { display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; padding: 7px 0; border-bottom: 1px solid #2a3142; font-size: 12px; }
   </style>
 </head>
 <body>
 
-  <div id="entryScreen" class="entry-wrap">
-    <div class="entry-card">
-      <div class="title">SafeKids <span>Chat</span></div>
+  <div id="entry" class="entry">
+    <h2>SafeKids <span>Chat</span></h2>
+    <label>Nickname</label>
+    <input id="nick" type="text" maxlength="20" placeholder="Your name..." />
 
-      <label class="lbl" for="nickInput">Nickname</label>
-      <input id="nickInput" class="inp" type="text" maxlength="20" placeholder="Enter nickname..." />
+    <label>Avatar</label>
+    <div id="avs" class="avs"></div>
 
-      <label class="lbl">Avatar</label>
-      <div id="avatarGrid" class="av-row"></div>
+    <label>Room</label>
+    <select id="room">
+      <option value="Kids Lounge">Kids Lounge</option>
+      <option value="Teen Chat">Teen Chat</option>
+      <option value="Memes Room">Memes Room</option>
+    </select>
 
-      <label class="lbl" for="roomSelect">Room</label>
-      <select id="roomSelect" class="sel">
-        <option value="Kids Lounge">🧸 Kids Lounge</option>
-        <option value="Teen Chat">🎮 Teen Chat</option>
-        <option value="Memes & Clips">😂 Memes & Clips</option>
-      </select>
-
-      <div class="admin-box">
-        <div class="admin-top">
-          <span>👑 Admin (Unlimited Coins)</span>
-          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; color:#fde68a;">
-            <input id="claimAdminToggle" type="checkbox" />
-            <span>Claim Admin</span>
-          </label>
-        </div>
-        <div id="secretKeyWrap" class="hidden" style="margin-top:8px;">
-          <input id="adminKeyInput" class="inp" type="password" placeholder="Key: ADMIN123" />
-        </div>
+    <div class="adm">
+      <div class="adm-top">
+        <span>Admin (Unlimited Coins)</span>
+        <label style="margin:0; display:inline-flex; gap:5px; cursor:pointer; color:#fde68a; text-transform:none;">
+          <input id="admChk" type="checkbox" style="width:auto;" /> Claim Admin
+        </label>
       </div>
-
-      <button id="enterBtn" class="btn-main" type="button">Enter Chat →</button>
-      <div id="entryError" class="err"></div>
+      <div id="admKeyBox" class="hidden" style="margin-top:8px;">
+        <input id="admKey" type="password" placeholder="Secret key: ADMIN123" />
+      </div>
     </div>
+
+    <button id="goBtn" class="btn" type="button">Enter Chat</button>
+    <div id="err" class="err"></div>
   </div>
 
-  <div id="chatScreen" class="shell hidden">
-    <header class="top">
-      <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
-        <strong id="roomTitle">🧸 Kids Lounge</strong>
-        <span id="rolePill" class="pill">Member</span>
-        <span class="pill">⭐ EXP: <span id="expVal">0</span></span>
-        <span class="pill">🪙 Coins: <span id="coinVal">0</span></span>
+  <div id="app" class="app hidden">
+    <div class="top">
+      <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+        <strong id="rName">Room</strong>
+        <span id="rBadge" class="badge">Member</span>
+        <span class="badge">EXP: <span id="expN">0</span></span>
+        <span class="badge">Coins: <span id="coinN">0</span></span>
       </div>
-      <div style="display:flex; gap:7px;">
-        <button id="openAdminBtn" class="btn-s btn-gold hidden" type="button">👑 Admin Panel</button>
-        <button id="logoutBtn" class="btn-s" type="button">Logout</button>
+      <div style="display:flex; gap:6px;">
+        <button id="admBtn" class="sbtn gold hidden" type="button">Admin</button>
+        <button id="outBtn" class="sbtn" type="button">Logout</button>
       </div>
-    </header>
+    </div>
 
-    <div class="body-grid">
-      <aside class="side">
-        <div class="side-h">Online Users</div>
-        <div id="usersSidebar"></div>
-      </aside>
+    <div class="main">
+      <div class="side">
+        <div class="sub" style="font-weight:700; margin-bottom:8px;">ONLINE</div>
+        <div id="uList"></div>
+      </div>
 
-      <section class="chat-main">
-        <div id="messagesArea" class="msgs"></div>
+      <div class="col">
+        <div id="msgs" class="msgs"></div>
 
-        <div id="plusDock" class="dock hidden">
+        <div id="tools" class="tools hidden">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <strong style="font-size:12px;">🌍 World Meme Search (Free for VIP+)</strong>
-            <button id="closeDockBtn" class="btn-s" type="button">✕</button>
+            <strong style="font-size:12px;">Memes (Free for VIP+)</strong>
+            <button id="closeTools" class="sbtn" type="button">x</button>
+          </div>
+          <div style="display:flex; gap:5px;">
+            <input id="mSearch" type="text" placeholder="Search meme..." />
+            <button id="mBtn" class="sbtn grn" type="button">Find</button>
+          </div>
+          <div id="mRes" class="m-res"></div>
+
+          <div style="display:flex; gap:5px; margin-top:7px;">
+            <input id="ytInp" type="text" placeholder="YouTube link or ID..." />
+            <button id="ytBtn" class="sbtn grn" type="button">YT</button>
           </div>
 
-          <div style="display:flex; gap:6px;">
-            <input id="memeSearchInput" class="inp" type="text" placeholder="Search any meme (cat, sigma, bruh, dance)..." />
-            <button id="memeSearchBtn" class="btn-s btn-grn" type="button">Search</button>
-          </div>
-          <div id="memeStatus" class="muted" style="margin-top:4px;">Trending memes</div>
-          <div id="memeGrid" class="m-grid"></div>
-
-          <div style="display:flex; gap:6px; margin-top:8px;">
-            <input id="ytInput" class="inp" type="text" placeholder="YouTube link or ID..." />
-            <button id="sendYtBtn" class="btn-s btn-grn" type="button">▶ YT</button>
-          </div>
-
-          <div style="display:flex; gap:6px; margin-top:8px;">
-            <input id="giftTargetInput" class="inp" type="text" placeholder="Gift username (20 Coins)..." />
-            <button id="sendGiftBtn" class="btn-s btn-gold" type="button">🎁 20</button>
+          <div style="display:flex; gap:5px; margin-top:7px;">
+            <input id="giftTo" type="text" placeholder="Gift to user (20 coins)..." />
+            <button id="giftBtn" class="sbtn gold" type="button">Gift 20</button>
           </div>
         </div>
 
-        <form id="chatForm" class="bar">
-          <button id="plusBtn" class="btn-s" type="button">+</button>
-          <input id="msgInput" class="inp" type="text" maxlength="300" placeholder="Type here (+10 EXP & +5 Coins)..." autocomplete="off" />
-          <button class="btn-s btn-grn" type="submit">Send</button>
+        <form id="mForm" class="foot">
+          <button id="plusBtn" class="sbtn" type="button">+</button>
+          <input id="mInp" type="text" maxlength="300" placeholder="Message (+10 EXP, +5 Coins)..." autocomplete="off" />
+          <button class="sbtn grn" type="submit">Send</button>
         </form>
-      </section>
+      </div>
     </div>
   </div>
 
-  <div id="adminModal" class="modal-bg hidden">
-    <div class="modal-c">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h3>👑 Admin Panel</h3>
-        <button id="closeAdminBtn" class="btn-s" type="button">✕</button>
+  <div id="admPop" class="pop hidden">
+    <div class="pop-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <strong>Admin Moderation</strong>
+        <button id="closeAdm" class="sbtn" type="button">x</button>
       </div>
-      <div class="side-h">Active Users (Rank, Remove/Kick, Ban)</div>
-      <div id="adminUsersList"></div>
-      <div class="side-h" style="margin-top:14px;">Banned List</div>
-      <div id="bannedList"></div>
+      <div class="sub" style="font-weight:700;">USERS</div>
+      <div id="admUsers"></div>
+      <div class="sub" style="font-weight:700; margin-top:10px;">BANNED</div>
+      <div id="admBanned"></div>
     </div>
   </div>
 
   <script>
-    const DB_URL = "https://safekids-chat-default-rtdb.firebaseio.com";
-    const AVATARS = ["😎", "🦊", "🐼", "🚀", "👑", "⚡"];
+    const DB = "https://safekids-chat-default-rtdb.firebaseio.com";
+    const AVS = ["😎", "🦊", "🐼", "🚀", "👑", "⚡"];
     const RANKS = ["Member", "Bronze", "Gold", "VIP", "Diamond", "Super VIP", "Moderator", "Room Manager"];
-    const VIP_PLUS = ["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
-    const ADMIN_KEY = "ADMIN123";
-
-    const FALLBACK_MEMES = [
-      { title: "Laugh Cat", tags: "cat laugh funny", url: "https://media.giphy.com/media/JIX9t1j0ZtnJetCPas/giphy.gif" },
-      { title: "Pro Gamer", tags: "gaming pro gamer", url: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" },
-      { title: "Fire Mode", tags: "fire hype lit", url: "https://media.giphy.com/media/26AHONQ79FdWTrAIy/giphy.gif" },
-      { title: "Shocked", tags: "shock omg what", url: "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" },
-      { title: "Thumbs Up", tags: "ok good nice", url: "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" },
-      { title: "Party Win", tags: "party win gg dance", url: "https://media.giphy.com/media/l0amJz5bNYuyn7Pxe/giphy.gif" }
+    const VIP_UP = ["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
+    const KEY = "ADMIN123";
+    const BACKUP_MEMES = [
+      { t: "Cat", u: "https://media.giphy.com/media/JIX9t1j0ZtnJetCPas/giphy.gif" },
+      { t: "Gamer", u: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" },
+      { t: "Fire", u: "https://media.giphy.com/media/26AHONQ79FdWTrAIy/giphy.gif" }
     ];
 
-    function getDeviceId() {
-      let id = localStorage.getItem("skc_dev_v2");
-      if (!id) {
-        id = "DEV-" + Math.random().toString(36).substring(2, 7).toUpperCase();
-        localStorage.setItem("skc_dev_v2", id);
-      }
-      return id;
-    }
+    let devId = localStorage.getItem("sk_dev_clean");
+    if (!devId) { devId = "D-" + Math.random().toString(36).slice(2, 7).toUpperCase(); localStorage.setItem("sk_dev_clean", devId); }
 
-    const myDeviceId = getDeviceId();
-    let selectedAvatar = AVATARS[0];
-    let currentUser = null;
-    let cacheUsers = {}, cacheBanned = {}, cacheRanks = {}, cacheStats = {}, cacheMsgs = {};
+    let av = AVS[0], me = null;
+    let users = {}, banned = {}, ranks = {}, stats = {}, msgs = {};
 
-    const entryScreen = document.getElementById("entryScreen");
-    const chatScreen = document.getElementById("chatScreen");
-    const claimAdminToggle = document.getElementById("claimAdminToggle");
-    const secretKeyWrap = document.getElementById("secretKeyWrap");
-    const entryError = document.getElementById("entryError");
-
-    const avatarGrid = document.getElementById("avatarGrid");
-    AVATARS.forEach((em, i) => {
+    const avBox = document.getElementById("avs");
+    AVS.forEach((e, i) => {
       const b = document.createElement("button");
-      b.type = "button";
-      b.className = "av-btn" + (i === 0 ? " active" : "");
-      b.textContent = em;
-      b.onclick = () => {
-        selectedAvatar = em;
-        document.querySelectorAll(".av-btn").forEach(x => x.classList.remove("active"));
-        b.classList.add("active");
-      };
-      avatarGrid.appendChild(b);
+      b.type = "button"; b.className = "av" + (i === 0 ? " on" : ""); b.textContent = e;
+      b.onclick = () => { av = e; document.querySelectorAll(".av").forEach(x => x.classList.remove("on")); b.classList.add("on"); };
+      avBox.appendChild(b);
     });
 
-    function toggleKey() {
-      secretKeyWrap.classList.toggle("hidden", !claimAdminToggle.checked);
-      entryError.textContent = "";
-    }
-    claimAdminToggle.addEventListener("change", toggleKey);
-    claimAdminToggle.addEventListener("click", toggleKey);
+    const admChk = document.getElementById("admChk");
+    const admKeyBox = document.getElementById("admKeyBox");
+    function syncAdmBox() { admKeyBox.classList.toggle("hidden", !admChk.checked); }
+    admChk.addEventListener("change", syncAdmBox);
+    admChk.addEventListener("click", syncAdmBox);
 
-    function safeKey(s) {
-      return encodeURIComponent(String(s || "").toLowerCase().trim());
-    }
+    const kOf = s => encodeURIComponent(String(s || "").toLowerCase().trim());
+    const getR = u => !u ? "Member" : (u.isAdmin ? "Admin" : (ranks[kOf(u.name)] || "Member"));
 
-    async function dbGet(p) {
-      const r = await fetch(`${DB_URL}/${p}.json`);
-      return r.ok ? await r.json() : null;
-    }
-    async function dbPut(p, d) {
-      await fetch(`${DB_URL}/${p}.json`, {
-        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d)
-      });
-    }
-    async function dbDel(p) {
-      await fetch(`${DB_URL}/${p}.json`, { method: "DELETE" });
-    }
+    async function apiGet(p) { const r = await fetch(`${DB}/${p}.json`); return r.ok ? await r.json() : null; }
+    async function apiPut(p, d) { await fetch(`${DB}/${p}.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) }); }
+    async function apiDel(p) { await fetch(`${DB}/${p}.json`, { method: "DELETE" }); }
 
-    function getRank(u) {
-      if (!u) return "Member";
-      if (u.isAdmin) return "Admin";
-      return cacheRanks[safeKey(u.name)] || "Member";
-    }
-
-    function renderMemeList(list) {
-      const g = document.getElementById("memeGrid");
-      g.innerHTML = "";
-      list.forEach(m => {
-        const box = document.createElement("div");
-        box.className = "m-box";
-        box.innerHTML = `<img src="${m.url}" alt="${m.title}" /><div>${m.title}</div>`;
-        box.onclick = async () => {
-          if (!currentUser || !VIP_PLUS.includes(getRank(currentUser))) {
-            alert("Memes free sirf VIP ya usse upar ke rank par send hote hain.");
-            return;
-          }
-          document.getElementById("plusDock").classList.add("hidden");
-          await pushMsg({ text: `Meme: ${m.title}`, imageData: m.url }, false);
+    function drawMemes(list) {
+      const box = document.getElementById("mRes"); box.innerHTML = "";
+      list.forEach(item => {
+        const c = document.createElement("div"); c.className = "m-card";
+        c.innerHTML = `<img src="${item.u}" alt="" /><div>${item.t}</div>`;
+        c.onclick = async () => {
+          if (!me || !VIP_UP.includes(getR(me))) return alert("Memes free sirf VIP+ rank par send hote hain.");
+          document.getElementById("tools").classList.add("hidden");
+          await sendMsg({ text: item.t, img: item.u }, false);
         };
-        g.appendChild(box);
+        box.appendChild(c);
       });
     }
 
-    async function searchWorldMemes(query = "") {
-      const q = query.trim();
-      const status = document.getElementById("memeStatus");
-      status.textContent = q ? `Searching "${q}"...` : "Loading trending memes...";
-
+    async function findMemes(q = "") {
+      const s = q.trim();
       try {
-        const endpoint = q
-          ? `https://g.tenor.com/v1/search?q=${encodeURIComponent(q + " meme")}&key=LIVDSRZULELA&limit=12`
-          : `https://g.tenor.com/v1/trending?key=LIVDSRZULELA&limit=12`;
-        const res = await fetch(endpoint);
+        const url = s
+          ? `https://g.tenor.com/v1/search?q=${encodeURIComponent(s + " meme")}&key=LIVDSRZULELA&limit=9`
+          : `https://g.tenor.com/v1/trending?key=LIVDSRZULELA&limit=9`;
+        const res = await fetch(url);
         const data = await res.json();
-        const items = (data.results || [])
-          .map(item => {
-            const media = item.media && item.media[0];
-            const gif = media && (media.tinygif || media.gif || media.nanogif);
-            return gif && gif.url ? { title: item.content_description || q || "Meme", url: gif.url } : null;
-          })
-          .filter(Boolean);
-
-        if (items.length > 0) {
-          status.textContent = q ? `Results for "${q}"` : "Trending memes";
-          renderMemeList(items);
-          return;
-        }
+        const out = (data.results || []).map(x => {
+          const g = x.media && x.media[0] && (x.media[0].tinygif || x.media[0].gif);
+          return g ? { t: x.content_description || s || "Meme", u: g.url } : null;
+        }).filter(Boolean);
+        if (out.length) return drawMemes(out);
       } catch (_) {}
-
-      const t = q.toLowerCase();
-      const localMatches = FALLBACK_MEMES.filter(m => !t || m.title.toLowerCase().includes(t) || m.tags.includes(t));
-      status.textContent = q ? `Showing matched memes for "${q}"` : "Trending memes";
-      renderMemeList(localMatches.length ? localMatches : FALLBACK_MEMES);
+      drawMemes(BACKUP_MEMES);
     }
+    findMemes("");
 
-    searchWorldMemes("");
+    document.getElementById("mBtn").onclick = () => findMemes(document.getElementById("mSearch").value);
+    document.getElementById("mSearch").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); findMemes(e.target.value); } });
 
-    document.getElementById("memeSearchBtn").addEventListener("click", () => {
-      searchWorldMemes(document.getElementById("memeSearchInput").value);
-    });
-    document.getElementById("memeSearchInput").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        searchWorldMemes(e.target.value);
-      }
-    });
-
-    function parseYt(val) {
-      const s = (val || "").trim();
+    function ytId(v) {
+      const s = (v || "").trim();
       if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
       const m = s.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
       return m ? m[1] : null;
     }
 
-    document.getElementById("sendYtBtn").addEventListener("click", async () => {
-      const id = parseYt(document.getElementById("ytInput").value);
-      if (!id) return alert("Valid YouTube link ya ID likhein.");
-      document.getElementById("ytInput").value = "";
-      document.getElementById("plusDock").classList.add("hidden");
-      await pushMsg({ text: "YouTube Video", ytId: id }, false);
-    });
+    document.getElementById("ytBtn").onclick = async () => {
+      const id = ytId(document.getElementById("ytInp").value);
+      if (!id) return alert("Valid YouTube link ya ID dein.");
+      document.getElementById("ytInp").value = "";
+      document.getElementById("tools").classList.add("hidden");
+      await sendMsg({ text: "YouTube", yt: id }, false);
+    };
 
-    document.getElementById("sendGiftBtn").addEventListener("click", async () => {
-      if (!currentUser) return;
-      const target = document.getElementById("giftTargetInput").value.trim();
-      if (!target) return;
+    document.getElementById("giftBtn").onclick = async () => {
+      if (!me) return;
+      const to = document.getElementById("giftTo").value.trim();
+      if (!to) return;
       const cost = 20;
-      const kMe = safeKey(currentUser.name);
-      const stMe = cacheStats[kMe] || { exp: 0, coins: 0 };
+      const myK = kOf(me.name);
+      const mySt = stats[myK] || { exp: 0, coins: 0 };
 
-      if (!currentUser.isAdmin) {
-        if (Number(stMe.coins || 0) < cost) return alert("Coins kam hain. Chat karke coins kamayein.");
-        await dbPut(`stats/${kMe}`, { exp: Number(stMe.exp || 0), coins: Number(stMe.coins || 0) - cost });
+      if (!me.isAdmin) {
+        if (Number(mySt.coins || 0) < cost) return alert("Coins kam hain.");
+        await apiPut(`stats/${myK}`, { exp: Number(mySt.exp || 0), coins: Number(mySt.coins || 0) - cost });
       }
+      const toK = kOf(to);
+      const toSt = stats[toK] || { exp: 0, coins: 0 };
+      await apiPut(`stats/${toK}`, { exp: Number(toSt.exp || 0) + 10, coins: Number(toSt.coins || 0) + cost });
 
-      const kTo = safeKey(target);
-      const stTo = cacheStats[kTo] || { exp: 0, coins: 0 };
-      await dbPut(`stats/${kTo}`, { exp: Number(stTo.exp || 0) + 15, coins: Number(stTo.coins || 0) + cost });
+      document.getElementById("giftTo").value = "";
+      document.getElementById("tools").classList.add("hidden");
+      await sendMsg({ text: `Gift 20 Coins -> ${to}` }, false);
+    };
 
-      document.getElementById("giftTargetInput").value = "";
-      document.getElementById("plusDock").classList.add("hidden");
-      await pushMsg({ text: `🎁 Sent 20 Coins Gift to ${target}` }, false);
-    });
-
-    async function poll() {
-      const [u, b, r, st, m] = await Promise.all([
-        dbGet("users"), dbGet("banned"), dbGet("ranks"), dbGet("stats"), dbGet("messages")
-      ]);
-      cacheUsers = u || {};
-      cacheBanned = b || {};
-      cacheRanks = r || {};
-      cacheStats = st || {};
-      cacheMsgs = m || {};
-      checkRemoved();
-      renderAll();
+    async function loop() {
+      const [u, b, r, s, m] = await Promise.all([apiGet("users"), apiGet("banned"), apiGet("ranks"), apiGet("stats"), apiGet("messages")]);
+      users = u || {}; banned = b || {}; ranks = r || {}; stats = s || {}; msgs = m || {};
+      if (me && !me.isAdmin) {
+        const isB = Object.values(banned).some(x => x && (x.devId === devId || (x.name && x.name.toLowerCase() === me.name.toLowerCase())));
+        const isA = Object.values(users).some(x => x && x.name === me.name && x.devId === devId);
+        if (isB || !isA) {
+          me = null;
+          document.getElementById("app").classList.add("hidden");
+          document.getElementById("entry").classList.remove("hidden");
+          document.getElementById("err").textContent = isB ? "Banned by Admin." : "Kicked by Admin.";
+        }
+      }
+      render();
     }
 
-    function checkRemoved() {
-      if (!currentUser || currentUser.isAdmin) return;
-      const banned = Object.values(cacheBanned).some(
-        x => x && (x.deviceId === myDeviceId || (x.name && x.name.toLowerCase() === currentUser.name.toLowerCase()))
-      );
-      const active = Object.values(cacheUsers).some(
-        x => x && x.name === currentUser.name && x.deviceId === myDeviceId
-      );
-      if (banned || !active) {
-        currentUser = null;
-        chatScreen.classList.add("hidden");
-        entryScreen.classList.remove("hidden");
-        entryError.textContent = banned ? "Banned by Admin." : "Kicked by Admin.";
-      }
-    }
+    document.getElementById("goBtn").onclick = async () => {
+      const name = document.getElementById("nick").value.trim();
+      const room = document.getElementById("room").value;
+      const err = document.getElementById("err");
+      err.textContent = "";
+      if (!name) return (err.textContent = "Nickname likhein.");
 
-    document.getElementById("enterBtn").addEventListener("click", async () => {
-      const name = document.getElementById("nickInput").value.trim();
-      const room = document.getElementById("roomSelect").value;
-      entryError.textContent = "";
-      if (!name) return (entryError.textContent = "Nickname likhein.");
+      const [b, u, r, s] = await Promise.all([apiGet("banned"), apiGet("users"), apiGet("ranks"), apiGet("stats")]);
+      banned = b || {}; users = u || {}; ranks = r || {}; stats = s || {};
 
-      const [b, u, r, st] = await Promise.all([
-        dbGet("banned"), dbGet("users"), dbGet("ranks"), dbGet("stats")
-      ]);
-      cacheBanned = b || {}; cacheUsers = u || {}; cacheRanks = r || {}; cacheStats = st || {};
-
-      const banned = Object.values(cacheBanned).some(
-        x => x && (x.deviceId === myDeviceId || (x.name && x.name.toLowerCase() === name.toLowerCase()))
-      );
-      if (banned && !claimAdminToggle.checked) return (entryError.textContent = "Device/account banned.");
+      const isB = Object.values(banned).some(x => x && (x.devId === devId || (x.name && x.name.toLowerCase() === name.toLowerCase())));
+      if (isB && !admChk.checked) return (err.textContent = "Banned.");
 
       let isAdmin = false;
-      if (claimAdminToggle.checked) {
-        if (document.getElementById("adminKeyInput").value !== ADMIN_KEY) {
-          return (entryError.textContent = "Galat key! Key: ADMIN123");
-        }
+      if (admChk.checked) {
+        if (document.getElementById("admKey").value !== KEY) return (err.textContent = "Wrong key (ADMIN123).");
         isAdmin = true;
       }
 
-      const sameDevOther = Object.values(cacheUsers).find(
-        x => x && x.deviceId === myDeviceId && x.name.toLowerCase() !== name.toLowerCase()
-      );
-      if (!isAdmin && sameDevOther) {
-        return (entryError.textContent = `1 Account Per Device: "${sameDevOther.name}" already active.`);
-      }
+      const otherSameDev = Object.values(users).find(x => x && x.devId === devId && x.name.toLowerCase() !== name.toLowerCase());
+      if (!isAdmin && otherSameDev) return (err.textContent = `1 device = 1 account (${otherSameDev.name} active).`);
 
-      for (const [key, val] of Object.entries(cacheUsers)) {
-        if (val && val.name && val.name.toLowerCase() === name.toLowerCase() && key !== myDeviceId) {
-          await dbDel("users/" + key);
+      for (const [key, val] of Object.entries(users)) {
+        if (val && val.name && val.name.toLowerCase() === name.toLowerCase() && key !== devId) {
+          await apiDel("users/" + key);
         }
       }
 
-      const rk = isAdmin ? "Admin" : (cacheRanks[safeKey(name)] && cacheRanks[safeKey(name)] !== "Admin" ? cacheRanks[safeKey(name)] : "Member");
-      await dbPut("ranks/" + safeKey(name), rk);
-      if (!cacheStats[safeKey(name)]) await dbPut("stats/" + safeKey(name), { exp: 0, coins: 0 });
+      const rk = isAdmin ? "Admin" : (ranks[kOf(name)] && ranks[kOf(name)] !== "Admin" ? ranks[kOf(name)] : "Member");
+      await apiPut("ranks/" + kOf(name), rk);
+      if (!stats[kOf(name)]) await apiPut("stats/" + kOf(name), { exp: 0, coins: 0 });
 
-      currentUser = { name, avatar: selectedAvatar, room, isAdmin, deviceId: myDeviceId };
-      await dbPut("users/" + myDeviceId, currentUser);
+      me = { name, av, room, isAdmin, devId };
+      await apiPut("users/" + devId, me);
 
-      entryScreen.classList.add("hidden");
-      chatScreen.classList.remove("hidden");
-      renderAll();
-    });
+      document.getElementById("entry").classList.add("hidden");
+      document.getElementById("app").classList.remove("hidden");
+      render();
+    };
 
-    function renderAll() {
-      if (!currentUser) return;
-      const st = cacheStats[safeKey(currentUser.name)] || { exp: 0, coins: 0 };
-      document.getElementById("roomTitle").textContent = `${currentUser.avatar} ${currentUser.name} — ${currentUser.room}`;
-      document.getElementById("rolePill").textContent = getRank(currentUser);
-      document.getElementById("expVal").textContent = st.exp || 0;
-      document.getElementById("coinVal").textContent = currentUser.isAdmin ? "∞" : (st.coins || 0);
-      document.getElementById("openAdminBtn").classList.toggle("hidden", !currentUser.isAdmin);
+    function render() {
+      if (!me) return;
+      const mySt = stats[kOf(me.name)] || { exp: 0, coins: 0 };
+      document.getElementById("rName").textContent = `${me.av} ${me.name} — ${me.room}`;
+      document.getElementById("rBadge").textContent = getR(me);
+      document.getElementById("expN").textContent = mySt.exp || 0;
+      document.getElementById("coinN").textContent = me.isAdmin ? "∞" : (mySt.coins || 0);
+      document.getElementById("admBtn").classList.toggle("hidden", !me.isAdmin);
 
-      renderUsers();
-      renderMsgs();
-      if (!document.getElementById("adminModal").classList.contains("hidden")) renderAdmin();
-    }
-
-    function renderUsers() {
-      const wrap = document.getElementById("usersSidebar");
-      wrap.innerHTML = "";
-      Object.values(cacheUsers).forEach(u => {
+      const uList = document.getElementById("uList"); uList.innerHTML = "";
+      Object.values(users).forEach(u => {
         if (!u) return;
-        const st = cacheStats[safeKey(u.name)] || { exp: 0, coins: 0 };
-        const d = document.createElement("div");
-        d.className = "u-card";
-        d.innerHTML = `
-          <div><strong>${u.avatar || "😎"} ${u.name}</strong> <span class="pill">${getRank(u)}</span></div>
-          <div class="muted">EXP: ${st.exp || 0} • Coins: ${u.isAdmin ? "∞" : (st.coins || 0)}</div>
-          <div class="muted">${u.deviceId}</div>
-        `;
-        wrap.appendChild(d);
+        const st = stats[kOf(u.name)] || { exp: 0, coins: 0 };
+        const d = document.createElement("div"); d.className = "u-item";
+        d.innerHTML = `<strong>${u.av} ${u.name}</strong> (${getR(u)})<div class="sub">EXP ${st.exp || 0} • Coins ${u.isAdmin ? "∞" : (st.coins || 0)}</div><div class="sub">${u.devId}</div>`;
+        uList.appendChild(d);
       });
-    }
 
-    function renderMsgs() {
-      if (!currentUser) return;
-      const area = document.getElementById("messagesArea");
-      area.innerHTML = "";
-      const rm = cacheMsgs[safeKey(currentUser.room)] || {};
-      Object.values(rm).forEach(m => {
+      const mBox = document.getElementById("msgs"); mBox.innerHTML = "";
+      Object.values(msgs[kOf(me.room)] || {}).forEach(m => {
         if (!m) return;
-        const d = document.createElement("div");
-        d.className = "msg";
-        const img = m.imageData ? `<img class="msg-img" src="${m.imageData}" alt="" />` : "";
-        const yt = m.ytId ? `<iframe class="yt" src="https://www.youtube.com/embed/${m.ytId}" allowfullscreen></iframe>` : "";
-        d.innerHTML = `
-          <div class="msg-h"><strong>${m.avatar || "😎"} ${m.sender}</strong> <span class="pill">${m.role || "Member"}</span> <span class="muted">${m.time || ""}</span></div>
-          <div class="msg-t">${m.text || ""}</div>${img}${yt}
-        `;
-        area.appendChild(d);
+        const d = document.createElement("div"); d.className = "m";
+        const img = m.img ? `<img src="${m.img}" alt="" />` : "";
+        const yt = m.yt ? `<iframe src="https://www.youtube.com/embed/${m.yt}" allowfullscreen></iframe>` : "";
+        d.innerHTML = `<div class="m-top"><strong>${m.av} ${m.sender}</strong><span>[${m.role}]</span><span>${m.time || ""}</span></div><div>${m.text || ""}</div>${img}${yt}`;
+        mBox.appendChild(d);
       });
-      area.scrollTop = area.scrollHeight;
+      mBox.scrollTop = mBox.scrollHeight;
+
+      if (!document.getElementById("admPop").classList.contains("hidden")) drawAdm();
     }
 
-    async function pushMsg({ text = "", imageData = "", ytId = "" }, earn = true) {
-      if (!currentUser) return;
-      const id = "M-" + Date.now() + "-" + Math.random().toString(36).substring(2, 5);
-      const k = safeKey(currentUser.name);
+    async function sendMsg({ text = "", img = "", yt = "" }, earn = true) {
+      if (!me) return;
+      const k = kOf(me.name);
       if (earn) {
-        const prev = cacheStats[k] || { exp: 0, coins: 0 };
-        const next = { exp: Number(prev.exp || 0) + 10, coins: currentUser.isAdmin ? "∞" : Number(prev.coins || 0) + 5 };
-        cacheStats[k] = next;
-        await dbPut("stats/" + k, next);
+        const prev = stats[k] || { exp: 0, coins: 0 };
+        const next = { exp: Number(prev.exp || 0) + 10, coins: me.isAdmin ? "∞" : Number(prev.coins || 0) + 5 };
+        stats[k] = next;
+        await apiPut("stats/" + k, next);
       }
-      const payload = {
-        sender: currentUser.name, avatar: currentUser.avatar, role: getRank(currentUser),
-        text, imageData, ytId, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-      };
-      cacheMsgs[safeKey(currentUser.room)] = cacheMsgs[safeKey(currentUser.room)] || {};
-      cacheMsgs[safeKey(currentUser.room)][id] = payload;
-      await dbPut(`messages/${safeKey(currentUser.room)}/${id}`, payload);
-      renderAll();
+      const id = "MSG_" + Date.now();
+      const row = { sender: me.name, av: me.av, role: getR(me), text, img, yt, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
+      msgs[kOf(me.room)] = msgs[kOf(me.room)] || {};
+      msgs[kOf(me.room)][id] = row;
+      await apiPut(`messages/${kOf(me.room)}/${id}`, row);
+      render();
     }
 
-    document.getElementById("chatForm").addEventListener("submit", async (e) => {
+    document.getElementById("mForm").onsubmit = async e => {
       e.preventDefault();
-      const inp = document.getElementById("msgInput");
+      const inp = document.getElementById("mInp");
       const t = inp.value.trim();
       if (!t) return;
       inp.value = "";
-      await pushMsg({ text: t }, true);
-    });
+      await sendMsg({ text: t }, true);
+    };
 
-    document.getElementById("plusBtn").addEventListener("click", () => document.getElementById("plusDock").classList.toggle("hidden"));
-    document.getElementById("closeDockBtn").addEventListener("click", () => document.getElementById("plusDock").classList.add("hidden"));
+    document.getElementById("plusBtn").onclick = () => document.getElementById("tools").classList.toggle("hidden");
+    document.getElementById("closeTools").onclick = () => document.getElementById("tools").classList.add("hidden");
 
-    const adminModal = document.getElementById("adminModal");
-    document.getElementById("openAdminBtn").addEventListener("click", () => {
-      if (!currentUser || !currentUser.isAdmin) return;
-      renderAdmin();
-      adminModal.classList.remove("hidden");
-    });
-    document.getElementById("closeAdminBtn").addEventListener("click", () => adminModal.classList.add("hidden"));
+    document.getElementById("admBtn").onclick = () => { drawAdm(); document.getElementById("admPop").classList.remove("hidden"); };
+    document.getElementById("closeAdm").onclick = () => document.getElementById("admPop").classList.add("hidden");
 
-    function renderAdmin() {
-      const list = document.getElementById("adminUsersList");
-      const banList = document.getElementById("bannedList");
-      list.innerHTML = ""; banList.innerHTML = "";
+    function drawAdm() {
+      const uDiv = document.getElementById("admUsers"); const bDiv = document.getElementById("admBanned");
+      uDiv.innerHTML = ""; bDiv.innerHTML = "";
+      const list = Object.entries(users).filter(([k, u]) => u && k !== devId);
+      if (!list.length) uDiv.innerHTML = `<div class="sub">No other users.</div>`;
+      list.forEach(([key, u]) => {
+        const row = document.createElement("div"); row.className = "mod-line";
+        row.innerHTML = `<div><strong>${u.name}</strong><div class="sub">${key}</div></div>`;
+        const acts = document.createElement("div"); acts.style.display = "flex"; acts.style.gap = "4px";
 
-      const entries = Object.entries(cacheUsers).filter(([k, u]) => u && k !== myDeviceId);
-      if (!entries.length) {
-        list.innerHTML = `<div class="muted">No other users.</div>`;
-      } else {
-        entries.forEach(([key, u]) => {
-          const row = document.createElement("div");
-          row.className = "m-row";
-          row.innerHTML = `<div><strong>${u.name}</strong><div class="muted">${key}</div></div>`;
+        const sel = document.createElement("select"); sel.style.width = "105px"; sel.style.padding = "4px";
+        RANKS.forEach(r => { const o = document.createElement("option"); o.value = r; o.textContent = r; if ((ranks[kOf(u.name)] || "Member") === r) o.selected = true; sel.appendChild(o); });
+        sel.onchange = async () => { await apiPut("ranks/" + kOf(u.name), sel.value); loop(); };
 
-          const acts = document.createElement("div");
-          acts.style.display = "flex"; acts.style.gap = "5px";
+        const kick = document.createElement("button"); kick.type = "button"; kick.className = "sbtn gold"; kick.textContent = "Kick";
+        kick.onclick = async () => { await apiDel("users/" + key); delete users[key]; render(); };
 
-          const sel = document.createElement("select");
-          sel.className = "sel"; sel.style.width = "115px"; sel.style.padding = "4px 6px";
-          RANKS.forEach(r => {
-            const o = document.createElement("option");
-            o.value = r; o.textContent = r;
-            if ((cacheRanks[safeKey(u.name)] || "Member") === r) o.selected = true;
-            sel.appendChild(o);
-          });
-          sel.onchange = async () => { await dbPut("ranks/" + safeKey(u.name), sel.value); poll(); };
+        const ban = document.createElement("button"); ban.type = "button"; ban.className = "sbtn red"; ban.textContent = "Ban";
+        ban.onclick = async () => {
+          await apiDel("users/" + key); delete users[key];
+          const bObj = { name: u.name, devId: u.devId || key };
+          banned[key] = bObj;
+          await apiPut("banned/" + key, bObj);
+          render();
+        };
 
-          const kick = document.createElement("button");
-          kick.type = "button"; kick.className = "btn-s btn-gold"; kick.textContent = "Kick";
-          kick.onclick = async () => { await dbDel("users/" + key); delete cacheUsers[key]; renderAll(); };
+        acts.append(sel, kick, ban); row.appendChild(acts); uDiv.appendChild(row);
+      });
 
-          const ban = document.createElement("button");
-          ban.type = "button"; ban.className = "btn-s btn-red"; ban.textContent = "Ban";
-          ban.onclick = async () => {
-            await dbDel("users/" + key); delete cacheUsers[key];
-            const bObj = { name: u.name, deviceId: u.deviceId || key };
-            cacheBanned[key] = bObj;
-            await dbPut("banned/" + key, bObj);
-            renderAll();
-          };
-
-          acts.appendChild(sel); acts.appendChild(kick); acts.appendChild(ban);
-          row.appendChild(acts);
-          list.appendChild(row);
-        });
-      }
-
-      const bEnt = Object.entries(cacheBanned);
-      if (!bEnt.length) {
-        banList.innerHTML = `<div class="muted">No banned users.</div>`;
-      } else {
-        bEnt.forEach(([k, b]) => {
-          if (!b) return;
-          const row = document.createElement("div");
-          row.className = "m-row";
-          row.innerHTML = `<div><strong>${b.name}</strong> <span class="muted">(${b.deviceId})</span></div>`;
-          const unban = document.createElement("button");
-          unban.type = "button"; unban.className = "btn-s btn-grn"; unban.textContent = "Unban";
-          unban.onclick = async () => { await dbDel("banned/" + k); delete cacheBanned[k]; renderAdmin(); };
-          row.appendChild(unban);
-          banList.appendChild(row);
-        });
-      }
+      const bList = Object.entries(banned);
+      if (!bList.length) bDiv.innerHTML = `<div class="sub">None</div>`;
+      bList.forEach(([k, b]) => {
+        if (!b) return;
+        const row = document.createElement("div"); row.className = "mod-line";
+        row.innerHTML = `<div><strong>${b.name}</strong> <span class="sub">(${b.devId})</span></div>`;
+        const un = document.createElement("button"); un.type = "button"; un.className = "sbtn grn"; un.textContent = "Unban";
+        un.onclick = async () => { await apiDel("banned/" + k); delete banned[k]; drawAdm(); };
+        row.appendChild(un); bDiv.appendChild(row);
+      });
     }
 
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      if (currentUser) {
-        await dbDel("users/" + myDeviceId);
-        delete cacheUsers[myDeviceId];
-      }
-      currentUser = null;
-      chatScreen.classList.add("hidden");
-      entryScreen.classList.remove("hidden");
-    });
+    document.getElementById("outBtn").onclick = async () => {
+      if (me) { await apiDel("users/" + devId); delete users[devId]; }
+      me = null;
+      document.getElementById("app").classList.add("hidden");
+      document.getElementById("entry").classList.remove("hidden");
+    };
 
-    setInterval(poll, 2500);
+    setInterval(loop, 2500);
   </script>
 </body>
 </html>
