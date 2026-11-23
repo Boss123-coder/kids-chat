@@ -3,157 +3,266 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SafeKids Chat</title>
+  <title>SafeKids Chat — All-World GIFs, Stickers & Admin Room</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-    body { background: #14171f; color: #f3f4f6; height: 100vh; display: flex; flex-direction: column; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    body { height: 100vh; overflow: hidden; background: #0d0b14; color: #f3f4f6; }
     .hidden { display: none !important; }
 
-    /* Entry */
-    .entry { margin: auto; width: 100%; max-width: 380px; background: #1e232e; padding: 20px; border-radius: 14px; border: 1px solid #2d3546; }
-    .entry h2 { text-align: center; margin-bottom: 14px; font-size: 20px; }
-    .entry h2 span { color: #fbbf24; }
-    label { display: block; font-size: 11px; color: #9ca3af; margin: 10px 0 4px; text-transform: uppercase; }
-    input, select { width: 100%; padding: 9px 11px; border-radius: 8px; border: 1px solid #374151; background: #12151c; color: #fff; font-size: 13px; }
-    .avs { display: flex; justify-content: space-between; gap: 6px; }
-    .av { flex: 1; padding: 7px 0; border-radius: 8px; border: 1px solid #374151; background: #12151c; font-size: 18px; cursor: pointer; }
-    .av.on { border-color: #10b981; background: #064e3b; }
-    .adm { margin-top: 12px; padding: 10px; border-radius: 8px; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); }
-    .adm-top { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #fbbf24; font-weight: 700; }
-    .btn { width: 100%; margin-top: 14px; padding: 10px; border: none; border-radius: 8px; background: #10b981; color: #fff; font-weight: 700; cursor: pointer; }
+    /* Entry Screen */
+    .entry-bg {
+      height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px;
+      background:
+        radial-gradient(circle at 25% 25%, rgba(168, 85, 247, 0.28), transparent 45%),
+        radial-gradient(circle at 80% 75%, rgba(236, 72, 153, 0.22), transparent 45%),
+        linear-gradient(135deg, #120d1d 0%, #1c132b 55%, #0c0a12 100%);
+    }
+    .entry-box {
+      width: 100%; max-width: 390px;
+      background: rgba(24, 19, 36, 0.94); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px; padding: 20px; box-shadow: 0 24px 60px rgba(0,0,0,0.75);
+    }
+    .entry-title { text-align: center; font-size: 21px; font-weight: 800; margin-bottom: 14px; }
+    .entry-title span { color: #c084fc; }
+    .lbl { display: block; font-size: 11px; font-weight: 700; color: #a1a1aa; text-transform: uppercase; margin: 10px 0 4px; }
+    .inp, .sel {
+      width: 100%; padding: 9px 11px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.14); background: #110e1a; color: #fff; font-size: 13px; outline: none;
+    }
+    .inp:focus, .sel:focus { border-color: #a855f7; }
+    .sel option { background: #181324; color: #fff; }
+    .avs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .av {
+      padding: 7px 0; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12);
+      background: #110e1a; font-size: 18px; cursor: pointer;
+    }
+    .av.on { border-color: #a855f7; background: rgba(168,85,247,0.25); }
+    .adm-card {
+      margin-top: 12px; padding: 10px 12px; border-radius: 10px;
+      background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.35);
+    }
+    .adm-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #fbbf24; }
+    .go-btn {
+      width: 100%; margin-top: 14px; padding: 11px; border: none; border-radius: 9px;
+      background: linear-gradient(90deg, #9333ea, #db2777); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer;
+    }
     .err { color: #f87171; font-size: 12px; margin-top: 8px; min-height: 16px; }
 
-    /* Chat */
-    .app { display: flex; flex-direction: column; height: 100vh; }
-    .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 12px; background: #0f1218; border-bottom: 1px solid #262d3d; font-size: 12px; }
-    .badge { padding: 3px 8px; border-radius: 99px; background: #1f2937; border: 1px solid #374151; font-weight: 700; }
-    .sbtn { padding: 5px 9px; border-radius: 7px; border: 1px solid #374151; background: #1f2937; color: #fff; font-size: 12px; cursor: pointer; }
-    .sbtn.gold { border-color: #fbbf24; color: #fde68a; background: rgba(251,191,36,0.15); }
-    .sbtn.red { border-color: #f87171; color: #fca5a5; background: rgba(239,68,68,0.15); }
-    .sbtn.grn { border-color: #34d399; color: #6ee7b7; background: rgba(16,185,129,0.15); }
+    /* Main Chat Layout (Left Feed + Center Stage + Right Users) */
+    .room-shell { display: flex; flex-direction: column; height: 100vh; }
+    .top-bar {
+      height: 42px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 0 12px; background: #141020; border-bottom: 1px solid rgba(255,255,255,0.09); font-size: 12px;
+    }
+    .chip {
+      padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+    }
+    .tbtn {
+      padding: 4px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.07); color: #fff; font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .tbtn.gold { border-color: #fbbf24; color: #fde68a; background: rgba(251,191,36,0.16); }
+    .tbtn.red { border-color: #f87171; color: #fca5a5; background: rgba(239,68,68,0.16); }
+    .tbtn.grn { border-color: #34d399; color: #6ee7b7; background: rgba(16,185,129,0.16); }
 
-    .main { flex: 1; display: grid; grid-template-columns: 200px 1fr; min-height: 0; }
-    @media (max-width: 700px) { .main { grid-template-columns: 1fr; } .side { display: none; } }
-    .side { background: #12151d; border-right: 1px solid #262d3d; padding: 10px; overflow-y: auto; font-size: 12px; }
-    .u-item { padding: 7px; border-radius: 8px; background: #1a1f2b; margin-bottom: 7px; }
-    .sub { font-size: 10px; color: #9ca3af; margin-top: 2px; word-break: break-all; }
+    .grid-3 { flex: 1; display: grid; grid-template-columns: 270px 1fr 220px; min-height: 0; }
+    @media (max-width: 900px) {
+      .grid-3 { grid-template-columns: 1fr; }
+      .center-stage, .right-panel { display: none; }
+    }
 
-    .col { position: relative; display: flex; flex-direction: column; min-height: 0; }
-    .msgs { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .m { background: #1c212c; border: 1px solid #2a3142; border-radius: 10px; padding: 8px 10px; font-size: 13px; }
-    .m-top { display: flex; gap: 6px; align-items: center; font-size: 11px; margin-bottom: 4px; color: #d1d5db; }
-    .m img { max-width: 200px; max-height: 160px; border-radius: 8px; margin-top: 6px; display: block; }
-    .m iframe { width: 100%; max-width: 290px; height: 165px; border: none; border-radius: 8px; margin-top: 6px; display: block; }
+    /* Left Chat Panel */
+    .left-chat {
+      display: flex; flex-direction: column; min-height: 0; position: relative;
+      background: #171324; border-right: 1px solid rgba(255,255,255,0.09);
+    }
+    .feed { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .bubble-item {
+      background: #231d36; border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 8px 10px; font-size: 12px;
+    }
+    .b-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 11px; }
+    .b-text { font-size: 13px; line-height: 1.35; word-break: break-word; }
+    .b-img { max-width: 190px; max-height: 150px; border-radius: 8px; margin-top: 6px; display: block; }
+    .b-yt { width: 100%; height: 155px; border: none; border-radius: 8px; margin-top: 6px; display: block; }
 
-    .tools { position: absolute; bottom: 52px; left: 10px; width: 320px; max-width: calc(100% - 20px); background: #1e232e; border: 1px solid #374151; border-radius: 10px; padding: 10px; z-index: 20; }
-    .m-res { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 6px; max-height: 150px; overflow-y: auto; }
-    .m-card { background: #12151c; border: 1px solid #2d3546; border-radius: 6px; padding: 3px; text-align: center; font-size: 10px; cursor: pointer; }
-    .m-card img { width: 100%; height: 48px; object-fit: cover; border-radius: 4px; display: block; }
+    /* Center Geometric Stage */
+    .center-stage {
+      position: relative;
+      background:
+        radial-gradient(circle at 22% 28%, rgba(168, 85, 247, 0.35), transparent 42%),
+        radial-gradient(circle at 78% 72%, rgba(236, 72, 153, 0.25), transparent 45%),
+        linear-gradient(135deg, #1b122b 0%, #2a163d 50%, #120d1d 100%);
+      display: flex; align-items: flex-end; justify-content: flex-end; padding: 14px;
+    }
+    .stage-tools { display: flex; gap: 6px; background: rgba(17,13,28,0.85); padding: 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); }
 
-    .foot { display: flex; gap: 6px; padding: 8px 10px; background: #0f1218; border-top: 1px solid #262d3d; }
+    /* Right Users Panel */
+    .right-panel {
+      background: #141020; border-left: 1px solid rgba(255,255,255,0.09);
+      padding: 10px; overflow-y: auto; font-size: 12px;
+    }
+    .sec-hdr {
+      background: rgba(255,255,255,0.06); padding: 5px 8px; border-radius: 6px;
+      font-size: 11px; font-weight: 800; text-align: center; margin: 8px 0 6px; color: #e9d5ff;
+    }
+    .u-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 6px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 5px; }
+    .tiny { font-size: 10px; color: #9ca3af; word-break: break-all; }
 
-    .pop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 40; }
-    .pop-box { width: 100%; max-width: 460px; max-height: 80vh; overflow-y: auto; background: #1c212c; border: 1px solid #374151; border-radius: 12px; padding: 14px; }
-    .mod-line { display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; padding: 7px 0; border-bottom: 1px solid #2a3142; font-size: 12px; }
+    /* Gifs / Stickers Popup (Matching Image 2) */
+    .gif-popup {
+      position: absolute; bottom: 52px; left: 8px; width: 295px; max-width: calc(100% - 16px);
+      background: #1b152b; border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 12px; padding: 10px; box-shadow: 0 18px 40px rgba(0,0,0,0.8); z-index: 35;
+    }
+    .tabs-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .tab-btn {
+      padding: 5px 11px; border-radius: 7px; border: none; background: transparent;
+      color: #d1d5db; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .tab-btn.active { background: #2d2446; color: #fff; }
+    .search-gif {
+      width: 100%; padding: 8px 10px; border-radius: 8px;
+      border: 1px solid rgba(244,114,182,0.5); background: #241226; color: #fff; font-size: 12px; outline: none;
+    }
+    .gif-results {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+      margin-top: 8px; max-height: 170px; overflow-y: auto;
+    }
+    .g-tile {
+      background: #120e1d; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 7px; padding: 4px; text-align: center; font-size: 10px; cursor: pointer;
+    }
+    .g-tile img { width: 100%; height: 54px; object-fit: cover; border-radius: 5px; display: block; margin-bottom: 2px; }
+
+    /* Bottom Composer */
+    .composer-bar {
+      height: 46px; display: flex; align-items: center; gap: 6px;
+      padding: 0 8px; background: #120e1c; border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Admin Modal */
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 60;
+    }
+    .modal-box {
+      width: 100%; max-width: 480px; max-height: 82vh; overflow-y: auto;
+      background: #1b1629; border: 1px solid rgba(251,191,36,0.35); border-radius: 14px; padding: 16px;
+    }
+    .mod-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 12px;
+    }
   </style>
 </head>
 <body>
 
-  <div id="entry" class="entry">
-    <h2>SafeKids <span>Chat</span></h2>
-    <label>Nickname</label>
-    <input id="nick" type="text" maxlength="20" placeholder="Your name..." />
+  <!-- ENTRY SCREEN -->
+  <div id="entryScreen" class="entry-bg">
+    <div class="entry-box">
+      <div class="entry-title">SafeKids <span>Chat</span></div>
 
-    <label>Avatar</label>
-    <div id="avs" class="avs"></div>
+      <label class="lbl" for="nickInp">Nickname</label>
+      <input id="nickInp" class="inp" type="text" maxlength="20" placeholder="Enter nickname..." />
 
-    <label>Room</label>
-    <select id="room">
-      <option value="Kids Lounge">Kids Lounge</option>
-      <option value="Teen Chat">Teen Chat</option>
-      <option value="Memes Room">Memes Room</option>
-    </select>
+      <label class="lbl">Avatar</label>
+      <div id="avGrid" class="avs"></div>
 
-    <div class="adm">
-      <div class="adm-top">
-        <span>Admin (Unlimited Coins)</span>
-        <label style="margin:0; display:inline-flex; gap:5px; cursor:pointer; color:#fde68a; text-transform:none;">
-          <input id="admChk" type="checkbox" style="width:auto;" /> Claim Admin
-        </label>
+      <label class="lbl" for="roomSel">Chat Room</label>
+      <select id="roomSel" class="sel">
+        <option value="AllTeen Lounge">AllTeen Lounge</option>
+        <option value="Kids Lounge">Kids Lounge</option>
+        <option value="Memes & GIFs">Memes & GIFs</option>
+      </select>
+
+      <div class="adm-card">
+        <div class="adm-row">
+          <span>Admin (Unlimited Coins)</span>
+          <label style="display:inline-flex; align-items:center; gap:5px; cursor:pointer; color:#fde68a;">
+            <input id="admToggle" type="checkbox" /> Claim Admin
+          </label>
+        </div>
+        <div id="admKeyWrap" class="hidden" style="margin-top:8px;">
+          <input id="admKeyInp" class="inp" type="password" placeholder="Secret Key: ADMIN123" />
+        </div>
       </div>
-      <div id="admKeyBox" class="hidden" style="margin-top:8px;">
-        <input id="admKey" type="password" placeholder="Secret key: ADMIN123" />
-      </div>
+
+      <button id="enterBtn" class="go-btn" type="button">Enter Chat</button>
+      <div id="entryErr" class="err"></div>
     </div>
-
-    <button id="goBtn" class="btn" type="button">Enter Chat</button>
-    <div id="err" class="err"></div>
   </div>
 
-  <div id="app" class="app hidden">
-    <div class="top">
-      <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-        <strong id="rName">Room</strong>
-        <span id="rBadge" class="badge">Member</span>
-        <span class="badge">EXP: <span id="expN">0</span></span>
-        <span class="badge">Coins: <span id="coinN">0</span></span>
+  <!-- ROOM SCREEN -->
+  <div id="roomScreen" class="room-shell hidden">
+    <header class="top-bar">
+      <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
+        <strong id="roomHeading">Room</strong>
+        <span id="rankChip" class="chip">Member</span>
+        <span class="chip">EXP: <span id="myExp">0</span></span>
+        <span class="chip">Coins: <span id="myCoins">0</span></span>
       </div>
       <div style="display:flex; gap:6px;">
-        <button id="admBtn" class="sbtn gold hidden" type="button">Admin</button>
-        <button id="outBtn" class="sbtn" type="button">Logout</button>
+        <button id="openAdmBtn" class="tbtn gold hidden" type="button">Admin Panel</button>
+        <button id="logoutBtn" class="tbtn" type="button">Logout</button>
       </div>
-    </div>
+    </header>
 
-    <div class="main">
-      <div class="side">
-        <div class="sub" style="font-weight:700; margin-bottom:8px;">ONLINE</div>
-        <div id="uList"></div>
-      </div>
+    <div class="grid-3">
+      <!-- Left Chat -->
+      <section class="left-chat">
+        <div id="chatFeed" class="feed"></div>
 
-      <div class="col">
-        <div id="msgs" class="msgs"></div>
-
-        <div id="tools" class="tools hidden">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <strong style="font-size:12px;">Memes (Free for VIP+)</strong>
-            <button id="closeTools" class="sbtn" type="button">x</button>
+        <!-- Gifs / Stickers Search Popup -->
+        <div id="gifPopup" class="gif-popup hidden">
+          <div class="tabs-top">
+            <div style="display:flex; gap:4px;">
+              <button id="tabGifs" class="tab-btn active" type="button">Gifs</button>
+              <button id="tabStickers" class="tab-btn" type="button">Stickers</button>
+            </div>
+            <button id="closeGifPopup" class="tbtn" type="button">✕</button>
           </div>
-          <div style="display:flex; gap:5px;">
-            <input id="mSearch" type="text" placeholder="Search meme..." />
-            <button id="mBtn" class="sbtn grn" type="button">Find</button>
-          </div>
-          <div id="mRes" class="m-res"></div>
-
-          <div style="display:flex; gap:5px; margin-top:7px;">
-            <input id="ytInp" type="text" placeholder="YouTube link or ID..." />
-            <button id="ytBtn" class="sbtn grn" type="button">YT</button>
-          </div>
-
-          <div style="display:flex; gap:5px; margin-top:7px;">
-            <input id="giftTo" type="text" placeholder="Gift to user (20 coins)..." />
-            <button id="giftBtn" class="sbtn gold" type="button">Gift 20</button>
-          </div>
+          <input id="gifSearchInp" class="search-gif" type="text" placeholder="Search" />
+          <div id="gifResults" class="gif-results"></div>
         </div>
 
-        <form id="mForm" class="foot">
-          <button id="plusBtn" class="sbtn" type="button">+</button>
-          <input id="mInp" type="text" maxlength="300" placeholder="Message (+10 EXP, +5 Coins)..." autocomplete="off" />
-          <button class="sbtn grn" type="submit">Send</button>
+        <form id="msgForm" class="composer-bar">
+          <button id="openGifBtn" class="tbtn" type="button" title="Gifs & Stickers">+</button>
+          <input id="msgInp" class="inp" type="text" maxlength="300" placeholder="Type here..." autocomplete="off" />
+          <button class="tbtn grn" type="submit">Send</button>
         </form>
-      </div>
+      </section>
+
+      <!-- Center Stage with YouTube & Gift Controls -->
+      <main class="center-stage">
+        <div class="stage-tools">
+          <input id="ytUrlInp" class="inp" style="width:145px; padding:6px 8px;" type="text" placeholder="YouTube link/ID..." />
+          <button id="sendYtBtn" class="tbtn grn" type="button">▶ YT</button>
+          <input id="giftUserInp" class="inp" style="width:115px; padding:6px 8px;" type="text" placeholder="Gift user..." />
+          <button id="sendGiftBtn" class="tbtn gold" type="button">🎁 20</button>
+        </div>
+      </main>
+
+      <!-- Right Online Users -->
+      <aside class="right-panel">
+        <div class="sec-hdr">Online</div>
+        <div id="onlineList"></div>
+      </aside>
     </div>
   </div>
 
-  <div id="admPop" class="pop hidden">
-    <div class="pop-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+  <!-- ADMIN MODAL -->
+  <div id="admModal" class="modal-bg hidden">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <strong>Admin Moderation</strong>
-        <button id="closeAdm" class="sbtn" type="button">x</button>
+        <button id="closeAdmModal" class="tbtn" type="button">✕</button>
       </div>
-      <div class="sub" style="font-weight:700;">USERS</div>
-      <div id="admUsers"></div>
-      <div class="sub" style="font-weight:700; margin-top:10px;">BANNED</div>
-      <div id="admBanned"></div>
+      <div class="tiny" style="font-weight:700; margin-bottom:4px;">ACTIVE USERS</div>
+      <div id="admUserList"></div>
+      <div class="tiny" style="font-weight:700; margin-top:12px;">BANNED LIST</div>
+      <div id="admBanList"></div>
     </div>
   </div>
 
@@ -161,281 +270,333 @@
     const DB = "https://safekids-chat-default-rtdb.firebaseio.com";
     const AVS = ["😎", "🦊", "🐼", "🚀", "👑", "⚡"];
     const RANKS = ["Member", "Bronze", "Gold", "VIP", "Diamond", "Super VIP", "Moderator", "Room Manager"];
-    const VIP_UP = ["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
-    const KEY = "ADMIN123";
-    const BACKUP_MEMES = [
-      { t: "Cat", u: "https://media.giphy.com/media/JIX9t1j0ZtnJetCPas/giphy.gif" },
-      { t: "Gamer", u: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" },
-      { t: "Fire", u: "https://media.giphy.com/media/26AHONQ79FdWTrAIy/giphy.gif" }
+    const VIP_OR_ABOVE = ["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
+    const ADMIN_KEY = "ADMIN123";
+
+    const STICKERS = [
+      { title: "Fire", url: "https://media.giphy.com/media/26AHONQ79FdWTrAIy/giphy.gif" },
+      { title: "Laugh", url: "https://media.giphy.com/media/JIX9t1j0ZtnJetCPas/giphy.gif" },
+      { title: "GG Win", url: "https://media.giphy.com/media/l0amJz5bNYuyn7Pxe/giphy.gif" },
+      { title: "Shock", url: "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" },
+      { title: "Pro", url: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" },
+      { title: "Nice", url: "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" }
     ];
 
-    let devId = localStorage.getItem("sk_dev_clean");
-    if (!devId) { devId = "D-" + Math.random().toString(36).slice(2, 7).toUpperCase(); localStorage.setItem("sk_dev_clean", devId); }
+    let devId = localStorage.getItem("skc_dev_clean3");
+    if (!devId) {
+      devId = "DEV-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+      localStorage.setItem("skc_dev_clean3", devId);
+    }
 
-    let av = AVS[0], me = null;
+    let chosenAv = AVS[0], me = null, activeTab = "gifs";
     let users = {}, banned = {}, ranks = {}, stats = {}, msgs = {};
 
-    const avBox = document.getElementById("avs");
-    AVS.forEach((e, i) => {
+    const avGrid = document.getElementById("avGrid");
+    AVS.forEach((em, idx) => {
       const b = document.createElement("button");
-      b.type = "button"; b.className = "av" + (i === 0 ? " on" : ""); b.textContent = e;
-      b.onclick = () => { av = e; document.querySelectorAll(".av").forEach(x => x.classList.remove("on")); b.classList.add("on"); };
-      avBox.appendChild(b);
+      b.type = "button"; b.className = "av" + (idx === 0 ? " on" : ""); b.textContent = em;
+      b.onclick = () => {
+        chosenAv = em;
+        document.querySelectorAll(".av").forEach(x => x.classList.remove("on"));
+        b.classList.add("on");
+      };
+      avGrid.appendChild(b);
     });
 
-    const admChk = document.getElementById("admChk");
-    const admKeyBox = document.getElementById("admKeyBox");
-    function syncAdmBox() { admKeyBox.classList.toggle("hidden", !admChk.checked); }
-    admChk.addEventListener("change", syncAdmBox);
-    admChk.addEventListener("click", syncAdmBox);
+    const admToggle = document.getElementById("admToggle");
+    const admKeyWrap = document.getElementById("admKeyWrap");
+    function toggleAdmKey() { admKeyWrap.classList.toggle("hidden", !admToggle.checked); }
+    admToggle.addEventListener("change", toggleAdmKey);
+    admToggle.addEventListener("click", toggleAdmKey);
 
     const kOf = s => encodeURIComponent(String(s || "").toLowerCase().trim());
-    const getR = u => !u ? "Member" : (u.isAdmin ? "Admin" : (ranks[kOf(u.name)] || "Member"));
+    const rankOf = u => !u ? "Member" : (u.isAdmin ? "Admin" : (ranks[kOf(u.name)] || "Member"));
 
-    async function apiGet(p) { const r = await fetch(`${DB}/${p}.json`); return r.ok ? await r.json() : null; }
-    async function apiPut(p, d) { await fetch(`${DB}/${p}.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) }); }
-    async function apiDel(p) { await fetch(`${DB}/${p}.json`, { method: "DELETE" }); }
+    async function dbGet(p) { const r = await fetch(`${DB}/${p}.json`); return r.ok ? await r.json() : null; }
+    async function dbPut(p, d) { await fetch(`${DB}/${p}.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) }); }
+    async function dbDel(p) { await fetch(`${DB}/${p}.json`, { method: "DELETE" }); }
 
-    function drawMemes(list) {
-      const box = document.getElementById("mRes"); box.innerHTML = "";
-      list.forEach(item => {
-        const c = document.createElement("div"); c.className = "m-card";
-        c.innerHTML = `<img src="${item.u}" alt="" /><div>${item.t}</div>`;
-        c.onclick = async () => {
-          if (!me || !VIP_UP.includes(getR(me))) return alert("Memes free sirf VIP+ rank par send hote hain.");
-          document.getElementById("tools").classList.add("hidden");
-          await sendMsg({ text: item.t, img: item.u }, false);
+    function paintMediaTiles(items) {
+      const box = document.getElementById("gifResults");
+      box.innerHTML = "";
+      items.forEach(item => {
+        const tile = document.createElement("div");
+        tile.className = "g-tile";
+        tile.innerHTML = `<img src="${item.url}" alt="" /><div>${item.title}</div>`;
+        tile.onclick = async () => {
+          if (!me || !VIP_OR_ABOVE.includes(rankOf(me))) {
+            return alert("GIFs aur Stickers free sirf VIP ya usse upar ke rank par send hote hain.");
+          }
+          document.getElementById("gifPopup").classList.add("hidden");
+          await sendMessage({ text: item.title, img: item.url }, false);
         };
-        box.appendChild(c);
+        box.appendChild(tile);
       });
     }
 
-    async function findMemes(q = "") {
-      const s = q.trim();
+    async function loadMedia(query = "") {
+      const q = query.trim();
+      if (activeTab === "stickers") {
+        const t = q.toLowerCase();
+        const list = STICKERS.filter(x => !t || x.title.toLowerCase().includes(t));
+        paintMediaTiles(list.length ? list : STICKERS);
+        return;
+      }
       try {
-        const url = s
-          ? `https://g.tenor.com/v1/search?q=${encodeURIComponent(s + " meme")}&key=LIVDSRZULELA&limit=9`
-          : `https://g.tenor.com/v1/trending?key=LIVDSRZULELA&limit=9`;
+        const url = q
+          ? `https://g.tenor.com/v1/search?q=${encodeURIComponent(q + " meme gif")}&key=LIVDSRZULELA&limit=12`
+          : `https://g.tenor.com/v1/trending?key=LIVDSRZULELA&limit=12`;
         const res = await fetch(url);
         const data = await res.json();
-        const out = (data.results || []).map(x => {
+        const list = (data.results || []).map(x => {
           const g = x.media && x.media[0] && (x.media[0].tinygif || x.media[0].gif);
-          return g ? { t: x.content_description || s || "Meme", u: g.url } : null;
+          return g ? { title: x.content_description || q || "GIF", url: g.url } : null;
         }).filter(Boolean);
-        if (out.length) return drawMemes(out);
+        if (list.length) return paintMediaTiles(list);
       } catch (_) {}
-      drawMemes(BACKUP_MEMES);
+      paintMediaTiles(STICKERS);
     }
-    findMemes("");
 
-    document.getElementById("mBtn").onclick = () => findMemes(document.getElementById("mSearch").value);
-    document.getElementById("mSearch").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); findMemes(e.target.value); } });
+    loadMedia("");
 
-    function ytId(v) {
-      const s = (v || "").trim();
+    document.getElementById("tabGifs").onclick = () => {
+      activeTab = "gifs";
+      document.getElementById("tabGifs").classList.add("active");
+      document.getElementById("tabStickers").classList.remove("active");
+      loadMedia(document.getElementById("gifSearchInp").value);
+    };
+    document.getElementById("tabStickers").onclick = () => {
+      activeTab = "stickers";
+      document.getElementById("tabStickers").classList.add("active");
+      document.getElementById("tabGifs").classList.remove("active");
+      loadMedia(document.getElementById("gifSearchInp").value);
+    };
+    document.getElementById("gifSearchInp").addEventListener("input", e => loadMedia(e.target.value));
+    document.getElementById("openGifBtn").onclick = () => document.getElementById("gifPopup").classList.toggle("hidden");
+    document.getElementById("closeGifPopup").onclick = () => document.getElementById("gifPopup").classList.add("hidden");
+
+    function getYtId(val) {
+      const s = (val || "").trim();
       if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
       const m = s.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
       return m ? m[1] : null;
     }
 
-    document.getElementById("ytBtn").onclick = async () => {
-      const id = ytId(document.getElementById("ytInp").value);
-      if (!id) return alert("Valid YouTube link ya ID dein.");
-      document.getElementById("ytInp").value = "";
-      document.getElementById("tools").classList.add("hidden");
-      await sendMsg({ text: "YouTube", yt: id }, false);
+    document.getElementById("sendYtBtn").onclick = async () => {
+      const id = getYtId(document.getElementById("ytUrlInp").value);
+      if (!id) return alert("Valid YouTube link ya 11-char ID dein.");
+      document.getElementById("ytUrlInp").value = "";
+      await sendMessage({ text: "YouTube Video", yt: id }, false);
     };
 
-    document.getElementById("giftBtn").onclick = async () => {
+    document.getElementById("sendGiftBtn").onclick = async () => {
       if (!me) return;
-      const to = document.getElementById("giftTo").value.trim();
+      const to = document.getElementById("giftUserInp").value.trim();
       if (!to) return;
       const cost = 20;
       const myK = kOf(me.name);
       const mySt = stats[myK] || { exp: 0, coins: 0 };
 
       if (!me.isAdmin) {
-        if (Number(mySt.coins || 0) < cost) return alert("Coins kam hain.");
-        await apiPut(`stats/${myK}`, { exp: Number(mySt.exp || 0), coins: Number(mySt.coins || 0) - cost });
+        if (Number(mySt.coins || 0) < cost) return alert("Coins kam hain. Chat karke coins kamayein.");
+        await dbPut(`stats/${myK}`, { exp: Number(mySt.exp || 0), coins: Number(mySt.coins || 0) - cost });
       }
+
       const toK = kOf(to);
       const toSt = stats[toK] || { exp: 0, coins: 0 };
-      await apiPut(`stats/${toK}`, { exp: Number(toSt.exp || 0) + 10, coins: Number(toSt.coins || 0) + cost });
+      await dbPut(`stats/${toK}`, { exp: Number(toSt.exp || 0) + 10, coins: Number(toSt.coins || 0) + cost });
 
-      document.getElementById("giftTo").value = "";
-      document.getElementById("tools").classList.add("hidden");
-      await sendMsg({ text: `Gift 20 Coins -> ${to}` }, false);
+      document.getElementById("giftUserInp").value = "";
+      await sendMessage({ text: `🎁 Sent 20 Coins Gift to ${to}` }, false);
     };
 
-    async function loop() {
-      const [u, b, r, s, m] = await Promise.all([apiGet("users"), apiGet("banned"), apiGet("ranks"), apiGet("stats"), apiGet("messages")]);
+    async function syncLoop() {
+      const [u, b, r, s, m] = await Promise.all([
+        dbGet("users"), dbGet("banned"), dbGet("ranks"), dbGet("stats"), dbGet("messages")
+      ]);
       users = u || {}; banned = b || {}; ranks = r || {}; stats = s || {}; msgs = m || {};
+
       if (me && !me.isAdmin) {
-        const isB = Object.values(banned).some(x => x && (x.devId === devId || (x.name && x.name.toLowerCase() === me.name.toLowerCase())));
-        const isA = Object.values(users).some(x => x && x.name === me.name && x.devId === devId);
-        if (isB || !isA) {
+        const isBan = Object.values(banned).some(x => x && (x.devId === devId || (x.name && x.name.toLowerCase() === me.name.toLowerCase())));
+        const isAct = Object.values(users).some(x => x && x.name === me.name && x.devId === devId);
+        if (isBan || !isAct) {
           me = null;
-          document.getElementById("app").classList.add("hidden");
-          document.getElementById("entry").classList.remove("hidden");
-          document.getElementById("err").textContent = isB ? "Banned by Admin." : "Kicked by Admin.";
+          document.getElementById("roomScreen").classList.add("hidden");
+          document.getElementById("entryScreen").classList.remove("hidden");
+          document.getElementById("entryErr").textContent = isBan ? "Banned by Admin." : "Kicked by Admin.";
         }
       }
-      render();
+      renderRoom();
     }
 
-    document.getElementById("goBtn").onclick = async () => {
-      const name = document.getElementById("nick").value.trim();
-      const room = document.getElementById("room").value;
-      const err = document.getElementById("err");
+    document.getElementById("enterBtn").onclick = async () => {
+      const name = document.getElementById("nickInp").value.trim();
+      const room = document.getElementById("roomSel").value;
+      const err = document.getElementById("entryErr");
       err.textContent = "";
       if (!name) return (err.textContent = "Nickname likhein.");
 
-      const [b, u, r, s] = await Promise.all([apiGet("banned"), apiGet("users"), apiGet("ranks"), apiGet("stats")]);
+      const [b, u, r, s] = await Promise.all([dbGet("banned"), dbGet("users"), dbGet("ranks"), dbGet("stats")]);
       banned = b || {}; users = u || {}; ranks = r || {}; stats = s || {};
 
-      const isB = Object.values(banned).some(x => x && (x.devId === devId || (x.name && x.name.toLowerCase() === name.toLowerCase())));
-      if (isB && !admChk.checked) return (err.textContent = "Banned.");
+      const isBan = Object.values(banned).some(x => x && (x.devId === devId || (x.name && x.name.toLowerCase() === name.toLowerCase())));
+      if (isBan && !admToggle.checked) return (err.textContent = "Banned.");
 
       let isAdmin = false;
-      if (admChk.checked) {
-        if (document.getElementById("admKey").value !== KEY) return (err.textContent = "Wrong key (ADMIN123).");
+      if (admToggle.checked) {
+        if (document.getElementById("admKeyInp").value !== ADMIN_KEY) return (err.textContent = "Wrong key (ADMIN123).");
         isAdmin = true;
       }
 
-      const otherSameDev = Object.values(users).find(x => x && x.devId === devId && x.name.toLowerCase() !== name.toLowerCase());
-      if (!isAdmin && otherSameDev) return (err.textContent = `1 device = 1 account (${otherSameDev.name} active).`);
+      const otherOnDev = Object.values(users).find(x => x && x.devId === devId && x.name.toLowerCase() !== name.toLowerCase());
+      if (!isAdmin && otherOnDev) return (err.textContent = `1 device = 1 account (${otherOnDev.name} active).`);
 
       for (const [key, val] of Object.entries(users)) {
         if (val && val.name && val.name.toLowerCase() === name.toLowerCase() && key !== devId) {
-          await apiDel("users/" + key);
+          await dbDel("users/" + key);
         }
       }
 
       const rk = isAdmin ? "Admin" : (ranks[kOf(name)] && ranks[kOf(name)] !== "Admin" ? ranks[kOf(name)] : "Member");
-      await apiPut("ranks/" + kOf(name), rk);
-      if (!stats[kOf(name)]) await apiPut("stats/" + kOf(name), { exp: 0, coins: 0 });
+      await dbPut("ranks/" + kOf(name), rk);
+      if (!stats[kOf(name)]) await dbPut("stats/" + kOf(name), { exp: 0, coins: 0 });
 
-      me = { name, av, room, isAdmin, devId };
-      await apiPut("users/" + devId, me);
+      me = { name, av: chosenAv, room, isAdmin, devId };
+      await dbPut("users/" + devId, me);
 
-      document.getElementById("entry").classList.add("hidden");
-      document.getElementById("app").classList.remove("hidden");
-      render();
+      document.getElementById("entryScreen").classList.add("hidden");
+      document.getElementById("roomScreen").classList.remove("hidden");
+      renderRoom();
     };
 
-    function render() {
+    function renderRoom() {
       if (!me) return;
       const mySt = stats[kOf(me.name)] || { exp: 0, coins: 0 };
-      document.getElementById("rName").textContent = `${me.av} ${me.name} — ${me.room}`;
-      document.getElementById("rBadge").textContent = getR(me);
-      document.getElementById("expN").textContent = mySt.exp || 0;
-      document.getElementById("coinN").textContent = me.isAdmin ? "∞" : (mySt.coins || 0);
-      document.getElementById("admBtn").classList.toggle("hidden", !me.isAdmin);
+      document.getElementById("roomHeading").textContent = `${me.av} ${me.name} — ${me.room}`;
+      document.getElementById("rankChip").textContent = rankOf(me);
+      document.getElementById("myExp").textContent = mySt.exp || 0;
+      document.getElementById("myCoins").textContent = me.isAdmin ? "∞" : (mySt.coins || 0);
+      document.getElementById("openAdmBtn").classList.toggle("hidden", !me.isAdmin);
 
-      const uList = document.getElementById("uList"); uList.innerHTML = "";
+      const uBox = document.getElementById("onlineList");
+      uBox.innerHTML = "";
       Object.values(users).forEach(u => {
         if (!u) return;
         const st = stats[kOf(u.name)] || { exp: 0, coins: 0 };
-        const d = document.createElement("div"); d.className = "u-item";
-        d.innerHTML = `<strong>${u.av} ${u.name}</strong> (${getR(u)})<div class="sub">EXP ${st.exp || 0} • Coins ${u.isAdmin ? "∞" : (st.coins || 0)}</div><div class="sub">${u.devId}</div>`;
-        uList.appendChild(d);
+        const div = document.createElement("div");
+        div.className = "u-row";
+        div.innerHTML = `
+          <div>
+            <strong>${u.av} ${u.name}</strong> <span class="chip">${rankOf(u)}</span>
+            <div class="tiny">EXP ${st.exp || 0} • Coins ${u.isAdmin ? "∞" : (st.coins || 0)}</div>
+          </div>
+        `;
+        uBox.appendChild(div);
       });
 
-      const mBox = document.getElementById("msgs"); mBox.innerHTML = "";
+      const feed = document.getElementById("chatFeed");
+      feed.innerHTML = "";
       Object.values(msgs[kOf(me.room)] || {}).forEach(m => {
         if (!m) return;
-        const d = document.createElement("div"); d.className = "m";
-        const img = m.img ? `<img src="${m.img}" alt="" />` : "";
-        const yt = m.yt ? `<iframe src="https://www.youtube.com/embed/${m.yt}" allowfullscreen></iframe>` : "";
-        d.innerHTML = `<div class="m-top"><strong>${m.av} ${m.sender}</strong><span>[${m.role}]</span><span>${m.time || ""}</span></div><div>${m.text || ""}</div>${img}${yt}`;
-        mBox.appendChild(d);
+        const item = document.createElement("div");
+        item.className = "bubble-item";
+        const img = m.img ? `<img class="b-img" src="${m.img}" alt="" />` : "";
+        const yt = m.yt ? `<iframe class="b-yt" src="https://www.youtube.com/embed/${m.yt}" allowfullscreen></iframe>` : "";
+        item.innerHTML = `
+          <div class="b-meta"><strong>${m.av} ${m.sender}</strong><span class="chip">${m.role}</span><span class="tiny">${m.time || ""}</span></div>
+          <div class="b-text">${m.text || ""}</div>${img}${yt}
+        `;
+        feed.appendChild(item);
       });
-      mBox.scrollTop = mBox.scrollHeight;
+      feed.scrollTop = feed.scrollHeight;
 
-      if (!document.getElementById("admPop").classList.contains("hidden")) drawAdm();
+      if (!document.getElementById("admModal").classList.contains("hidden")) renderAdmModal();
     }
 
-    async function sendMsg({ text = "", img = "", yt = "" }, earn = true) {
+    async function sendMessage({ text = "", img = "", yt = "" }, earnChat = true) {
       if (!me) return;
       const k = kOf(me.name);
-      if (earn) {
+      if (earnChat) {
         const prev = stats[k] || { exp: 0, coins: 0 };
         const next = { exp: Number(prev.exp || 0) + 10, coins: me.isAdmin ? "∞" : Number(prev.coins || 0) + 5 };
         stats[k] = next;
-        await apiPut("stats/" + k, next);
+        await dbPut("stats/" + k, next);
       }
       const id = "MSG_" + Date.now();
-      const row = { sender: me.name, av: me.av, role: getR(me), text, img, yt, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
+      const payload = {
+        sender: me.name, av: me.av, role: rankOf(me), text, img, yt,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      };
       msgs[kOf(me.room)] = msgs[kOf(me.room)] || {};
-      msgs[kOf(me.room)][id] = row;
-      await apiPut(`messages/${kOf(me.room)}/${id}`, row);
-      render();
+      msgs[kOf(me.room)][id] = payload;
+      await dbPut(`messages/${kOf(me.room)}/${id}`, payload);
+      renderRoom();
     }
 
-    document.getElementById("mForm").onsubmit = async e => {
+    document.getElementById("msgForm").onsubmit = async e => {
       e.preventDefault();
-      const inp = document.getElementById("mInp");
-      const t = inp.value.trim();
-      if (!t) return;
+      const inp = document.getElementById("msgInp");
+      const val = inp.value.trim();
+      if (!val) return;
       inp.value = "";
-      await sendMsg({ text: t }, true);
+      await sendMessage({ text: val }, true);
     };
 
-    document.getElementById("plusBtn").onclick = () => document.getElementById("tools").classList.toggle("hidden");
-    document.getElementById("closeTools").onclick = () => document.getElementById("tools").classList.add("hidden");
+    const admModal = document.getElementById("admModal");
+    document.getElementById("openAdmBtn").onclick = () => { renderAdmModal(); admModal.classList.remove("hidden"); };
+    document.getElementById("closeAdmModal").onclick = () => admModal.classList.add("hidden");
 
-    document.getElementById("admBtn").onclick = () => { drawAdm(); document.getElementById("admPop").classList.remove("hidden"); };
-    document.getElementById("closeAdm").onclick = () => document.getElementById("admPop").classList.add("hidden");
+    function renderAdmModal() {
+      const uList = document.getElementById("admUserList");
+      const bList = document.getElementById("admBanList");
+      uList.innerHTML = ""; bList.innerHTML = "";
 
-    function drawAdm() {
-      const uDiv = document.getElementById("admUsers"); const bDiv = document.getElementById("admBanned");
-      uDiv.innerHTML = ""; bDiv.innerHTML = "";
-      const list = Object.entries(users).filter(([k, u]) => u && k !== devId);
-      if (!list.length) uDiv.innerHTML = `<div class="sub">No other users.</div>`;
-      list.forEach(([key, u]) => {
-        const row = document.createElement("div"); row.className = "mod-line";
-        row.innerHTML = `<div><strong>${u.name}</strong><div class="sub">${key}</div></div>`;
+      const others = Object.entries(users).filter(([k, u]) => u && k !== devId);
+      if (!others.length) uList.innerHTML = `<div class="tiny">No other users.</div>`;
+      others.forEach(([key, u]) => {
+        const row = document.createElement("div"); row.className = "mod-item";
+        row.innerHTML = `<div><strong>${u.name}</strong><div class="tiny">${key}</div></div>`;
         const acts = document.createElement("div"); acts.style.display = "flex"; acts.style.gap = "4px";
 
-        const sel = document.createElement("select"); sel.style.width = "105px"; sel.style.padding = "4px";
+        const sel = document.createElement("select"); sel.className = "sel"; sel.style.width = "110px"; sel.style.padding = "4px";
         RANKS.forEach(r => { const o = document.createElement("option"); o.value = r; o.textContent = r; if ((ranks[kOf(u.name)] || "Member") === r) o.selected = true; sel.appendChild(o); });
-        sel.onchange = async () => { await apiPut("ranks/" + kOf(u.name), sel.value); loop(); };
+        sel.onchange = async () => { await dbPut("ranks/" + kOf(u.name), sel.value); syncLoop(); };
 
-        const kick = document.createElement("button"); kick.type = "button"; kick.className = "sbtn gold"; kick.textContent = "Kick";
-        kick.onclick = async () => { await apiDel("users/" + key); delete users[key]; render(); };
+        const kick = document.createElement("button"); kick.type = "button"; kick.className = "tbtn gold"; kick.textContent = "Kick";
+        kick.onclick = async () => { await dbDel("users/" + key); delete users[key]; renderRoom(); };
 
-        const ban = document.createElement("button"); ban.type = "button"; ban.className = "sbtn red"; ban.textContent = "Ban";
+        const ban = document.createElement("button"); ban.type = "button"; ban.className = "tbtn red"; ban.textContent = "Ban";
         ban.onclick = async () => {
-          await apiDel("users/" + key); delete users[key];
+          await dbDel("users/" + key); delete users[key];
           const bObj = { name: u.name, devId: u.devId || key };
           banned[key] = bObj;
-          await apiPut("banned/" + key, bObj);
-          render();
+          await dbPut("banned/" + key, bObj);
+          renderRoom();
         };
 
-        acts.append(sel, kick, ban); row.appendChild(acts); uDiv.appendChild(row);
+        acts.append(sel, kick, ban); row.appendChild(acts); uList.appendChild(row);
       });
 
-      const bList = Object.entries(banned);
-      if (!bList.length) bDiv.innerHTML = `<div class="sub">None</div>`;
-      bList.forEach(([k, b]) => {
+      const bEnt = Object.entries(banned);
+      if (!bEnt.length) bList.innerHTML = `<div class="tiny">No banned users.</div>`;
+      bEnt.forEach(([k, b]) => {
         if (!b) return;
-        const row = document.createElement("div"); row.className = "mod-line";
-        row.innerHTML = `<div><strong>${b.name}</strong> <span class="sub">(${b.devId})</span></div>`;
-        const un = document.createElement("button"); un.type = "button"; un.className = "sbtn grn"; un.textContent = "Unban";
-        un.onclick = async () => { await apiDel("banned/" + k); delete banned[k]; drawAdm(); };
-        row.appendChild(un); bDiv.appendChild(row);
+        const row = document.createElement("div"); row.className = "mod-item";
+        row.innerHTML = `<div><strong>${b.name}</strong> <span class="tiny">(${b.devId})</span></div>`;
+        const unban = document.createElement("button"); unban.type = "button"; unban.className = "tbtn grn"; unban.textContent = "Unban";
+        unban.onclick = async () => { await dbDel("banned/" + k); delete banned[k]; renderAdmModal(); };
+        row.appendChild(unban); bList.appendChild(row);
       });
     }
 
-    document.getElementById("outBtn").onclick = async () => {
-      if (me) { await apiDel("users/" + devId); delete users[devId]; }
+    document.getElementById("logoutBtn").onclick = async () => {
+      if (me) { await dbDel("users/" + devId); delete users[devId]; }
       me = null;
-      document.getElementById("app").classList.add("hidden");
-      document.getElementById("entry").classList.remove("hidden");
+      document.getElementById("roomScreen").classList.add("hidden");
+      document.getElementById("entryScreen").classList.remove("hidden");
     };
 
-    setInterval(loop, 2500);
+    setInterval(syncLoop, 2500);
   </script>
 </body>
 </html>
