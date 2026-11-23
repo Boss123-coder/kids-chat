@@ -3,254 +3,209 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SafeKids Chat — VIP Free Memes, Coin Gifts, EXP Coins & Admin Guard</title>
+  <title>SafeKids Chat — All-World Meme Search & Admin Guard</title>
   <style>
-    :root {
-      --bg-canvas: #1c2029;
-      --bg-rail: #14171f;
-      --bg-panel: #181c24;
-      --bg-card: #222733;
-      --accent: #10b981;
-      --accent-2: #fbbf24;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --border: rgba(255, 255, 255, 0.1);
-    }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-    body {
-      min-height: 100vh;
-      background: linear-gradient(160deg, #13161d 0%, #1c212b 55%, #11141a 100%);
-      color: var(--text-main);
-    }
+    body { min-height: 100vh; background: #171a21; color: #f3f4f6; }
     .hidden { display: none !important; }
 
-    /* Entry Card */
-    .entry-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 18px; }
+    /* Entry */
+    .entry-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
     .entry-card {
-      width: 100%; max-width: 440px;
-      background: #1b1f29; border: 1px solid var(--border);
-      border-radius: 18px; padding: 22px 20px; box-shadow: 0 22px 55px rgba(0,0,0,0.65);
+      width: 100%; max-width: 420px;
+      background: #202530; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px; padding: 20px;
     }
-    .brand-title { font-size: 23px; font-weight: 800; text-align: center; }
-    .brand-title span { color: var(--accent-2); }
-    .brand-sub { font-size: 12px; color: var(--text-muted); text-align: center; margin: 4px 0 16px; }
-
-    .field-group { margin-bottom: 12px; }
-    .field-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
-    .input-box, .select-box {
-      width: 100%; padding: 10px 12px; border-radius: 10px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
-      color: #fff; font-size: 13px; outline: none;
+    .title { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 14px; }
+    .title span { color: #fbbf24; }
+    .lbl { display: block; font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin: 10px 0 5px; }
+    .inp, .sel {
+      width: 100%; padding: 9px 12px; border-radius: 9px;
+      background: #141820; border: 1px solid rgba(255,255,255,0.14); color: #fff; font-size: 13px;
     }
-    .input-box:focus, .select-box:focus { border-color: var(--accent); }
-    .select-box option { background: #1e222b; color: #fff; }
-
-    .avatar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
-    .avatar-btn {
-      padding: 8px 0; border-radius: 10px; font-size: 20px;
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+    .sel option { background: #202530; color: #fff; }
+    .av-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .av-btn {
+      padding: 7px 0; border-radius: 8px; font-size: 18px;
+      background: #141820; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
     }
-    .avatar-btn.active { border-color: var(--accent); background: rgba(16,185,129,0.22); }
-
+    .av-btn.active { border-color: #10b981; background: rgba(16,185,129,0.22); }
     .admin-box {
-      background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.35);
-      border-radius: 12px; padding: 11px 12px; margin-bottom: 14px;
+      margin-top: 12px; padding: 10px 12px; border-radius: 10px;
+      background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.35);
     }
-    .admin-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .admin-title { font-size: 13px; font-weight: 700; color: #fbbf24; }
-    .toggle-wrap { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #fde68a; cursor: pointer; }
+    .admin-top { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: #fbbf24; }
+    .btn-main {
+      width: 100%; margin-top: 14px; padding: 11px; border: none; border-radius: 10px;
+      background: #10b981; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
+    }
+    .err { color: #f87171; font-size: 12px; margin-top: 8px; min-height: 16px; }
 
-    .btn-primary {
-      width: 100%; padding: 12px; border: none; border-radius: 11px;
-      background: linear-gradient(90deg, #10b981, #059669);
-      color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
+    /* Chat */
+    .shell { display: flex; flex-direction: column; height: 100vh; }
+    .top {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+      padding: 8px 12px; background: #12151b; border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    .error-msg { color: #f87171; font-size: 12px; margin-top: 8px; min-height: 16px; }
-
-    /* Chat App */
-    .app-shell { display: flex; flex-direction: column; height: 100vh; }
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 8px 14px; background: var(--bg-rail); border-bottom: 1px solid var(--border);
-    }
-    .stat-pill {
-      padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700;
+    .pill {
+      padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
     }
-    .btn-sm {
-      padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.14);
+    .btn-s {
+      padding: 5px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.07); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer;
     }
-    .btn-admin { background: rgba(245,158,11,0.18); border-color: #fbbf24; color: #fde68a; }
-    .btn-warn { background: rgba(245,158,11,0.2); border-color: #f59e0b; color: #fcd34d; }
-    .btn-danger { background: rgba(239,68,68,0.2); border-color: #f87171; color: #fca5a5; }
-    .btn-ok { background: rgba(16,185,129,0.2); border-color: #34d399; color: #6ee7b7; }
+    .btn-gold { background: rgba(251,191,36,0.2); border-color: #fbbf24; color: #fde68a; }
+    .btn-red { background: rgba(239,68,68,0.2); border-color: #f87171; color: #fca5a5; }
+    .btn-grn { background: rgba(16,185,129,0.2); border-color: #34d399; color: #6ee7b7; }
 
-    .workspace { flex: 1; display: grid; grid-template-columns: 245px 1fr; min-height: 0; }
-    @media (max-width: 800px) {
-      .workspace { grid-template-columns: 1fr; }
-      .users-panel { display: none; }
+    .body-grid { flex: 1; display: grid; grid-template-columns: 230px 1fr; min-height: 0; }
+    @media (max-width: 760px) {
+      .body-grid { grid-template-columns: 1fr; }
+      .side { display: none; }
     }
-    .users-panel { background: var(--bg-panel); border-right: 1px solid var(--border); padding: 12px; overflow-y: auto; }
-    .panel-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-    .user-card { padding: 8px; border-radius: 10px; background: rgba(255,255,255,0.04); margin-bottom: 8px; font-size: 12px; }
-    .device-tag { font-size: 10px; color: var(--text-muted); margin-top: 4px; word-break: break-all; }
+    .side { background: #151921; border-right: 1px solid rgba(255,255,255,0.08); padding: 10px; overflow-y: auto; }
+    .side-h { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 8px; }
+    .u-card { padding: 8px; border-radius: 9px; background: #1e232e; margin-bottom: 8px; font-size: 12px; }
+    .muted { font-size: 10px; color: #9ca3af; margin-top: 3px; word-break: break-all; }
 
-    .chat-col { position: relative; display: flex; flex-direction: column; min-height: 0; background: var(--bg-canvas); }
-    .messages-area { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .msg-row {
-      padding: 10px 12px; border-radius: 12px;
-      background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
-    }
-    .msg-head { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; font-size: 12px; margin-bottom: 4px; }
-    .msg-text { font-size: 13px; line-height: 1.45; word-break: break-word; }
-    .msg-img { max-width: 240px; max-height: 200px; border-radius: 10px; margin-top: 6px; display: block; }
-    .yt-frame { width: 100%; max-width: 340px; height: 195px; border: none; border-radius: 10px; margin-top: 6px; display: block; }
+    .chat-main { position: relative; display: flex; flex-direction: column; min-height: 0; background: #1a1e27; }
+    .msgs { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .msg { padding: 9px 11px; border-radius: 10px; background: #232834; border: 1px solid rgba(255,255,255,0.07); }
+    .msg-h { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-bottom: 4px; }
+    .msg-t { font-size: 13px; line-height: 1.4; word-break: break-word; }
+    .msg-img { max-width: 240px; max-height: 190px; border-radius: 8px; margin-top: 6px; display: block; }
+    .yt { width: 100%; max-width: 320px; height: 180px; border: none; border-radius: 8px; margin-top: 6px; display: block; }
 
-    .plus-dock {
-      position: absolute; bottom: 60px; left: 14px; right: 14px; max-width: 430px;
-      background: #232834; border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 14px; padding: 12px; box-shadow: 0 18px 40px rgba(0,0,0,0.7); z-index: 30;
+    .dock {
+      position: absolute; bottom: 56px; left: 12px; width: 370px; max-width: calc(100% - 24px);
+      background: #242936; border: 1px solid rgba(255,255,255,0.16); border-radius: 12px; padding: 10px; z-index: 25;
     }
-    .meme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
-    .meme-item {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px; padding: 5px; text-align: center; cursor: pointer; font-size: 10px;
+    .m-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px;
+      max-height: 190px; overflow-y: auto;
     }
-    .meme-item img { width: 100%; height: 62px; object-fit: cover; border-radius: 6px; display: block; margin-bottom: 4px; }
+    .m-box { background: #181c26; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 4px; text-align: center; font-size: 10px; cursor: pointer; }
+    .m-box img { width: 100%; height: 60px; object-fit: cover; border-radius: 5px; display: block; margin-bottom: 3px; }
 
-    .composer {
-      display: flex; align-items: center; gap: 8px; padding: 10px 14px;
-      background: var(--bg-rail); border-top: 1px solid var(--border);
-    }
+    .bar { display: flex; gap: 8px; padding: 9px 12px; background: #12151b; border-top: 1px solid rgba(255,255,255,0.1); }
 
     .modal-bg {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-      display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 60;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+      display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 50;
     }
-    .modal-card {
-      width: 100%; max-width: 560px; max-height: 86vh; overflow-y: auto;
-      background: #1d222c; border: 1px solid rgba(251,191,36,0.35); border-radius: 16px; padding: 18px;
+    .modal-c {
+      width: 100%; max-width: 520px; max-height: 84vh; overflow-y: auto;
+      background: #1e232e; border: 1px solid rgba(251,191,36,0.35); border-radius: 14px; padding: 16px;
     }
-    .mod-row {
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 12px;
+    .m-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 12px;
     }
   </style>
 </head>
 <body>
 
-  <!-- ENTRY SCREEN -->
   <div id="entryScreen" class="entry-wrap">
     <div class="entry-card">
-      <div class="brand-title">SafeKids <span>Chat</span></div>
-      <div class="brand-sub">VIP Free Memes • Coin Gifts • EXP Coins • Admin Guard</div>
+      <div class="title">SafeKids <span>Chat</span></div>
 
-      <div class="field-group">
-        <label class="field-label" for="nickInput">Nickname</label>
-        <input id="nickInput" class="input-box" type="text" maxlength="20" placeholder="Enter your nickname..." />
-      </div>
+      <label class="lbl" for="nickInput">Nickname</label>
+      <input id="nickInput" class="inp" type="text" maxlength="20" placeholder="Enter nickname..." />
 
-      <div class="field-group">
-        <label class="field-label">Pick Avatar</label>
-        <div id="avatarGrid" class="avatar-grid"></div>
-      </div>
+      <label class="lbl">Avatar</label>
+      <div id="avatarGrid" class="av-row"></div>
 
-      <div class="field-group">
-        <label class="field-label" for="roomSelect">Chat Room</label>
-        <select id="roomSelect" class="select-box">
-          <option value="Kids Lounge">🧸 Kids Lounge</option>
-          <option value="Teen Chat">🎮 Teen Chat</option>
-          <option value="Memes & Clips">😂 Memes & Clips</option>
-        </select>
-      </div>
+      <label class="lbl" for="roomSelect">Room</label>
+      <select id="roomSelect" class="sel">
+        <option value="Kids Lounge">🧸 Kids Lounge</option>
+        <option value="Teen Chat">🎮 Teen Chat</option>
+        <option value="Memes & Clips">😂 Memes & Clips</option>
+      </select>
 
       <div class="admin-box">
-        <div class="admin-row">
-          <span class="admin-title">👑 Admin Login (Unlimited Coins)</span>
-          <label class="toggle-wrap" for="claimAdminToggle">
+        <div class="admin-top">
+          <span>👑 Admin (Unlimited Coins)</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; color:#fde68a;">
             <input id="claimAdminToggle" type="checkbox" />
             <span>Claim Admin</span>
           </label>
         </div>
-        <div id="secretKeyWrap" class="hidden" style="margin-top:9px;">
-          <input id="adminKeyInput" class="input-box" type="password" placeholder="Secret Key (ADMIN123)" />
+        <div id="secretKeyWrap" class="hidden" style="margin-top:8px;">
+          <input id="adminKeyInput" class="inp" type="password" placeholder="Key: ADMIN123" />
         </div>
       </div>
 
-      <button id="enterBtn" class="btn-primary" type="button">Enter Chat →</button>
-      <div id="entryError" class="error-msg"></div>
+      <button id="enterBtn" class="btn-main" type="button">Enter Chat →</button>
+      <div id="entryError" class="err"></div>
     </div>
   </div>
 
-  <!-- CHAT SCREEN -->
-  <div id="chatScreen" class="app-shell hidden">
-    <header class="topbar">
-      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+  <div id="chatScreen" class="shell hidden">
+    <header class="top">
+      <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
         <strong id="roomTitle">🧸 Kids Lounge</strong>
-        <span id="rolePill" class="stat-pill">Member</span>
-        <span class="stat-pill">⭐ EXP: <span id="expVal">0</span></span>
-        <span class="stat-pill">🪙 Coins: <span id="coinVal">0</span></span>
+        <span id="rolePill" class="pill">Member</span>
+        <span class="pill">⭐ EXP: <span id="expVal">0</span></span>
+        <span class="pill">🪙 Coins: <span id="coinVal">0</span></span>
       </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <button id="openAdminBtn" class="btn-sm btn-admin hidden" type="button">👑 Admin Panel</button>
-        <button id="logoutBtn" class="btn-sm" type="button">Logout</button>
+      <div style="display:flex; gap:7px;">
+        <button id="openAdminBtn" class="btn-s btn-gold hidden" type="button">👑 Admin Panel</button>
+        <button id="logoutBtn" class="btn-s" type="button">Logout</button>
       </div>
     </header>
 
-    <div class="workspace">
-      <aside class="users-panel">
-        <div class="panel-title">Online Users & EXP / Coins</div>
+    <div class="body-grid">
+      <aside class="side">
+        <div class="side-h">Online Users</div>
         <div id="usersSidebar"></div>
       </aside>
 
-      <section class="chat-col">
-        <div id="messagesArea" class="messages-area"></div>
+      <section class="chat-main">
+        <div id="messagesArea" class="msgs"></div>
 
-        <!-- + Menu: VIP Free Memes, YouTube Video & Coin Gifts -->
-        <div id="plusDock" class="plus-dock hidden">
+        <div id="plusDock" class="dock hidden">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <strong style="font-size:12px;">😂 Memes (Free for VIP+)</strong>
-            <button id="closeDockBtn" class="btn-sm" type="button">✕</button>
+            <strong style="font-size:12px;">🌍 World Meme Search (Free for VIP+)</strong>
+            <button id="closeDockBtn" class="btn-s" type="button">✕</button>
           </div>
 
-          <div class="field-group">
-            <input id="memeSearchInput" class="input-box" type="text" placeholder="Search meme (cat, gaming, fire, shock)..." />
-            <div id="memeGrid" class="meme-grid"></div>
+          <div style="display:flex; gap:6px;">
+            <input id="memeSearchInput" class="inp" type="text" placeholder="Search any meme (cat, sigma, bruh, dance)..." />
+            <button id="memeSearchBtn" class="btn-s btn-grn" type="button">Search</button>
+          </div>
+          <div id="memeStatus" class="muted" style="margin-top:4px;">Trending memes</div>
+          <div id="memeGrid" class="m-grid"></div>
+
+          <div style="display:flex; gap:6px; margin-top:8px;">
+            <input id="ytInput" class="inp" type="text" placeholder="YouTube link or ID..." />
+            <button id="sendYtBtn" class="btn-s btn-grn" type="button">▶ YT</button>
           </div>
 
-          <div class="field-group" style="margin-bottom:8px;">
-            <div style="display:flex; gap:6px;">
-              <input id="ytInput" class="input-box" type="text" placeholder="Paste YouTube link or video ID..." />
-              <button id="sendYtBtn" class="btn-sm btn-ok" type="button">▶ YT</button>
-            </div>
-          </div>
-
-          <div style="display:flex; gap:6px; align-items:center;">
-            <input id="giftTargetInput" class="input-box" type="text" placeholder="Gift to username (20 Coins)..." />
-            <button id="sendGiftBtn" class="btn-sm btn-admin" type="button">🎁 Gift 20</button>
+          <div style="display:flex; gap:6px; margin-top:8px;">
+            <input id="giftTargetInput" class="inp" type="text" placeholder="Gift username (20 Coins)..." />
+            <button id="sendGiftBtn" class="btn-s btn-gold" type="button">🎁 20</button>
           </div>
         </div>
 
-        <form id="chatForm" class="composer">
-          <button id="plusBtn" class="btn-sm" type="button" title="Memes, YouTube & Gifts">+</button>
-          <input id="msgInput" class="input-box" type="text" maxlength="300" placeholder="Type here (+10 EXP & +5 Coins per message)..." autocomplete="off" />
-          <button class="btn-sm btn-ok" type="submit">Send</button>
+        <form id="chatForm" class="bar">
+          <button id="plusBtn" class="btn-s" type="button">+</button>
+          <input id="msgInput" class="inp" type="text" maxlength="300" placeholder="Type here (+10 EXP & +5 Coins)..." autocomplete="off" />
+          <button class="btn-s btn-grn" type="submit">Send</button>
         </form>
       </section>
     </div>
   </div>
 
-  <!-- ADMIN MODAL -->
   <div id="adminModal" class="modal-bg hidden">
-    <div class="modal-card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3>👑 Admin Guard (Kick, Ban, Ranks, Device ID)</h3>
-        <button id="closeAdminBtn" class="btn-sm" type="button">✕</button>
+    <div class="modal-c">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3>👑 Admin Panel</h3>
+        <button id="closeAdminBtn" class="btn-s" type="button">✕</button>
       </div>
-      <div class="panel-title">Online Users</div>
+      <div class="side-h">Active Users (Rank, Remove/Kick, Ban)</div>
       <div id="adminUsersList"></div>
-      <div class="panel-title" style="margin-top:16px;">Banned Devices / Accounts</div>
+      <div class="side-h" style="margin-top:14px;">Banned List</div>
       <div id="bannedList"></div>
     </div>
   </div>
@@ -259,23 +214,23 @@
     const DB_URL = "https://safekids-chat-default-rtdb.firebaseio.com";
     const AVATARS = ["😎", "🦊", "🐼", "🚀", "👑", "⚡"];
     const RANKS = ["Member", "Bronze", "Gold", "VIP", "Diamond", "Super VIP", "Moderator", "Room Manager"];
-    const VIP_OR_HIGHER = ["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
+    const VIP_PLUS = ["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
     const ADMIN_KEY = "ADMIN123";
 
-    const MEMES = [
-      { title: "Laughing Cat", tags: "cat laugh funny", url: "https://media.giphy.com/media/JIX9t1j0ZtnJetCPas/giphy.gif" },
-      { title: "Gaming Pro", tags: "gaming pro gamer", url: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" },
+    const FALLBACK_MEMES = [
+      { title: "Laugh Cat", tags: "cat laugh funny", url: "https://media.giphy.com/media/JIX9t1j0ZtnJetCPas/giphy.gif" },
+      { title: "Pro Gamer", tags: "gaming pro gamer", url: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" },
       { title: "Fire Mode", tags: "fire hype lit", url: "https://media.giphy.com/media/26AHONQ79FdWTrAIy/giphy.gif" },
-      { title: "Shocked Face", tags: "shock what omg", url: "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" },
+      { title: "Shocked", tags: "shock omg what", url: "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" },
       { title: "Thumbs Up", tags: "ok good nice", url: "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" },
-      { title: "Party Time", tags: "party win gg", url: "https://media.giphy.com/media/l0amJz5bNYuyn7Pxe/giphy.gif" }
+      { title: "Party Win", tags: "party win gg dance", url: "https://media.giphy.com/media/l0amJz5bNYuyn7Pxe/giphy.gif" }
     ];
 
     function getDeviceId() {
-      let id = localStorage.getItem("skc_device_id");
+      let id = localStorage.getItem("skc_dev_v2");
       if (!id) {
-        id = "DEV-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-        localStorage.setItem("skc_device_id", id);
+        id = "DEV-" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        localStorage.setItem("skc_dev_v2", id);
       }
       return id;
     }
@@ -283,241 +238,227 @@
     const myDeviceId = getDeviceId();
     let selectedAvatar = AVATARS[0];
     let currentUser = null;
-    let cacheUsers = {};
-    let cacheBanned = {};
-    let cacheRanks = {};
-    let cacheStats = {};
-    let cacheMsgs = {};
+    let cacheUsers = {}, cacheBanned = {}, cacheRanks = {}, cacheStats = {}, cacheMsgs = {};
 
     const entryScreen = document.getElementById("entryScreen");
     const chatScreen = document.getElementById("chatScreen");
-    const nickInput = document.getElementById("nickInput");
-    const roomSelect = document.getElementById("roomSelect");
     const claimAdminToggle = document.getElementById("claimAdminToggle");
     const secretKeyWrap = document.getElementById("secretKeyWrap");
-    const adminKeyInput = document.getElementById("adminKeyInput");
     const entryError = document.getElementById("entryError");
 
     const avatarGrid = document.getElementById("avatarGrid");
-    AVATARS.forEach((emo, i) => {
+    AVATARS.forEach((em, i) => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "avatar-btn" + (i === 0 ? " active" : "");
-      b.textContent = emo;
+      b.className = "av-btn" + (i === 0 ? " active" : "");
+      b.textContent = em;
       b.onclick = () => {
-        selectedAvatar = emo;
-        document.querySelectorAll(".avatar-btn").forEach(x => x.classList.remove("active"));
+        selectedAvatar = em;
+        document.querySelectorAll(".av-btn").forEach(x => x.classList.remove("active"));
         b.classList.add("active");
       };
       avatarGrid.appendChild(b);
     });
 
-    function toggleAdminBox() {
+    function toggleKey() {
       secretKeyWrap.classList.toggle("hidden", !claimAdminToggle.checked);
       entryError.textContent = "";
     }
-    claimAdminToggle.addEventListener("change", toggleAdminBox);
-    claimAdminToggle.addEventListener("click", toggleAdminBox);
+    claimAdminToggle.addEventListener("change", toggleKey);
+    claimAdminToggle.addEventListener("click", toggleKey);
 
     function safeKey(s) {
       return encodeURIComponent(String(s || "").toLowerCase().trim());
     }
 
-    async function dbGet(path) {
-      const r = await fetch(`${DB_URL}/${path}.json`);
-      if (!r.ok) throw new Error("DB error");
-      return await r.json();
+    async function dbGet(p) {
+      const r = await fetch(`${DB_URL}/${p}.json`);
+      return r.ok ? await r.json() : null;
     }
-
-    async function dbPut(path, data) {
-      await fetch(`${DB_URL}/${path}.json`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+    async function dbPut(p, d) {
+      await fetch(`${DB_URL}/${p}.json`, {
+        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d)
       });
     }
-
-    async function dbDelete(path) {
-      await fetch(`${DB_URL}/${path}.json`, { method: "DELETE" });
+    async function dbDel(p) {
+      await fetch(`${DB_URL}/${p}.json`, { method: "DELETE" });
     }
 
-    function getUserRank(userObj) {
-      if (!userObj) return "Member";
-      if (userObj.isAdmin) return "Admin";
-      return cacheRanks[safeKey(userObj.name)] || "Member";
+    function getRank(u) {
+      if (!u) return "Member";
+      if (u.isAdmin) return "Admin";
+      return cacheRanks[safeKey(u.name)] || "Member";
     }
 
-    function canSendFreeMeme() {
-      if (!currentUser) return false;
-      return VIP_OR_HIGHER.includes(getUserRank(currentUser));
-    }
-
-    function renderMemes(filterText = "") {
-      const q = filterText.trim().toLowerCase();
-      const grid = document.getElementById("memeGrid");
-      grid.innerHTML = "";
-      MEMES.filter(m => !q || m.title.toLowerCase().includes(q) || m.tags.includes(q)).forEach(m => {
-        const item = document.createElement("div");
-        item.className = "meme-item";
-        item.innerHTML = `<img src="${m.url}" alt="${m.title}" /><div>${m.title}</div>`;
-        item.onclick = async () => {
-          if (!canSendFreeMeme()) {
-            alert("Memes free sirf VIP ya usse upar ke rank par send hote hain!");
+    function renderMemeList(list) {
+      const g = document.getElementById("memeGrid");
+      g.innerHTML = "";
+      list.forEach(m => {
+        const box = document.createElement("div");
+        box.className = "m-box";
+        box.innerHTML = `<img src="${m.url}" alt="${m.title}" /><div>${m.title}</div>`;
+        box.onclick = async () => {
+          if (!currentUser || !VIP_PLUS.includes(getRank(currentUser))) {
+            alert("Memes free sirf VIP ya usse upar ke rank par send hote hain.");
             return;
           }
           document.getElementById("plusDock").classList.add("hidden");
-          await pushMessage({ text: `Meme: ${m.title}`, imageData: m.url }, false);
+          await pushMsg({ text: `Meme: ${m.title}`, imageData: m.url }, false);
         };
-        grid.appendChild(item);
+        g.appendChild(box);
       });
     }
-    renderMemes();
-    document.getElementById("memeSearchInput").addEventListener("input", (e) => renderMemes(e.target.value));
 
-    function extractYouTubeId(input) {
-      const s = (input || "").trim();
+    async function searchWorldMemes(query = "") {
+      const q = query.trim();
+      const status = document.getElementById("memeStatus");
+      status.textContent = q ? `Searching "${q}"...` : "Loading trending memes...";
+
+      try {
+        const endpoint = q
+          ? `https://g.tenor.com/v1/search?q=${encodeURIComponent(q + " meme")}&key=LIVDSRZULELA&limit=12`
+          : `https://g.tenor.com/v1/trending?key=LIVDSRZULELA&limit=12`;
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        const items = (data.results || [])
+          .map(item => {
+            const media = item.media && item.media[0];
+            const gif = media && (media.tinygif || media.gif || media.nanogif);
+            return gif && gif.url ? { title: item.content_description || q || "Meme", url: gif.url } : null;
+          })
+          .filter(Boolean);
+
+        if (items.length > 0) {
+          status.textContent = q ? `Results for "${q}"` : "Trending memes";
+          renderMemeList(items);
+          return;
+        }
+      } catch (_) {}
+
+      const t = q.toLowerCase();
+      const localMatches = FALLBACK_MEMES.filter(m => !t || m.title.toLowerCase().includes(t) || m.tags.includes(t));
+      status.textContent = q ? `Showing matched memes for "${q}"` : "Trending memes";
+      renderMemeList(localMatches.length ? localMatches : FALLBACK_MEMES);
+    }
+
+    searchWorldMemes("");
+
+    document.getElementById("memeSearchBtn").addEventListener("click", () => {
+      searchWorldMemes(document.getElementById("memeSearchInput").value);
+    });
+    document.getElementById("memeSearchInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        searchWorldMemes(e.target.value);
+      }
+    });
+
+    function parseYt(val) {
+      const s = (val || "").trim();
       if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
       const m = s.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
       return m ? m[1] : null;
     }
 
     document.getElementById("sendYtBtn").addEventListener("click", async () => {
-      const vid = extractYouTubeId(document.getElementById("ytInput").value);
-      if (!vid) {
-        alert("Valid YouTube link ya 11-character video ID likhein.");
-        return;
-      }
+      const id = parseYt(document.getElementById("ytInput").value);
+      if (!id) return alert("Valid YouTube link ya ID likhein.");
       document.getElementById("ytInput").value = "";
       document.getElementById("plusDock").classList.add("hidden");
-      await pushMessage({ text: "Shared a YouTube video", ytId: vid }, false);
+      await pushMsg({ text: "YouTube Video", ytId: id }, false);
     });
 
-    function getMyStats() {
-      if (!currentUser) return { exp: 0, coins: 0 };
-      const st = cacheStats[safeKey(currentUser.name)] || { exp: 0, coins: 0 };
-      if (currentUser.isAdmin) {
-        return { exp: Number(st.exp || 0), coins: "∞" };
-      }
-      return { exp: Number(st.exp || 0), coins: Number(st.coins || 0) };
-    }
-
-    // Gifts always use coins; Admin has unlimited coins, others earn coins from chat & EXP
     document.getElementById("sendGiftBtn").addEventListener("click", async () => {
       if (!currentUser) return;
-      const targetName = document.getElementById("giftTargetInput").value.trim();
-      if (!targetName) return;
-      const giftCost = 20;
+      const target = document.getElementById("giftTargetInput").value.trim();
+      if (!target) return;
+      const cost = 20;
+      const kMe = safeKey(currentUser.name);
+      const stMe = cacheStats[kMe] || { exp: 0, coins: 0 };
 
       if (!currentUser.isAdmin) {
-        const mine = getMyStats();
-        if (mine.coins < giftCost) {
-          alert("Gift bhejne ke liye coins kam hain. Chat karke aur EXP aur coins kamayein!");
-          return;
-        }
-        await dbPut(`stats/${safeKey(currentUser.name)}`, {
-          exp: mine.exp,
-          coins: mine.coins - giftCost
-        });
+        if (Number(stMe.coins || 0) < cost) return alert("Coins kam hain. Chat karke coins kamayein.");
+        await dbPut(`stats/${kMe}`, { exp: Number(stMe.exp || 0), coins: Number(stMe.coins || 0) - cost });
       }
 
-      const targetKey = safeKey(targetName);
-      const targetSt = cacheStats[targetKey] || { exp: 0, coins: 0 };
-      await dbPut(`stats/${targetKey}`, {
-        exp: Number(targetSt.exp || 0) + 15,
-        coins: Number(targetSt.coins || 0) + giftCost
-      });
+      const kTo = safeKey(target);
+      const stTo = cacheStats[kTo] || { exp: 0, coins: 0 };
+      await dbPut(`stats/${kTo}`, { exp: Number(stTo.exp || 0) + 15, coins: Number(stTo.coins || 0) + cost });
 
       document.getElementById("giftTargetInput").value = "";
       document.getElementById("plusDock").classList.add("hidden");
-      await pushMessage({ text: `🎁 Sent a ${giftCost}-Coin Gift to ${targetName}!` }, false);
+      await pushMsg({ text: `🎁 Sent 20 Coins Gift to ${target}` }, false);
     });
 
-    async function pollFirebase() {
-      try {
-        const [u, b, r, st, m] = await Promise.all([
-          dbGet("users"), dbGet("banned"), dbGet("ranks"), dbGet("stats"), dbGet("messages")
-        ]);
-        cacheUsers = u || {};
-        cacheBanned = b || {};
-        cacheRanks = r || {};
-        cacheStats = st || {};
-        cacheMsgs = m || {};
-        checkKickOrBan();
-        renderAll();
-      } catch (_) {}
+    async function poll() {
+      const [u, b, r, st, m] = await Promise.all([
+        dbGet("users"), dbGet("banned"), dbGet("ranks"), dbGet("stats"), dbGet("messages")
+      ]);
+      cacheUsers = u || {};
+      cacheBanned = b || {};
+      cacheRanks = r || {};
+      cacheStats = st || {};
+      cacheMsgs = m || {};
+      checkRemoved();
+      renderAll();
     }
 
-    function checkKickOrBan() {
+    function checkRemoved() {
       if (!currentUser || currentUser.isAdmin) return;
-      const isBanned = Object.values(cacheBanned).some(
-        b => b && (b.deviceId === myDeviceId || (b.name && b.name.toLowerCase() === currentUser.name.toLowerCase()))
+      const banned = Object.values(cacheBanned).some(
+        x => x && (x.deviceId === myDeviceId || (x.name && x.name.toLowerCase() === currentUser.name.toLowerCase()))
       );
-      const stillActive = Object.values(cacheUsers).some(
-        u => u && u.name === currentUser.name && u.deviceId === myDeviceId
+      const active = Object.values(cacheUsers).some(
+        x => x && x.name === currentUser.name && x.deviceId === myDeviceId
       );
-      if (isBanned || !stillActive) {
+      if (banned || !active) {
         currentUser = null;
         chatScreen.classList.add("hidden");
         entryScreen.classList.remove("hidden");
-        entryError.textContent = isBanned
-          ? "You have been BANNED from chat by Admin."
-          : "You were KICKED from the chat room by Admin.";
+        entryError.textContent = banned ? "Banned by Admin." : "Kicked by Admin.";
       }
     }
 
     document.getElementById("enterBtn").addEventListener("click", async () => {
-      const name = nickInput.value.trim();
-      const room = roomSelect.value;
+      const name = document.getElementById("nickInput").value.trim();
+      const room = document.getElementById("roomSelect").value;
       entryError.textContent = "";
-      if (!name) {
-        entryError.textContent = "Please enter a nickname.";
-        return;
-      }
+      if (!name) return (entryError.textContent = "Nickname likhein.");
 
-      try {
-        const [b, u, r, st] = await Promise.all([
-          dbGet("banned"), dbGet("users"), dbGet("ranks"), dbGet("stats")
-        ]);
-        cacheBanned = b || {};
-        cacheUsers = u || {};
-        cacheRanks = r || {};
-        cacheStats = st || {};
-      } catch (_) {
-        entryError.textContent = "Database error. Check Firebase rules.";
-        return;
-      }
+      const [b, u, r, st] = await Promise.all([
+        dbGet("banned"), dbGet("users"), dbGet("ranks"), dbGet("stats")
+      ]);
+      cacheBanned = b || {}; cacheUsers = u || {}; cacheRanks = r || {}; cacheStats = st || {};
 
-      const isBanned = Object.values(cacheBanned).some(
-        b => b && (b.deviceId === myDeviceId || (b.name && b.name.toLowerCase() === name.toLowerCase()))
+      const banned = Object.values(cacheBanned).some(
+        x => x && (x.deviceId === myDeviceId || (x.name && x.name.toLowerCase() === name.toLowerCase()))
       );
-      if (isBanned && !claimAdminToggle.checked) {
-        entryError.textContent = "Access denied: This device/account is banned.";
-        return;
-      }
+      if (banned && !claimAdminToggle.checked) return (entryError.textContent = "Device/account banned.");
 
       let isAdmin = false;
       if (claimAdminToggle.checked) {
-        if (adminKeyInput.value !== ADMIN_KEY) {
-          entryError.textContent = "Wrong Admin Secret Key! Key is ADMIN123.";
-          return;
+        if (document.getElementById("adminKeyInput").value !== ADMIN_KEY) {
+          return (entryError.textContent = "Galat key! Key: ADMIN123");
         }
         isAdmin = true;
       }
 
-      const sameDeviceOther = Object.values(cacheUsers).find(
-        u => u && u.deviceId === myDeviceId && u.name.toLowerCase() !== name.toLowerCase()
+      const sameDevOther = Object.values(cacheUsers).find(
+        x => x && x.deviceId === myDeviceId && x.name.toLowerCase() !== name.toLowerCase()
       );
-      if (!isAdmin && sameDeviceOther) {
-        entryError.textContent = `One-account-per-device rule: "${sameDeviceOther.name}" is already active on this device.`;
-        return;
+      if (!isAdmin && sameDevOther) {
+        return (entryError.textContent = `1 Account Per Device: "${sameDevOther.name}" already active.`);
       }
 
-      const rankVal = isAdmin ? "Admin" : (cacheRanks[safeKey(name)] && cacheRanks[safeKey(name)] !== "Admin" ? cacheRanks[safeKey(name)] : "Member");
-      await dbPut("ranks/" + safeKey(name), rankVal);
-
-      if (!cacheStats[safeKey(name)]) {
-        await dbPut("stats/" + safeKey(name), { exp: 0, coins: 0 });
+      for (const [key, val] of Object.entries(cacheUsers)) {
+        if (val && val.name && val.name.toLowerCase() === name.toLowerCase() && key !== myDeviceId) {
+          await dbDel("users/" + key);
+        }
       }
+
+      const rk = isAdmin ? "Admin" : (cacheRanks[safeKey(name)] && cacheRanks[safeKey(name)] !== "Admin" ? cacheRanks[safeKey(name)] : "Member");
+      await dbPut("ranks/" + safeKey(name), rk);
+      if (!cacheStats[safeKey(name)]) await dbPut("stats/" + safeKey(name), { exp: 0, coins: 0 });
 
       currentUser = { name, avatar: selectedAvatar, room, isAdmin, deviceId: myDeviceId };
       await dbPut("users/" + myDeviceId, currentUser);
@@ -529,209 +470,155 @@
 
     function renderAll() {
       if (!currentUser) return;
-      const myRank = getUserRank(currentUser);
-      const st = getMyStats();
-
+      const st = cacheStats[safeKey(currentUser.name)] || { exp: 0, coins: 0 };
       document.getElementById("roomTitle").textContent = `${currentUser.avatar} ${currentUser.name} — ${currentUser.room}`;
-      document.getElementById("rolePill").textContent = myRank;
-      document.getElementById("expVal").textContent = st.exp;
-      document.getElementById("coinVal").textContent = st.coins;
-
+      document.getElementById("rolePill").textContent = getRank(currentUser);
+      document.getElementById("expVal").textContent = st.exp || 0;
+      document.getElementById("coinVal").textContent = currentUser.isAdmin ? "∞" : (st.coins || 0);
       document.getElementById("openAdminBtn").classList.toggle("hidden", !currentUser.isAdmin);
-      renderUsersSidebar();
-      renderMessages();
-      if (!document.getElementById("adminModal").classList.contains("hidden")) renderAdminModal();
+
+      renderUsers();
+      renderMsgs();
+      if (!document.getElementById("adminModal").classList.contains("hidden")) renderAdmin();
     }
 
-    function renderUsersSidebar() {
+    function renderUsers() {
       const wrap = document.getElementById("usersSidebar");
       wrap.innerHTML = "";
       Object.values(cacheUsers).forEach(u => {
         if (!u) return;
         const st = cacheStats[safeKey(u.name)] || { exp: 0, coins: 0 };
-        const rank = getUserRank(u);
-        const coinDisplay = u.isAdmin ? "∞" : (st.coins || 0);
-        const card = document.createElement("div");
-        card.className = "user-card";
-        card.innerHTML = `
-          <div><strong>${u.avatar || "😎"} ${u.name}</strong> <span class="stat-pill">${rank}</span></div>
-          <div class="device-tag">⭐ EXP: ${st.exp || 0} • 🪙 Coins: ${coinDisplay}</div>
-          <div class="device-tag">ID/Device: ${u.deviceId}</div>
+        const d = document.createElement("div");
+        d.className = "u-card";
+        d.innerHTML = `
+          <div><strong>${u.avatar || "😎"} ${u.name}</strong> <span class="pill">${getRank(u)}</span></div>
+          <div class="muted">EXP: ${st.exp || 0} • Coins: ${u.isAdmin ? "∞" : (st.coins || 0)}</div>
+          <div class="muted">${u.deviceId}</div>
         `;
-        wrap.appendChild(card);
+        wrap.appendChild(d);
       });
     }
 
-    function renderMessages() {
+    function renderMsgs() {
       if (!currentUser) return;
       const area = document.getElementById("messagesArea");
       area.innerHTML = "";
-      const roomMsgs = cacheMsgs[safeKey(currentUser.room)] || {};
-
-      Object.values(roomMsgs).forEach(m => {
+      const rm = cacheMsgs[safeKey(currentUser.room)] || {};
+      Object.values(rm).forEach(m => {
         if (!m) return;
-        const row = document.createElement("div");
-        row.className = "msg-row";
-        const imgHtml = m.imageData ? `<img class="msg-img" src="${m.imageData}" alt="media" />` : "";
-        const ytHtml = m.ytId ? `<iframe class="yt-frame" src="https://www.youtube.com/embed/${m.ytId}" allowfullscreen></iframe>` : "";
-        row.innerHTML = `
-          <div class="msg-head">
-            <strong>${m.avatar || "😎"} ${m.sender}</strong>
-            <span class="stat-pill">${m.role || "Member"}</span>
-            <span style="font-size:10px; color:#9ca3af;">${m.time || ""}</span>
-          </div>
-          <div class="msg-text">${m.text || ""}</div>
-          ${imgHtml}
-          ${ytHtml}
+        const d = document.createElement("div");
+        d.className = "msg";
+        const img = m.imageData ? `<img class="msg-img" src="${m.imageData}" alt="" />` : "";
+        const yt = m.ytId ? `<iframe class="yt" src="https://www.youtube.com/embed/${m.ytId}" allowfullscreen></iframe>` : "";
+        d.innerHTML = `
+          <div class="msg-h"><strong>${m.avatar || "😎"} ${m.sender}</strong> <span class="pill">${m.role || "Member"}</span> <span class="muted">${m.time || ""}</span></div>
+          <div class="msg-t">${m.text || ""}</div>${img}${yt}
         `;
-        area.appendChild(row);
+        area.appendChild(d);
       });
       area.scrollTop = area.scrollHeight;
     }
 
-    async function pushMessage({ text = "", imageData = "", ytId = "" }, rewardChat = true) {
+    async function pushMsg({ text = "", imageData = "", ytId = "" }, earn = true) {
       if (!currentUser) return;
-      const msgId = "MSG-" + Date.now() + "-" + Math.random().toString(36).substring(2, 6);
-      const role = getUserRank(currentUser);
-
-      if (rewardChat) {
-        const k = safeKey(currentUser.name);
+      const id = "M-" + Date.now() + "-" + Math.random().toString(36).substring(2, 5);
+      const k = safeKey(currentUser.name);
+      if (earn) {
         const prev = cacheStats[k] || { exp: 0, coins: 0 };
-        const nextStats = {
-          exp: Number(prev.exp || 0) + 10,
-          coins: currentUser.isAdmin ? "∞" : Number(prev.coins || 0) + 5
-        };
-        cacheStats[k] = nextStats;
-        await dbPut("stats/" + k, nextStats);
+        const next = { exp: Number(prev.exp || 0) + 10, coins: currentUser.isAdmin ? "∞" : Number(prev.coins || 0) + 5 };
+        cacheStats[k] = next;
+        await dbPut("stats/" + k, next);
       }
-
       const payload = {
-        id: msgId,
-        sender: currentUser.name,
-        avatar: currentUser.avatar,
-        role,
-        text,
-        imageData,
-        ytId,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        sender: currentUser.name, avatar: currentUser.avatar, role: getRank(currentUser),
+        text, imageData, ytId, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
-
       cacheMsgs[safeKey(currentUser.room)] = cacheMsgs[safeKey(currentUser.room)] || {};
-      cacheMsgs[safeKey(currentUser.room)][msgId] = payload;
-      await dbPut(`messages/${safeKey(currentUser.room)}/${msgId}`, payload);
+      cacheMsgs[safeKey(currentUser.room)][id] = payload;
+      await dbPut(`messages/${safeKey(currentUser.room)}/${id}`, payload);
       renderAll();
     }
 
     document.getElementById("chatForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const inp = document.getElementById("msgInput");
-      const text = inp.value.trim();
-      if (!text) return;
+      const t = inp.value.trim();
+      if (!t) return;
       inp.value = "";
-      await pushMessage({ text }, true);
+      await pushMsg({ text: t }, true);
     });
 
-    document.getElementById("plusBtn").addEventListener("click", () => {
-      document.getElementById("plusDock").classList.toggle("hidden");
-    });
-    document.getElementById("closeDockBtn").addEventListener("click", () => {
-      document.getElementById("plusDock").classList.add("hidden");
-    });
+    document.getElementById("plusBtn").addEventListener("click", () => document.getElementById("plusDock").classList.toggle("hidden"));
+    document.getElementById("closeDockBtn").addEventListener("click", () => document.getElementById("plusDock").classList.add("hidden"));
 
-    // Admin Modal
     const adminModal = document.getElementById("adminModal");
     document.getElementById("openAdminBtn").addEventListener("click", () => {
       if (!currentUser || !currentUser.isAdmin) return;
-      renderAdminModal();
+      renderAdmin();
       adminModal.classList.remove("hidden");
     });
     document.getElementById("closeAdminBtn").addEventListener("click", () => adminModal.classList.add("hidden"));
 
-    function renderAdminModal() {
+    function renderAdmin() {
       const list = document.getElementById("adminUsersList");
       const banList = document.getElementById("bannedList");
-      list.innerHTML = "";
-      banList.innerHTML = "";
+      list.innerHTML = ""; banList.innerHTML = "";
 
-      const others = Object.values(cacheUsers).filter(u => u && u.deviceId !== myDeviceId);
-      if (others.length === 0) {
-        list.innerHTML = `<div class="device-tag">No other online users.</div>`;
+      const entries = Object.entries(cacheUsers).filter(([k, u]) => u && k !== myDeviceId);
+      if (!entries.length) {
+        list.innerHTML = `<div class="muted">No other users.</div>`;
       } else {
-        others.forEach(u => {
+        entries.forEach(([key, u]) => {
           const row = document.createElement("div");
-          row.className = "mod-row";
-          row.innerHTML = `<div><strong>${u.name}</strong><div class="device-tag">ID/Device: ${u.deviceId}</div></div>`;
+          row.className = "m-row";
+          row.innerHTML = `<div><strong>${u.name}</strong><div class="muted">${key}</div></div>`;
 
           const acts = document.createElement("div");
-          acts.style.display = "flex";
-          acts.style.gap = "6px";
+          acts.style.display = "flex"; acts.style.gap = "5px";
 
           const sel = document.createElement("select");
-          sel.className = "select-box";
-          sel.style.width = "120px";
-          sel.style.padding = "5px 7px";
+          sel.className = "sel"; sel.style.width = "115px"; sel.style.padding = "4px 6px";
           RANKS.forEach(r => {
-            const op = document.createElement("option");
-            op.value = r;
-            op.textContent = r;
-            if ((cacheRanks[safeKey(u.name)] || "Member") === r) op.selected = true;
-            sel.appendChild(op);
+            const o = document.createElement("option");
+            o.value = r; o.textContent = r;
+            if ((cacheRanks[safeKey(u.name)] || "Member") === r) o.selected = true;
+            sel.appendChild(o);
           });
-          sel.onchange = async () => {
-            await dbPut("ranks/" + safeKey(u.name), sel.value);
-            pollFirebase();
-          };
+          sel.onchange = async () => { await dbPut("ranks/" + safeKey(u.name), sel.value); poll(); };
 
-          const kickBtn = document.createElement("button");
-          kickBtn.type = "button";
-          kickBtn.className = "btn-sm btn-warn";
-          kickBtn.textContent = "Kick";
-          kickBtn.onclick = async () => {
-            await dbDelete("users/" + u.deviceId);
-            delete cacheUsers[u.deviceId];
+          const kick = document.createElement("button");
+          kick.type = "button"; kick.className = "btn-s btn-gold"; kick.textContent = "Kick";
+          kick.onclick = async () => { await dbDel("users/" + key); delete cacheUsers[key]; renderAll(); };
+
+          const ban = document.createElement("button");
+          ban.type = "button"; ban.className = "btn-s btn-red"; ban.textContent = "Ban";
+          ban.onclick = async () => {
+            await dbDel("users/" + key); delete cacheUsers[key];
+            const bObj = { name: u.name, deviceId: u.deviceId || key };
+            cacheBanned[key] = bObj;
+            await dbPut("banned/" + key, bObj);
             renderAll();
           };
 
-          const banBtn = document.createElement("button");
-          banBtn.type = "button";
-          banBtn.className = "btn-sm btn-danger";
-          banBtn.textContent = "Ban";
-          banBtn.onclick = async () => {
-            await dbDelete("users/" + u.deviceId);
-            delete cacheUsers[u.deviceId];
-            const entry = { name: u.name, deviceId: u.deviceId };
-            cacheBanned[u.deviceId] = entry;
-            await dbPut("banned/" + u.deviceId, entry);
-            renderAll();
-          };
-
-          acts.appendChild(sel);
-          acts.appendChild(kickBtn);
-          acts.appendChild(banBtn);
+          acts.appendChild(sel); acts.appendChild(kick); acts.appendChild(ban);
           row.appendChild(acts);
           list.appendChild(row);
         });
       }
 
-      const bannedEntries = Object.entries(cacheBanned);
-      if (bannedEntries.length === 0) {
-        banList.innerHTML = `<div class="device-tag">No banned devices.</div>`;
+      const bEnt = Object.entries(cacheBanned);
+      if (!bEnt.length) {
+        banList.innerHTML = `<div class="muted">No banned users.</div>`;
       } else {
-        bannedEntries.forEach(([key, b]) => {
+        bEnt.forEach(([k, b]) => {
           if (!b) return;
           const row = document.createElement("div");
-          row.className = "mod-row";
-          row.innerHTML = `<div><strong>${b.name}</strong> <span class="device-tag">(${b.deviceId})</span></div>`;
-          const unbanBtn = document.createElement("button");
-          unbanBtn.type = "button";
-          unbanBtn.className = "btn-sm btn-ok";
-          unbanBtn.textContent = "Unban";
-          unbanBtn.onclick = async () => {
-            await dbDelete("banned/" + key);
-            delete cacheBanned[key];
-            renderAdminModal();
-          };
-          row.appendChild(unbanBtn);
+          row.className = "m-row";
+          row.innerHTML = `<div><strong>${b.name}</strong> <span class="muted">(${b.deviceId})</span></div>`;
+          const unban = document.createElement("button");
+          unban.type = "button"; unban.className = "btn-s btn-grn"; unban.textContent = "Unban";
+          unban.onclick = async () => { await dbDel("banned/" + k); delete cacheBanned[k]; renderAdmin(); };
+          row.appendChild(unban);
           banList.appendChild(row);
         });
       }
@@ -739,7 +626,7 @@
 
     document.getElementById("logoutBtn").addEventListener("click", async () => {
       if (currentUser) {
-        await dbDelete("users/" + myDeviceId);
+        await dbDel("users/" + myDeviceId);
         delete cacheUsers[myDeviceId];
       }
       currentUser = null;
@@ -747,7 +634,7 @@
       entryScreen.classList.remove("hidden");
     });
 
-    setInterval(pollFirebase, 2500);
+    setInterval(poll, 2500);
   </script>
 </body>
 </html>
