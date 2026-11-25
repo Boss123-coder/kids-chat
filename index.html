@@ -15,7 +15,7 @@
       --bg-elevated: #1b1133;
       --bg-card: #221640;
       --border-dim: rgba(168, 85, 247, 0.24);
-      --border-bright: rgba(217, 70, 239, 0.55);
+      --border-bright: rgba(217, 70, 239, 0.58);
       --text-main: #f5f3ff;
       --text-muted: #b7a8d9;
       --accent-purple: #9333ea;
@@ -45,35 +45,34 @@
       display: none !important;
     }
 
-    /* Geometric Polygon Background Pattern */
+    /* Dark Purple & Neon Geometric Polygon Background */
     .poly-bg {
       background-color: #090512;
       background-image:
-        linear-gradient(135deg, rgba(147, 51, 234, 0.16) 25%, transparent 25%),
-        linear-gradient(225deg, rgba(236, 72, 153, 0.14) 25%, transparent 25%),
-        linear-gradient(45deg, rgba(34, 211, 238, 0.08) 25%, transparent 25%),
-        linear-gradient(315deg, rgba(126, 34, 206, 0.18) 25%, #090512 25%);
+        linear-gradient(135deg, rgba(147, 51, 234, 0.18) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(236, 72, 153, 0.15) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(34, 211, 238, 0.09) 25%, transparent 25%),
+        linear-gradient(315deg, rgba(126, 34, 206, 0.2) 25%, #090512 25%);
       background-position: 36px 0, 36px 0, 0 0, 0 0;
       background-size: 72px 72px;
       background-repeat: repeat;
     }
 
-    /* Room Theme Variants */
     body.theme-neon .chat-canvas {
       background-color: #070917;
       background-image:
-        linear-gradient(120deg, rgba(34, 211, 238, 0.14) 25%, transparent 25%),
-        linear-gradient(240deg, rgba(168, 85, 247, 0.16) 25%, transparent 25%),
-        linear-gradient(60deg, rgba(236, 72, 153, 0.1) 25%, #070917 25%);
+        linear-gradient(120deg, rgba(34, 211, 238, 0.16) 25%, transparent 25%),
+        linear-gradient(240deg, rgba(168, 85, 247, 0.18) 25%, transparent 25%),
+        linear-gradient(60deg, rgba(236, 72, 153, 0.12) 25%, #070917 25%);
       background-size: 64px 64px;
     }
 
     body.theme-sunset .chat-canvas {
       background-color: #140714;
       background-image:
-        linear-gradient(135deg, rgba(244, 63, 94, 0.16) 25%, transparent 25%),
-        linear-gradient(225deg, rgba(251, 191, 36, 0.12) 25%, transparent 25%),
-        linear-gradient(45deg, rgba(168, 85, 247, 0.14) 25%, #140714 25%);
+        linear-gradient(135deg, rgba(244, 63, 94, 0.17) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(251, 191, 36, 0.13) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(168, 85, 247, 0.15) 25%, #140714 25%);
       background-size: 68px 68px;
     }
 
@@ -89,12 +88,12 @@
 
     .entry-card {
       width: 100%;
-      max-width: 450px;
-      background: rgba(18, 11, 34, 0.94);
+      max-width: 460px;
+      background: rgba(18, 11, 34, 0.95);
       border: 1px solid var(--border-bright);
       border-radius: 18px;
       padding: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 28px rgba(147, 51, 234, 0.22);
+      box-shadow: 0 22px 64px rgba(0, 0, 0, 0.7), 0 0 32px rgba(147, 51, 234, 0.24);
       backdrop-filter: blur(10px);
     }
 
@@ -117,7 +116,7 @@
       font-size: 12px;
       color: var(--text-muted);
       margin-top: 4px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .lbl {
@@ -141,12 +140,12 @@
       font-family: inherit;
       font-size: 13px;
       outline: none;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
     }
 
     .inp:focus, .sel:focus {
       border-color: #d946ef;
-      box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.18);
+      box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.2);
     }
 
     .av-grid {
@@ -177,16 +176,16 @@
 
     .av-btn.active {
       border-color: #f472b6;
-      background: rgba(168, 85, 247, 0.28);
-      box-shadow: 0 0 12px rgba(236, 72, 153, 0.35);
+      background: rgba(168, 85, 247, 0.3);
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.36);
     }
 
     .adm-box {
       margin-top: 14px;
       padding: 12px;
       border-radius: 12px;
-      border: 1px solid rgba(251, 191, 36, 0.32);
-      background: rgba(251, 191, 36, 0.06);
+      border: 1px solid rgba(251, 191, 36, 0.38);
+      background: rgba(251, 191, 36, 0.07);
     }
 
     .adm-head {
@@ -197,6 +196,12 @@
       font-size: 12px;
       font-weight: 700;
       color: #fde68a;
+    }
+
+    .adm-pass-row {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(251, 191, 36, 0.2);
     }
 
     .rules-agree {
@@ -237,7 +242,7 @@
       font-weight: 800;
       font-size: 14px;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(236, 72, 153, 0.32);
+      box-shadow: 0 8px 24px rgba(236, 72, 153, 0.34);
       transition: transform 0.15s ease, filter 0.15s ease;
     }
 
@@ -254,7 +259,7 @@
       text-align: center;
     }
 
-    /* Main Chat Room Shell */
+    /* Main Chat Shell */
     .room-shell {
       height: 100vh;
       width: 100%;
@@ -302,6 +307,24 @@
     .stat-chip.gold {
       border-color: rgba(251, 191, 36, 0.45);
       color: #fde047;
+    }
+
+    .top-pfp-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px 3px 4px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-dim);
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .top-pfp-chip:hover {
+      border-color: #d946ef;
     }
 
     .tbtn {
@@ -448,11 +471,18 @@
       align-items: flex-start;
       gap: 10px;
       max-width: 88%;
+      border-radius: 14px;
+      transition: box-shadow 0.25s ease, background 0.25s ease;
     }
 
     .msg-row.mine {
       align-self: flex-end;
       flex-direction: row-reverse;
+    }
+
+    .msg-row.highlighted .msg-bubble {
+      border-color: #22d3ee;
+      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.45), 0 0 24px rgba(34, 211, 238, 0.35);
     }
 
     .msg-av {
@@ -469,10 +499,18 @@
       overflow: hidden;
     }
 
+    .msg-av.sm {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      font-size: 13px;
+    }
+
     .msg-av img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     .msg-bubble {
@@ -485,7 +523,7 @@
     }
 
     .msg-row.mine .msg-bubble {
-      background: rgba(88, 28, 135, 0.52);
+      background: rgba(88, 28, 135, 0.54);
       border-color: rgba(236, 72, 153, 0.45);
     }
 
@@ -528,13 +566,18 @@
     }
 
     .msg-quote {
-      background: rgba(9, 5, 18, 0.55);
-      border-left: 3px solid #c084fc;
-      padding: 4px 8px;
+      background: rgba(9, 5, 18, 0.62);
+      border-left: 3px solid #22d3ee;
+      padding: 5px 8px;
       border-radius: 6px;
       font-size: 11px;
-      color: var(--text-muted);
+      color: #d8b4fe;
       margin-bottom: 6px;
+      cursor: pointer;
+    }
+
+    .msg-quote:hover {
+      background: rgba(34, 211, 238, 0.12);
     }
 
     .msg-text {
@@ -622,6 +665,13 @@
       background: rgba(255, 255, 255, 0.05);
     }
 
+    .receipt-txt {
+      font-size: 10px;
+      color: #67e8f9;
+      margin-top: 3px;
+      text-align: right;
+    }
+
     /* Reply & Mute Banners */
     .reply-bar {
       background: #180e2f;
@@ -644,7 +694,7 @@
       text-align: center;
     }
 
-    /* Media Drawer (+ button) */
+    /* Media Drawer */
     .media-drawer {
       background: #140b28;
       border-top: 1px solid var(--border-dim);
@@ -730,7 +780,7 @@
 
     /* Right Online Sidebar */
     .users-side {
-      width: 245px;
+      width: 248px;
       flex-shrink: 0;
       background: #0f091e;
       border-left: 1px solid var(--border-dim);
@@ -885,7 +935,7 @@
 
     .modal-box {
       width: 100%;
-      max-width: 540px;
+      max-width: 550px;
       max-height: 86vh;
       overflow-y: auto;
       background: #150c29;
@@ -924,8 +974,20 @@
       flex-wrap: wrap;
     }
 
+    .dm-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #1b1035;
+      border: 1px solid var(--border-dim);
+      margin-top: 8px;
+    }
+
     .dm-feed {
-      max-height: 290px;
+      max-height: 280px;
       overflow-y: auto;
       background: #0d0719;
       border: 1px solid var(--border-dim);
@@ -937,7 +999,6 @@
       margin: 8px 0;
     }
 
-    /* Toast */
     .toast {
       position: fixed;
       bottom: 68px;
@@ -954,7 +1015,6 @@
       box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
     }
 
-    /* Responsive Breakpoints */
     @media (max-width: 820px) {
       .users-side {
         position: fixed;
@@ -988,7 +1048,7 @@
 
       <label class="lbl" for="userPassInp">Account Password</label>
       <input id="userPassInp" class="inp" type="password" maxlength="40" placeholder="Set or enter your account password..." autocomplete="off" />
-      <div id="authModeHint" class="u-sub" style="margin-top:4px;">Each username belongs to one account; new names register with your password.</div>
+      <div id="authModeHint" class="u-sub" style="margin-top:4px;">Each username belongs to one account; new names register with your password, existing names require their password.</div>
 
       <label class="lbl">Avatar Preset</label>
       <div id="avGrid" class="av-grid"></div>
@@ -996,20 +1056,24 @@
       <label class="lbl" for="roomSel">Chat Room</label>
       <select id="roomSel" class="sel">
         <option value="AllTeen Chat">AllTeen Chat</option>
-        <option value="Kids Lounge">Kids Lounge</option>
-        <option value="Memes & GIFs">Memes &amp; GIFs</option>
+        <option value="Gaming Zone">Gaming Zone</option>
+        <option value="Study & Art">Study &amp; Art</option>
+        <option value="Chill Lounge">Chill Lounge</option>
       </select>
 
+      <!-- Admin Access Bar with Always-Rendered Secret Password Input -->
       <div class="adm-box">
         <div class="adm-head">
           <span>👑 Admin Access</span>
-          <label style="display:inline-flex; align-items:center; gap:5px; cursor:pointer; font-weight:700;">
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-weight:700;">
             <input id="admToggle" type="checkbox" style="accent-color:#fbbf24;" />
             <span>Admin Login</span>
           </label>
         </div>
-        <div id="admKeyWrap" class="hidden" style="margin-top:8px;">
-          <input id="admKeyInp" class="inp" type="password" placeholder="Enter admin password..." autocomplete="off" />
+        <div id="admPassSection" class="adm-pass-row">
+          <label class="lbl" for="admKeyInp" style="margin-top:0;">Admin Secret Password</label>
+          <input id="admKeyInp" class="inp" type="password" placeholder="Enter admin password (default: ADMIN123)..." autocomplete="off" />
+          <div id="admLoginStatus" class="u-sub" style="margin-top:4px;">Check "Admin Login" above and enter the admin password to sign in as Admin.</div>
         </div>
       </div>
 
@@ -1030,6 +1094,10 @@
   <div id="roomScreen" class="room-shell hidden">
     <header class="topbar">
       <div class="top-left">
+        <button id="topPfpChip" class="top-pfp-chip" type="button" title="Change Profile Picture">
+          <span id="topPfpAv" class="msg-av sm">😎</span>
+          <span id="topPfpName">User</span>
+        </button>
         <span id="roomHeading" class="room-title">AllTeen Chat</span>
         <span id="rankChip" class="stat-chip">Member</span>
         <span class="stat-chip">EXP: <span id="myExp">0</span></span>
@@ -1140,7 +1208,7 @@
     </div>
   </div>
 
-  <!-- PFP MODAL (Self Avatar Upload / URL / Preset; Username Restricted to Admin) -->
+  <!-- BULLETPROOF PFP MODAL -->
   <div id="pfpModal" class="modal-bg hidden">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -1148,20 +1216,24 @@
         <button id="closePfpBtn" class="tbtn" type="button">✕</button>
       </div>
       <div class="u-sub" style="margin-bottom:10px;">
-        You can update your PFP anytime. Usernames can only be changed by an Admin.
+        Upload a photo (auto-compressed to 160×160 JPEG), apply an image URL, or choose an emoji preset.
       </div>
       <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-        <div id="pfpPreview" class="msg-av" style="width:52px; height:52px; font-size:24px;">😎</div>
+        <div id="pfpPreview" class="msg-av" style="width:56px; height:56px; font-size:26px;">😎</div>
         <div>
           <div id="pfpAcctName" style="font-weight:700; font-size:14px;"></div>
-          <div class="u-sub">Upload an image file, paste a link, or pick an emoji.</div>
+          <div id="pfpStatusText" class="u-sub">Ready to customize your PFP.</div>
         </div>
       </div>
-      <label class="lbl">Upload Image File</label>
+
+      <label class="lbl" for="pfpFileInp">Upload Image File (Max 160×160 JPEG)</label>
       <input id="pfpFileInp" type="file" accept="image/*" style="font-size:12px; color:var(--text-muted); margin-bottom:8px;" />
 
-      <label class="lbl">Or Image URL</label>
-      <input id="pfpUrlInp" class="inp" type="text" placeholder="https://example.com/avatar.png" />
+      <label class="lbl" for="pfpUrlInp">Or Image URL</label>
+      <div style="display:flex; gap:6px;">
+        <input id="pfpUrlInp" class="inp" type="text" placeholder="https://example.com/avatar.png" />
+        <button id="usePfpUrlBtn" class="tbtn" type="button">Use URL</button>
+      </div>
 
       <label class="lbl">Or Emoji Preset</label>
       <div id="pfpPresetGrid" class="av-grid"></div>
@@ -1239,11 +1311,38 @@
       </div>
       <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
         <select id="dmPeerSel" class="sel" style="flex:1; min-width:160px;"></select>
+        <button id="reportDmPeerBtn" class="tbtn red" type="button">🚨 Report</button>
         <button id="clearMyDmBtn" class="tbtn red" type="button">Clear Chat</button>
       </div>
+
+      <div id="dmPeerBar" class="dm-header-bar">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="dmPeerAv" class="msg-av sm">😎</span>
+          <div>
+            <div id="dmPeerTitle" class="u-name">Select a user</div>
+            <div id="dmTypingIndicator" class="u-sub"></div>
+          </div>
+        </div>
+        <button id="dmGifToggleBtn" class="tbtn" type="button">😄 GIF</button>
+      </div>
+
+      <div id="dmGifStrip" class="hidden" style="margin-top:6px; background:#120a24; border:1px solid var(--border-dim); border-radius:10px; padding:8px;">
+        <div style="display:flex; gap:6px; margin-bottom:6px;">
+          <input id="dmGifInp" class="inp" style="padding:6px 8px;" type="text" placeholder="Search DM GIF..." />
+          <button id="dmGifSearchBtn" class="tbtn" type="button">Go</button>
+        </div>
+        <div id="dmGifResults" class="gif-grid" style="max-height:120px;"></div>
+      </div>
+
       <div id="dmFeed" class="dm-feed"></div>
+
+      <div id="dmReplyBanner" class="reply-bar hidden" style="border-radius:8px; margin-bottom:6px;">
+        <span>Replying to <strong id="dmReplyToName"></strong>: <span id="dmReplyToSnippet" class="u-sub"></span></span>
+        <button id="cancelDmReplyBtn" class="mini-act" type="button">✕</button>
+      </div>
+
       <div style="display:flex; gap:6px; align-items:center;">
-        <input id="dmPhotoInp" type="file" accept="image/*" style="max-width:120px; font-size:11px; color:var(--text-muted);" />
+        <input id="dmPhotoInp" type="file" accept="image/*" style="max-width:118px; font-size:11px; color:var(--text-muted);" />
         <input id="dmTextInp" class="msg-inp" type="text" maxlength="400" placeholder="Write a private message..." />
         <button id="dmSendBtn" class="send-btn" type="button">➤</button>
       </div>
@@ -1261,9 +1360,9 @@
     </div>
   </div>
 
-  <!-- ADMIN-ONLY CONTROL CENTER MODAL -->
+  <!-- STRICT ADMIN-ONLY CONTROL CENTER MODAL -->
   <div id="admModal" class="modal-bg hidden">
-    <div class="modal-box" style="max-width:690px;">
+    <div class="modal-box" style="max-width:700px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <strong>🛡️ Admin &amp; Moderation Control Center</strong>
         <button id="closeAdmModal" class="tbtn" type="button">✕</button>
@@ -1271,15 +1370,15 @@
 
       <div class="adm-tabs">
         <button class="tbtn adm-tab active" data-atab="users" type="button">Users &amp; Ranks</button>
-        <button class="tbtn adm-tab" data-atab="reports" type="button">Reports (<span id="repBadge">0</span>)</button>
+        <button class="tbtn adm-tab" data-atab="reports" type="button">Reports &amp; Moderation (<span id="repBadge">0</span>)</button>
         <button class="tbtn adm-tab" data-atab="bans" type="button">Banned &amp; Muted (<span id="banBadge">0</span>)</button>
         <button class="tbtn adm-tab" data-atab="dmmonitor" type="button">Private Chats (<span id="dmMonBadge">0</span>)</button>
-        <button class="tbtn adm-tab" data-atab="tools" type="button">Fixes &amp; Password</button>
+        <button class="tbtn adm-tab" data-atab="tools" type="button">Room, Rules &amp; Password</button>
       </div>
 
       <div id="admTabUsers">
         <div class="u-sub" style="margin-bottom:8px;">
-          Admin can change any user's unique username or password, assign any rank/Moderator, set custom mute minutes, kick, or ban.
+          Admin can change any user's unique username, set/reset any user's password, assign ranks (User, VIP, Moderator, Admin), set custom mute minutes, kick, or ban.
         </div>
         <div id="admUserList"></div>
       </div>
@@ -1297,7 +1396,7 @@
 
       <div id="admTabDmMonitor" class="hidden">
         <div class="u-sub" style="margin-bottom:8px;">
-          Safety monitor: Admin can inspect 1-on-1 personal chats across the platform and mute or ban rule violators.
+          Safety monitor: Admin can inspect 1-on-1 personal chats (text, images, GIFs, replies, and timestamps) and mute or ban rule violators.
         </div>
         <div id="admDmMonitorList"></div>
       </div>
@@ -1312,7 +1411,7 @@
         </div>
 
         <div class="rules-item">
-          <strong style="font-size:12px; display:block; margin-bottom:6px;">🛠️ Room &amp; Sync Fixes</strong>
+          <strong style="font-size:12px; display:block; margin-bottom:6px;">🛠️ Room Chat &amp; Sync Controls</strong>
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <button id="clearRoomBtn" class="tbtn red" type="button">Clear Room Chat</button>
             <button id="syncFixBtn" class="tbtn gold" type="button">Force Sync &amp; Clean Stale Sessions</button>
@@ -1331,12 +1430,12 @@
   <div id="toastEl" class="toast hidden"></div>
 
   <script>
-    // Firebase Realtime Database Configuration & Helpers
+    // Firebase Realtime Database & GIPHY Constants
     const DB_URL = "https://safekids-chat-default-rtdb.firebaseio.com";
     const GIPHY_KEY = "MuD5UfvhOF5BJ1Bb6SDlvsUzjUCEKM9s";
     const AVS = ["😎", "🦊", "🐼", "🚀", "👑", "⚡"];
-    const RANKS = ["Member", "Bronze", "Gold", "VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
-    const VIP_PLUS = new Set(["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"]);
+    const RANKS = ["User", "VIP", "Moderator", "Admin"];
+    const VIP_PLUS = new Set(["VIP", "Moderator", "Admin"]);
     const DEFAULT_RULES = [
       "This platform is strictly for Under-18 users in a safe, moderated environment.",
       "Respect Everyone: zero abuse, bullying, hate speech, or harassment in public rooms or personal chats.",
@@ -1358,10 +1457,11 @@
       }
     })();
 
-    // Application State
+    // Core Application State
     let me = null;
     let chosenAv = AVS[0];
-    let selectedPfpValue = AVS[0];
+    let draftPfp = AVS[0];
+    let pfpUpdatedAt = 0;
     let adminPass = "ADMIN123";
     let roomRules = DEFAULT_RULES.slice();
     let users = {};
@@ -1374,13 +1474,15 @@
     let friendRequests = {};
     let friendsMap = {};
     let dmThreads = {};
+    let dmTyping = {};
     let activeDmPeer = "";
     let replyDraft = null;
+    let dmReplyDraft = null;
     let soundEnabled = true;
     let themeIdx = 0;
     const THEMES = ["", "theme-neon", "theme-sunset"];
 
-    // Message Persistence Stores (Confirmed + Pending + Local Room Mirror)
+    // Persistent Room Message Stores
     const confirmedMsgs = {};
     const pendingMsgs = {};
     const clearedRoomsAt = {};
@@ -1392,7 +1494,7 @@
     let gifCurrentQuery = "";
     const GIF_CATS = ["Trending", "Funny", "Gaming", "Reaction", "Cute", "Dance"];
 
-    // Safe Firebase REST Wrappers
+    // Safe Firebase REST Helpers
     async function dbGet(path) {
       try {
         const res = await fetch(`${DB_URL}/${path}.json`, { cache: "no-store" });
@@ -1481,10 +1583,10 @@
     }
 
     function rankOf(userObj) {
-      if (!userObj) return "Member";
+      if (!userObj) return "User";
       if (userObj.isAdmin) return "Admin";
       const r = ranks[kOf(userObj.name)];
-      return r && r !== "Admin" ? r : "Member";
+      return RANKS.includes(r) ? r : "User";
     }
 
     function isImageVal(val) {
@@ -1498,29 +1600,72 @@
       return `<div class="${cls}">${esc(avVal || "😎")}</div>`;
     }
 
-    function savePfpLocal(uname, val) {
+    // Bulletproof PFP Storage & Resolution Helpers
+    function persistPfpLocal(uname, val, ts = Date.now()) {
+      const uk = kOf(uname);
+      pfpUpdatedAt = Math.max(pfpUpdatedAt, ts);
       try {
-        localStorage.setItem("sk_pfp_" + kOf(uname), val);
+        if (uk) {
+          localStorage.setItem("sk_pfp_" + uk, val);
+          localStorage.setItem("sk_pfp_ts_" + uk, String(pfpUpdatedAt));
+        }
+        localStorage.setItem("sk_pfp_by_id_" + devId, val);
+        if (me) {
+          const snapshot = Object.assign({}, me, {
+            av: val,
+            avatar: val,
+            pfp: val,
+            pfpUpdatedAt
+          });
+          localStorage.setItem("sk_me", JSON.stringify(snapshot));
+        }
       } catch (_) {}
     }
 
     function getPfpLocal(uname) {
+      const uk = kOf(uname);
       try {
-        return localStorage.getItem("sk_pfp_" + kOf(uname)) || "";
+        if (uk) {
+          const byName = localStorage.getItem("sk_pfp_" + uk);
+          if (byName) return byName;
+        }
+        if (me && uk && kOf(me.name) === uk) {
+          const byId = localStorage.getItem("sk_pfp_by_id_" + devId);
+          if (byId) return byId;
+        }
+      } catch (_) {}
+      return "";
+    }
+
+    function getPfpTsLocal(uname) {
+      const uk = kOf(uname);
+      try {
+        const raw = uk ? localStorage.getItem("sk_pfp_ts_" + uk) : "";
+        return Math.max(Number(raw || 0), me && kOf(me.name) === uk ? pfpUpdatedAt : 0);
       } catch (_) {
-        return "";
+        return pfpUpdatedAt;
       }
     }
 
     function resolveUserPfp(uname, fallback = "😎") {
       const local = getPfpLocal(uname);
       if (local) return local;
-      const liveUser = Object.values(users).find(u => u && u.name && u.name.toLowerCase() === String(uname || "").toLowerCase());
-      if (liveUser && liveUser.av) return liveUser.av;
+      const liveUser = Object.values(users).find(
+        u => u && u.name && u.name.toLowerCase() === String(uname || "").toLowerCase()
+      );
+      if (liveUser) {
+        const cand = liveUser.pfp || liveUser.avatar || liveUser.av;
+        if (cand) return cand;
+      }
+      const acct = accounts[kOf(uname)];
+      if (acct && (acct.pfp || acct.avatar || acct.av)) {
+        return acct.pfp || acct.avatar || acct.av;
+      }
       return fallback;
     }
 
-    function compressImageFile(file, maxSide = 360, quality = 0.78) {
+    // Compress Uploaded Image to Max 160x160 JPEG @ 0.72 Quality
+    function compressImageFile(file, maxSide = 160, quality = 0.72) {
       return new Promise((resolve, reject) => {
         if (!file || !file.type.startsWith("image/")) {
           reject(new Error("Select a valid image file."));
@@ -1560,7 +1705,7 @@
       return { permanent: false, remainingText: `${mins} min(s) left` };
     }
 
-    // Strict Admin-Only UI Visibility
+    // Strict Admin-Only Visibility Control
     function syncAdminVisibility() {
       const isAdm = Boolean(me && me.isAdmin);
       const topAdmBtn = document.getElementById("openAdmBtn");
@@ -1648,7 +1793,7 @@
       await dbPut(`messages/${rKey}/${id}`, msg);
     }
 
-    // Build Entry Avatar Grid & Listeners
+    // Build Entry Avatar Preset Strip
     const avGridEl = document.getElementById("avGrid");
     AVS.forEach((emo, idx) => {
       const btn = document.createElement("button");
@@ -1663,16 +1808,22 @@
       avGridEl.appendChild(btn);
     });
 
+    // Admin Access Checkbox & Secret Password Box
     const admToggleEl = document.getElementById("admToggle");
-    const admKeyWrapEl = document.getElementById("admKeyWrap");
-    admToggleEl.onchange = () => {
-      admKeyWrapEl.classList.toggle("hidden", !admToggleEl.checked);
+    const admKeyInpEl = document.getElementById("admKeyInp");
+    const admLoginStatusEl = document.getElementById("admLoginStatus");
+
+    function updateAdminBoxVisualState() {
       if (admToggleEl.checked) {
-        document.getElementById("admKeyInp").focus();
+        admLoginStatusEl.textContent = "Admin Login active — enter the Admin Secret Password above.";
+        admKeyInpEl.focus();
       } else {
-        document.getElementById("admKeyInp").value = "";
+        admLoginStatusEl.textContent = "Check 'Admin Login' above and enter the admin password to sign in as Admin.";
       }
-    };
+    }
+
+    admToggleEl.addEventListener("change", updateAdminBoxVisualState);
+    updateAdminBoxVisualState();
 
     // Live Nickname Availability Hint
     const nickInpEl = document.getElementById("nickInp");
@@ -1680,7 +1831,7 @@
     async function updateAuthHint() {
       const raw = nickInpEl.value.trim();
       if (!raw) {
-        authModeHintEl.textContent = "Each username belongs to one account; new names register with your password.";
+        authModeHintEl.textContent = "Each username belongs to one account; new names register with your password, existing names require their password.";
         return;
       }
       if (!Object.keys(accounts).length) {
@@ -1697,8 +1848,8 @@
     nickInpEl.addEventListener("input", updateAuthHint);
     nickInpEl.addEventListener("blur", updateAuthHint);
 
-    // Login / Enter Chat Handler
-    document.getElementById("enterBtn").onclick = async () => {
+    // Reliable Enter Chat / Login Handler (Works with Button Click or Enter Key + Offline Fallback)
+    async function attemptEnterChat() {
       const nick = document.getElementById("nickInp").value.trim();
       const userPass = document.getElementById("userPassInp").value;
       const room = document.getElementById("roomSel").value;
@@ -1729,11 +1880,11 @@
         dbGet(`messages/${kOf(room)}`)
       ]);
 
-      banned = b || {};
-      users = u || {};
-      ranks = r || {};
-      stats = s || {};
-      accounts = acc || {};
+      banned = b || banned || {};
+      users = u || users || {};
+      ranks = r || ranks || {};
+      stats = s || stats || {};
+      accounts = acc || accounts || {};
       if (typeof cfgPass === "string" && cfgPass.trim()) {
         adminPass = cfgPass.trim();
       }
@@ -1743,9 +1894,9 @@
 
       let isAdmin = false;
       if (admToggleEl.checked) {
-        const typedAdminPass = document.getElementById("admKeyInp").value;
+        const typedAdminPass = admKeyInpEl.value;
         if (typedAdminPass !== adminPass) {
-          errEl.textContent = "Invalid Admin password.";
+          errEl.textContent = "Invalid Admin Secret Password.";
           return;
         }
         isAdmin = true;
@@ -1759,7 +1910,6 @@
         return;
       }
 
-      // Unique Username Ownership & Password Verification
       const accKey = kOf(nick);
       const passHash = hashPassword(userPass);
       const existingAcc = accounts[accKey];
@@ -1775,13 +1925,15 @@
         const newAccount = {
           name: nick,
           passHash,
+          pfp: chosenAv,
+          avatar: chosenAv,
+          av: chosenAv,
           createdAt: Date.now()
         };
         accounts[accKey] = newAccount;
         await dbPut("accounts/" + accKey, newAccount);
       }
 
-      // One-Account-Per-Device Lock (unless Admin)
       const activeOtherOnDevice = Object.values(users).find(
         item => item && item.devId === devId && item.name && item.name.toLowerCase() !== finalName.toLowerCase()
       );
@@ -1790,7 +1942,6 @@
         return;
       }
 
-      // Remove duplicate sessions for the same username
       for (const [uk, uv] of Object.entries(users)) {
         if (uv && uv.name && uv.name.toLowerCase() === finalName.toLowerCase() && uk !== devId) {
           await dbDel("users/" + uk);
@@ -1801,17 +1952,26 @@
       const userPfp = resolveUserPfp(finalName, chosenAv);
       const assignedRank = isAdmin
         ? "Admin"
-        : (ranks[finalKey] && ranks[finalKey] !== "Admin" ? ranks[finalKey] : "Member");
+        : (RANKS.includes(ranks[finalKey]) && ranks[finalKey] !== "Admin" ? ranks[finalKey] : "User");
 
+      ranks[finalKey] = assignedRank;
       await dbPut("ranks/" + finalKey, assignedRank);
       if (!stats[finalKey]) {
         stats[finalKey] = { exp: 0, coins: 0 };
         await dbPut("stats/" + finalKey, stats[finalKey]);
       }
 
-      me = { name: finalName, av: userPfp, room, isAdmin, devId };
+      me = {
+        name: finalName,
+        av: userPfp,
+        avatar: userPfp,
+        pfp: userPfp,
+        room,
+        isAdmin,
+        devId
+      };
       users[devId] = me;
-      savePfpLocal(finalName, userPfp);
+      persistPfpLocal(finalName, userPfp, Date.now());
       await dbPut("users/" + devId, me);
 
       const rKey = kOf(room);
@@ -1822,15 +1982,28 @@
       }
 
       document.getElementById("userPassInp").value = "";
-      document.getElementById("admKeyInp").value = "";
+      admKeyInpEl.value = "";
       document.getElementById("entryScreen").classList.add("hidden");
       document.getElementById("roomScreen").classList.remove("hidden");
       syncAdminVisibility();
       playTone(620, 0.09);
       renderRoom();
-    };
+    }
 
-    // Room Message Sending (+10 EXP & +5 Coins; Admin has ∞ Coins)
+    document.getElementById("enterBtn").addEventListener("click", attemptEnterChat);
+    ["nickInp", "userPassInp", "admKeyInp"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            attemptEnterChat();
+          }
+        });
+      }
+    });
+
+    // Room Message Sending (+5 Coins & +10 EXP; No Free Coins)
     async function sendChatMessage({ text = "", img = "", ytId = "", giftText = "", quote = null }) {
       if (!me) return;
       const muteInfo = getActiveMute(me.name);
@@ -1842,7 +2015,6 @@
       const cleanText = String(text || "").trim();
       if (!cleanText && !img && !ytId && !giftText) return;
 
-      // Slash Commands: /w <user> <message> and /roll
       if (!img && !ytId && !giftText && cleanText.startsWith("/")) {
         const parts = cleanText.split(/\s+/);
         const cmd = parts[0].toLowerCase();
@@ -1861,15 +2033,14 @@
           const tKey = kOf(targetName);
           const now = Date.now();
           const wId = `W_${now}_${Math.random().toString(36).slice(2, 6)}`;
-          const wObj = {
+          await dbPut(`whispers/${tKey}/${wId}`, {
             id: wId,
             ts: now,
             from: me.name,
             to: targetName,
             text: whisperBody,
             time: new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-          };
-          await dbPut(`whispers/${tKey}/${wId}`, wObj);
+          });
           showToast(`Whisper sent to ${targetName}`);
           return;
         }
@@ -1878,11 +2049,14 @@
       const rKey = kOf(me.room);
       const now = Date.now();
       const msgId = `MSG_${now}_${Math.random().toString(36).slice(2, 6)}`;
+      const curAv = resolveUserPfp(me.name, me.av);
       const msgObj = {
         id: msgId,
         ts: now,
         sender: me.name,
-        av: resolveUserPfp(me.name, me.av),
+        av: curAv,
+        avatar: curAv,
+        pfp: curAv,
         role: rankOf(me),
         text: cleanText,
         img: img || "",
@@ -1893,17 +2067,15 @@
         time: new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
 
-      // Optimistic Persistence into Pending + Local Mirror
       pendingMsgs[rKey] = pendingMsgs[rKey] || {};
       pendingMsgs[rKey][msgId] = msgObj;
       saveLocalRoomMirror(rKey);
 
-      // Update EXP (+10) & Coins (+5; Admin keeps ∞)
       const uKey = kOf(me.name);
       const curSt = stats[uKey] || { exp: 0, coins: 0 };
       const nextSt = {
         exp: Number(curSt.exp || 0) + 10,
-        coins: me.isAdmin ? 999999 : Number(curSt.coins || 0) + 5
+        coins: Number(curSt.coins || 0) + 5
       };
       stats[uKey] = nextSt;
 
@@ -1934,11 +2106,13 @@
       document.getElementById("replyBar").classList.add("hidden");
     };
 
-    // Media Drawer Controls (Photo Upload/URL, YouTube, Gift)
+    // Media Drawer (Photo Upload/URL, YouTube, 20-Coin Gift)
     const mediaDrawerEl = document.getElementById("mediaDrawer");
-    document.getElementById("plusDrawerBtn").onclick = () => {
+    function toggleMediaDrawer() {
       mediaDrawerEl.classList.toggle("hidden");
-    };
+    }
+    document.getElementById("plusDrawerBtn").onclick = toggleMediaDrawer;
+    document.getElementById("railMediaBtn").onclick = toggleMediaDrawer;
 
     document.getElementById("photoFileInp").onchange = async (e) => {
       const file = e.target.files && e.target.files[0];
@@ -1986,20 +2160,18 @@
       if (!me) return;
       const uKey = kOf(me.name);
       const st = stats[uKey] || { exp: 0, coins: 0 };
-      if (!me.isAdmin && Number(st.coins || 0) < 20) {
+      if (Number(st.coins || 0) < 20) {
         showToast("Need 20 Coins to send a Rose Gift (chat to earn +5 Coins/msg).");
         return;
       }
-      if (!me.isAdmin) {
-        st.coins = Number(st.coins || 0) - 20;
-        stats[uKey] = st;
-        await dbPut("stats/" + uKey, st);
-      }
+      st.coins = Number(st.coins || 0) - 20;
+      stats[uKey] = st;
+      await dbPut("stats/" + uKey, st);
       mediaDrawerEl.classList.add("hidden");
       await sendChatMessage({ giftText: "sent a special 🌹 Rose Gift!" });
     };
 
-    // GIPHY Real-Time Search (GIFs & Stickers, VIP+ Free, Load More + Proxy Fallback)
+    // GIPHY Live GIFs & Stickers Picker (API Key: MuD5UfvhOF5BJ1Bb6SDlvsUzjUCEKM9s)
     const gifPopEl = document.getElementById("gifPop");
     const gifGridEl = document.getElementById("gifGrid");
     const gifCatsEl = document.getElementById("gifCats");
@@ -2130,69 +2302,119 @@
       loadGiphyMedia(true);
     };
 
-    // Self PFP Modal (Username Change Reserved for Admin Only)
+    // Bulletproof PFP Modal (File Compression 160x160 @ 0.72, Use URL Button, Emoji Presets)
     const pfpModalEl = document.getElementById("pfpModal");
     const pfpPresetGridEl = document.getElementById("pfpPresetGrid");
 
-    function renderPfpModal() {
+    function updatePfpPreviewUi(statusMsg = "") {
       if (!me) return;
-      selectedPfpValue = resolveUserPfp(me.name, me.av);
       document.getElementById("pfpAcctName").textContent = `${me.name} (${rankOf(me)})`;
-      document.getElementById("pfpUrlInp").value = isImageVal(selectedPfpValue) && !selectedPfpValue.startsWith("data:") ? selectedPfpValue : "";
+      if (statusMsg) {
+        document.getElementById("pfpStatusText").textContent = statusMsg;
+      }
       const prev = document.getElementById("pfpPreview");
-      prev.innerHTML = isImageVal(selectedPfpValue)
-        ? `<img src="${esc(selectedPfpValue)}" alt="Preview" />`
-        : esc(selectedPfpValue);
+      prev.innerHTML = isImageVal(draftPfp)
+        ? `<img src="${esc(draftPfp)}" alt="PFP Preview" />`
+        : esc(draftPfp || "😎");
 
+      pfpPresetGridEl.querySelectorAll(".av-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.textContent === draftPfp);
+      });
+    }
+
+    function openPfpModal() {
+      if (!me) return;
+      draftPfp = resolveUserPfp(me.name, me.av);
+      document.getElementById("pfpUrlInp").value = isImageVal(draftPfp) && !draftPfp.startsWith("data:") ? draftPfp : "";
       pfpPresetGridEl.innerHTML = "";
       AVS.forEach(emo => {
         const b = document.createElement("button");
         b.type = "button";
-        b.className = "av-btn" + (selectedPfpValue === emo ? " active" : "");
+        b.className = "av-btn" + (draftPfp === emo ? " active" : "");
         b.textContent = emo;
         b.onclick = () => {
-          selectedPfpValue = emo;
-          renderPfpModal();
+          draftPfp = emo;
+          document.getElementById("pfpUrlInp").value = "";
+          updatePfpPreviewUi(`Selected emoji preset ${emo} — click Save PFP to apply.`);
         };
         pfpPresetGridEl.appendChild(b);
       });
+      updatePfpPreviewUi("Upload a photo, click Use URL, or choose an emoji.");
+      pfpModalEl.classList.remove("hidden");
     }
 
-    document.getElementById("openPfpBtn").onclick = () => {
-      renderPfpModal();
-      pfpModalEl.classList.remove("hidden");
-    };
+    document.getElementById("openPfpBtn").onclick = openPfpModal;
+    document.getElementById("topPfpChip").onclick = openPfpModal;
     document.getElementById("closePfpBtn").onclick = () => pfpModalEl.classList.add("hidden");
 
     document.getElementById("pfpFileInp").onchange = async (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
       try {
-        selectedPfpValue = await compressImageFile(file, 260, 0.78);
+        draftPfp = await compressImageFile(file, 160, 0.72);
         e.target.value = "";
-        renderPfpModal();
+        updatePfpPreviewUi("Compressed image (160×160 JPEG) ready — click Save PFP.");
       } catch (err) {
-        showToast(err.message || "Invalid image file.");
+        updatePfpPreviewUi(err.message || "Could not process image.");
+        showToast(err.message || "Could not process image.");
       }
+    };
+
+    document.getElementById("usePfpUrlBtn").onclick = () => {
+      const url = document.getElementById("pfpUrlInp").value.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        updatePfpPreviewUi("Enter a valid http/https image URL first.");
+        showToast("Enter a valid http/https image URL.");
+        return;
+      }
+      draftPfp = url;
+      updatePfpPreviewUi("Image URL applied to preview — click Save PFP.");
     };
 
     document.getElementById("savePfpBtn").onclick = async () => {
       if (!me) return;
       const urlTyped = document.getElementById("pfpUrlInp").value.trim();
-      if (urlTyped) {
+      if (urlTyped && urlTyped !== draftPfp) {
         if (!/^https?:\/\//i.test(urlTyped)) {
           showToast("Enter a valid http/https image URL.");
           return;
         }
-        selectedPfpValue = urlTyped;
+        draftPfp = urlTyped;
       }
-      me.av = selectedPfpValue;
-      users[devId] = me;
-      savePfpLocal(me.name, selectedPfpValue);
-      await dbPut(`users/${devId}/av`, selectedPfpValue);
+
+      const finalVal = draftPfp || "😎";
+      const nowTs = Date.now();
+      const nameKey = kOf(me.name);
+
+      me = Object.assign({}, me, {
+        av: finalVal,
+        avatar: finalVal,
+        pfp: finalVal,
+        pfpUpdatedAt: nowTs
+      });
+      users[devId] = Object.assign({}, users[devId] || {}, me);
+
+      if (accounts[nameKey]) {
+        accounts[nameKey] = Object.assign({}, accounts[nameKey], {
+          av: finalVal,
+          avatar: finalVal,
+          pfp: finalVal,
+          pfpUpdatedAt: nowTs
+        });
+      }
+
+      persistPfpLocal(me.name, finalVal, nowTs);
       pfpModalEl.classList.add("hidden");
-      showToast("Your PFP has been updated!");
       renderRoom();
+      showToast("Profile picture updated!");
+
+      await Promise.all([
+        dbPut(`users/${devId}/av`, finalVal),
+        dbPut(`users/${devId}/avatar`, finalVal),
+        dbPut(`users/${devId}/pfp`, finalVal),
+        dbPut(`users/${devId}/pfpUpdatedAt`, nowTs),
+        accounts[nameKey] ? dbPut(`accounts/${nameKey}/pfp`, finalVal) : Promise.resolve()
+      ]);
     };
 
     // Under-18 & Respect Everyone Rules Modal
@@ -2216,13 +2438,13 @@
 
     // Abuse Report Modal
     const reportModalEl = document.getElementById("reportModal");
-    function openReportModal(prefillTarget = "") {
+    function openReportModal(prefillTarget = "", prefillDetails = "") {
       document.getElementById("repTargetInp").value = prefillTarget;
-      document.getElementById("repDetailsInp").value = "";
+      document.getElementById("repDetailsInp").value = prefillDetails;
       reportModalEl.classList.remove("hidden");
     }
 
-    document.getElementById("openReportBtn").onclick = () => openReportModal("");
+    document.getElementById("openReportBtn").onclick = () => openReportModal("", "");
     document.getElementById("closeReportBtn").onclick = () => reportModalEl.classList.add("hidden");
 
     document.getElementById("submitReportBtn").onclick = async () => {
@@ -2325,9 +2547,10 @@
       fListEl.innerHTML = myFriends.length ? "" : `<div class="u-sub">No friends added yet.</div>`;
       myFriends.forEach(fk => {
         const fname = friendsMap[myKey][fk] || fk;
+        const isOnline = Object.values(users).some(u => u && u.name && kOf(u.name) === fk);
         const row = document.createElement("div");
         row.className = "mod-row";
-        row.innerHTML = `<strong>${esc(fname)}</strong>`;
+        row.innerHTML = `<div><strong>${esc(fname)}</strong> <span class="u-sub">${isOnline ? "🟢 Online" : "⚫ Offline"}</span></div>`;
         const btns = document.createElement("div");
         btns.style.display = "flex";
         btns.style.gap = "4px";
@@ -2401,7 +2624,7 @@
       inp.value = "";
     };
 
-    // Personal Chat (1-on-1 DM) Modal
+    // 1-on-1 Personal Chat (DM) with Reply, Jump-to-Original Highlight, GIFs, Reactions, Typing & Read Receipts
     const dmModalEl = document.getElementById("dmModal");
     function dmThreadKey(a, b) {
       const pair = [String(a || "").trim(), String(b || "").trim()].sort((x, y) => x.toLowerCase().localeCompare(y.toLowerCase()));
@@ -2425,6 +2648,18 @@
       return Array.from(names);
     }
 
+    function highlightDmMessage(msgId) {
+      const feed = document.getElementById("dmFeed");
+      const targetEl = feed.querySelector(`[data-dmid="${CSS.escape(msgId)}"]`);
+      if (!targetEl) {
+        showToast("Original message not in current thread.");
+        return;
+      }
+      targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      targetEl.classList.add("highlighted");
+      setTimeout(() => targetEl.classList.remove("highlighted"), 1800);
+    }
+
     function renderDmFeed() {
       if (!me) return;
       const sel = document.getElementById("dmPeerSel");
@@ -2433,6 +2668,9 @@
       sel.innerHTML = "";
       if (!candidates.length) {
         sel.innerHTML = `<option value="">No users available</option>`;
+        document.getElementById("dmPeerTitle").textContent = "No recipient";
+        document.getElementById("dmPeerAv").innerHTML = "😎";
+        document.getElementById("dmTypingIndicator").textContent = "";
         document.getElementById("dmFeed").innerHTML = `<div class="u-sub">No personal chat messages yet.</div>`;
         return;
       }
@@ -2445,11 +2683,29 @@
       });
       activeDmPeer = sel.value || candidates[0];
 
+      const peerOnline = Object.values(users).some(u => u && u.name && u.name.toLowerCase() === activeDmPeer.toLowerCase());
+      document.getElementById("dmPeerTitle").textContent = `${activeDmPeer} (${peerOnline ? "Online" : "Offline"})`;
+      const peerAvEl = document.getElementById("dmPeerAv");
+      const peerPfp = resolveUserPfp(activeDmPeer, "😎");
+      peerAvEl.innerHTML = isImageVal(peerPfp) ? `<img src="${esc(peerPfp)}" alt="Peer" />` : esc(peerPfp);
+
       const tKey = dmThreadKey(me.name, activeDmPeer);
+      const typingEntry = dmTyping[tKey] && dmTyping[tKey][kOf(activeDmPeer)];
+      const isPeerTyping = typingEntry && Number(typingEntry.ts || 0) > Date.now() - 4000;
+      document.getElementById("dmTypingIndicator").textContent = isPeerTyping ? `${activeDmPeer} is typing...` : "";
+
       const rawThread = dmThreads[tKey] || {};
       const list = Object.values(rawThread)
         .filter(Boolean)
         .sort((a, b) => Number(a.ts || 0) - Number(b.ts || 0));
+
+      // Mark incoming messages in this thread as seen
+      list.forEach(m => {
+        if (String(m.from || "").toLowerCase() !== me.name.toLowerCase() && !m.seen) {
+          m.seen = true;
+          dbPut(`dmThreads/${tKey}/${m.id}/seen`, true);
+        }
+      });
 
       const feed = document.getElementById("dmFeed");
       feed.innerHTML = "";
@@ -2462,17 +2718,77 @@
         const mine = String(m.from || "").toLowerCase() === me.name.toLowerCase();
         const row = document.createElement("div");
         row.className = "msg-row" + (mine ? " mine" : "");
-        const imgHtml = m.img ? `<img class="msg-media" src="${esc(m.img)}" alt="DM Image" />` : "";
+        row.setAttribute("data-dmid", m.id);
+
+        const quoteHtml = m.replyTo
+          ? `<div class="msg-quote" data-jump="${esc(m.replyTo.id || "")}">↩ <strong>${esc(m.replyTo.sender)}:</strong> ${esc(m.replyTo.text || "")}</div>`
+          : "";
+
+        const imgHtml = m.img ? `<img class="msg-media" src="${esc(m.img)}" alt="DM Media" />` : "";
+        const reactions = m.reactions || {};
+        const reactChipsHtml = ["👍", "❤️", "😂", "🔥"].map(emo => {
+          const usersList = Array.isArray(reactions[emo]) ? reactions[emo] : [];
+          const active = usersList.includes(me.name);
+          return `<button type="button" class="react-chip${active ? " active" : ""}" data-react="${emo}">${emo}${usersList.length ? " " + usersList.length : ""}</button>`;
+        }).join("");
+
+        const receiptHtml = mine
+          ? `<div class="receipt-txt">${m.seen ? "✓✓ Seen" : "✓ Sent"}</div>`
+          : "";
+
         row.innerHTML = `
           <div class="msg-bubble">
             <div class="msg-meta">
               <span class="msg-sender">${esc(m.from)}</span>
               <span class="msg-time">${esc(m.time || "")}</span>
             </div>
+            ${quoteHtml}
             ${m.text ? `<div class="msg-text">${esc(m.text)}</div>` : ""}
             ${imgHtml}
+            <div class="msg-footer">
+              <div class="react-bar">${reactChipsHtml}</div>
+              <div class="msg-acts">
+                <button type="button" class="mini-act act-dm-reply">↩ Reply</button>
+              </div>
+            </div>
+            ${receiptHtml}
           </div>
         `;
+
+        const qEl = row.querySelector(".msg-quote");
+        if (qEl && m.replyTo && m.replyTo.id) {
+          qEl.onclick = () => highlightDmMessage(m.replyTo.id);
+        }
+
+        row.querySelectorAll(".react-chip").forEach(chip => {
+          chip.onclick = async () => {
+            const emo = chip.getAttribute("data-react");
+            const curArr = Array.isArray(reactions[emo]) ? reactions[emo].slice() : [];
+            const idx = curArr.indexOf(me.name);
+            if (idx >= 0) curArr.splice(idx, 1);
+            else curArr.push(me.name);
+            reactions[emo] = curArr;
+            m.reactions = reactions;
+            renderDmFeed();
+            await dbPut(`dmThreads/${tKey}/${m.id}/reactions`, reactions);
+          };
+        });
+
+        const repBtn = row.querySelector(".act-dm-reply");
+        if (repBtn) {
+          repBtn.onclick = () => {
+            dmReplyDraft = {
+              id: m.id,
+              sender: m.from,
+              text: m.text || (m.img ? "[Image / GIF]" : "")
+            };
+            document.getElementById("dmReplyToName").textContent = dmReplyDraft.sender;
+            document.getElementById("dmReplyToSnippet").textContent = dmReplyDraft.text;
+            document.getElementById("dmReplyBanner").classList.remove("hidden");
+            document.getElementById("dmTextInp").focus();
+          };
+        }
+
         feed.appendChild(row);
       });
       feed.scrollTop = feed.scrollHeight;
@@ -2480,6 +2796,8 @@
 
     function openDmModal(peerName = "") {
       if (peerName) activeDmPeer = peerName;
+      dmReplyDraft = null;
+      document.getElementById("dmReplyBanner").classList.add("hidden");
       renderDmFeed();
       dmModalEl.classList.remove("hidden");
     }
@@ -2487,8 +2805,20 @@
     document.getElementById("openDmTopBtn").onclick = () => openDmModal("");
     document.getElementById("railDmBtn").onclick = () => openDmModal("");
     document.getElementById("closeDmBtn").onclick = () => dmModalEl.classList.add("hidden");
+    document.getElementById("cancelDmReplyBtn").onclick = () => {
+      dmReplyDraft = null;
+      document.getElementById("dmReplyBanner").classList.add("hidden");
+    };
+
+    document.getElementById("reportDmPeerBtn").onclick = () => {
+      if (!activeDmPeer) return;
+      openReportModal(activeDmPeer, `Reported from 1-on-1 Personal Chat with ${activeDmPeer}`);
+    };
+
     document.getElementById("dmPeerSel").onchange = (e) => {
       activeDmPeer = e.target.value;
+      dmReplyDraft = null;
+      document.getElementById("dmReplyBanner").classList.add("hidden");
       renderDmFeed();
     };
 
@@ -2499,6 +2829,54 @@
       await dbDel("dmThreads/" + tKey);
       renderDmFeed();
       showToast("Personal chat cleared.");
+    };
+
+    // DM Typing Signal
+    document.getElementById("dmTextInp").addEventListener("input", () => {
+      if (!me || !activeDmPeer) return;
+      const tKey = dmThreadKey(me.name, activeDmPeer);
+      dmTyping[tKey] = dmTyping[tKey] || {};
+      dmTyping[tKey][kOf(me.name)] = { name: me.name, ts: Date.now() };
+      dbPut(`dmTyping/${tKey}/${kOf(me.name)}`, { name: me.name, ts: Date.now() });
+    });
+
+    // DM GIF Picker
+    document.getElementById("dmGifToggleBtn").onclick = async () => {
+      const strip = document.getElementById("dmGifStrip");
+      strip.classList.toggle("hidden");
+      if (!strip.classList.contains("hidden") && !document.getElementById("dmGifResults").children.length) {
+        await searchDmGifs("");
+      }
+    };
+
+    async function searchDmGifs(query) {
+      const resBox = document.getElementById("dmGifResults");
+      resBox.innerHTML = `<div class="u-sub" style="grid-column:1/-1; text-align:center;">Loading...</div>`;
+      const mode = query.trim() ? "search" : "trending";
+      const qParam = query.trim() ? `&q=${encodeURIComponent(query.trim())}` : "";
+      const url = `https://api.giphy.com/v1/gifs/${mode}?api_key=${GIPHY_KEY}&limit=6&rating=pg${qParam}`;
+      const data = await fetchJsonWithFallback(url);
+      resBox.innerHTML = "";
+      const items = data && Array.isArray(data.data) ? data.data : [];
+      items.forEach(item => {
+        const imgs = item.images || {};
+        const thumb = (imgs.fixed_width_small && imgs.fixed_width_small.url) || "";
+        const full = (imgs.downsized && imgs.downsized.url) || thumb;
+        if (!thumb || !full) return;
+        const tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = "gif-tile";
+        tile.innerHTML = `<img src="${esc(thumb)}" alt="DM GIF" />`;
+        tile.onclick = async () => {
+          document.getElementById("dmGifStrip").classList.add("hidden");
+          await sendPersonalMessage("", full);
+        };
+        resBox.appendChild(tile);
+      });
+    }
+
+    document.getElementById("dmGifSearchBtn").onclick = () => {
+      searchDmGifs(document.getElementById("dmGifInp").value);
     };
 
     async function sendPersonalMessage(text = "", img = "") {
@@ -2524,8 +2902,14 @@
         to: activeDmPeer,
         text: clean,
         img: img || "",
+        replyTo: dmReplyDraft || null,
+        reactions: {},
+        seen: false,
         time: new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
+
+      dmReplyDraft = null;
+      document.getElementById("dmReplyBanner").classList.add("hidden");
       dmThreads[tKey] = dmThreads[tKey] || {};
       dmThreads[tKey][mid] = dObj;
       renderDmFeed();
@@ -2606,7 +2990,7 @@
       document.getElementById("usersSide").classList.toggle("open");
     };
 
-    // Admin Panel Logic (Strictly Admin-Only)
+    // Strict Admin-Only Panel Logic
     const admModalEl = document.getElementById("admModal");
 
     function openAdmModal() {
@@ -2624,7 +3008,10 @@
 
     admModalEl.querySelectorAll(".adm-tab").forEach(tabBtn => {
       tabBtn.onclick = () => {
-        if (!me || !me.isAdmin) return;
+        if (!me || !me.isAdmin) {
+          syncAdminVisibility();
+          return;
+        }
         admModalEl.querySelectorAll(".adm-tab").forEach(b => b.classList.remove("active"));
         tabBtn.classList.add("active");
         const tab = tabBtn.getAttribute("data-atab");
@@ -2675,7 +3062,7 @@
       document.getElementById("banBadge").textContent = activeBans.length + activeMutes.length;
       document.getElementById("dmMonBadge").textContent = dmEntries.length;
 
-      // Users & Ranks Tab (Change Username, Change Password, Assign Rank/Moderator, Custom Mute, Kick, Ban)
+      // Users & Ranks Tab
       const uList = document.getElementById("admUserList");
       uList.innerHTML = "";
       const dirMap = new Map();
@@ -2714,7 +3101,7 @@
       allManaged.forEach(entry => {
         const row = document.createElement("div");
         row.className = "mod-row";
-        const curRank = ranks[entry.userKey] || "Member";
+        const curRank = RANKS.includes(ranks[entry.userKey]) ? ranks[entry.userKey] : "User";
         const muteAct = getActiveMute(entry.name);
 
         row.innerHTML = `
@@ -2731,7 +3118,7 @@
         controls.style.gap = "5px";
         controls.style.flexWrap = "wrap";
 
-        // Admin Change User's Unique Username
+        // Admin Change Unique Username
         const nameInp = document.createElement("input");
         nameInp.className = "inp";
         nameInp.style.width = "102px";
@@ -2757,13 +3144,13 @@
 
           accounts[nextKey] = updatedAcc;
           delete accounts[oldKey];
-          ranks[nextKey] = ranks[oldKey] || "Member";
+          ranks[nextKey] = ranks[oldKey] || "User";
           delete ranks[oldKey];
           stats[nextKey] = stats[oldKey] || { exp: 0, coins: 0 };
           delete stats[oldKey];
 
           const pfpVal = resolveUserPfp(oldName, AVS[0]);
-          savePfpLocal(nextName, pfpVal);
+          persistPfpLocal(nextName, pfpVal, Date.now());
 
           await Promise.all([
             dbPut("accounts/" + nextKey, updatedAcc),
@@ -2785,7 +3172,7 @@
           renderRoom();
         };
 
-        // Admin Change User's Password
+        // Admin Set/Reset Account Password
         const passInp = document.createElement("input");
         passInp.type = "password";
         passInp.className = "inp";
@@ -2814,10 +3201,10 @@
           showToast(`Password updated for ${entry.name}`);
         };
 
-        // Admin Rank / Moderator Selector
+        // Admin Rank Selector (User, VIP, Moderator, Admin)
         const rankSel = document.createElement("select");
         rankSel.className = "sel";
-        rankSel.style.width = "114px";
+        rankSel.style.width = "106px";
         rankSel.style.padding = "4px";
         RANKS.forEach(rk => {
           const op = document.createElement("option");
@@ -2833,7 +3220,7 @@
           renderRoom();
         };
 
-        // Custom-Duration Mute Controls
+        // Custom-Duration Mute Controls (in minutes)
         const muteSel = document.createElement("select");
         muteSel.className = "sel";
         muteSel.style.width = "104px";
@@ -2928,7 +3315,7 @@
         uList.appendChild(row);
       });
 
-      // Reports Tab
+      // Reports & Moderation Tab
       const repList = document.getElementById("admReportList");
       repList.innerHTML = openReps.length ? "" : `<div class="u-sub">No open abuse reports.</div>`;
       openReps.forEach(rep => {
@@ -3025,7 +3412,7 @@
         mList.appendChild(row);
       });
 
-      // Private Chats Safety Monitor Tab
+      // Private Chats (DM Monitor) Tab
       const monBox = document.getElementById("admDmMonitorList");
       monBox.innerHTML = dmEntries.length ? "" : `<div class="u-sub">No 1-on-1 personal chats recorded yet.</div>`;
       dmEntries.forEach(([tKey, tObj]) => {
@@ -3041,10 +3428,15 @@
             <strong>🔒 ${esc(p1)} ↔ ${esc(p2)}</strong>
             <span class="pill">${ordered.length} msg(s)</span>
           </div>
-          <div style="max-height:140px; overflow-y:auto; background:#0c0618; padding:6px; border-radius:8px;">
-            ${ordered.map(m =>
-              `<div style="font-size:11px; margin-bottom:4px;"><strong>${esc(m.from)} → ${esc(m.to)}</strong> (${esc(m.time || "")}): ${esc(m.text || "")}${m.img ? `<img class="msg-media" src="${esc(m.img)}" alt="DM Media" />` : ""}</div>`
-            ).join("")}
+          <div style="max-height:150px; overflow-y:auto; background:#0c0618; padding:6px; border-radius:8px;">
+            ${ordered.map(m => `
+              <div style="font-size:11px; margin-bottom:5px;">
+                <strong>${esc(m.from)} → ${esc(m.to)}</strong> <span class="u-sub">(${esc(m.time || "")})</span>:
+                ${m.replyTo ? `<div class="u-sub">↩ Reply to ${esc(m.replyTo.sender)}: ${esc(m.replyTo.text || "")}</div>` : ""}
+                <span>${esc(m.text || "")}</span>
+                ${m.img ? `<img class="msg-media" src="${esc(m.img)}" alt="DM Media" />` : ""}
+              </div>
+            `).join("")}
           </div>
         `;
 
@@ -3080,7 +3472,7 @@
       });
     }
 
-    // Fixes & Password Tab Handlers
+    // Room Chat Clear, Rules & Admin Password Handlers
     document.getElementById("saveAdmPassBtn").onclick = async () => {
       if (!me || !me.isAdmin) return;
       const nextPass = document.getElementById("newAdmPassInp").value.trim();
@@ -3097,14 +3489,17 @@
     document.getElementById("clearRoomBtn").onclick = async () => {
       if (!me || !me.isAdmin) return;
       const rKey = kOf(me.room);
-      clearedRoomsAt[rKey] = Date.now();
+      const clearStamp = Date.now();
+      clearedRoomsAt[rKey] = clearStamp;
       confirmedMsgs[rKey] = {};
       pendingMsgs[rKey] = {};
-      saveLocalRoomMirror(rKey);
+      try {
+        localStorage.removeItem("sk_room_msgs_" + rKey);
+      } catch (_) {}
       await dbDel(`messages/${rKey}`);
       await postSystemNotice(me.room, `Room chat cleared by ${me.name}`);
       renderRoom();
-      showToast("Room chat cleared!");
+      showToast("Room chat cleared from Firebase & local cache!");
     };
 
     document.getElementById("syncFixBtn").onclick = async () => {
@@ -3125,7 +3520,7 @@
       showToast("Under-18 & Respect rules updated!");
     };
 
-    // Render Room Messages, Badges & Online Users
+    // Render Room Messages, PFP Badges, Friend/DM Badges & Online Users
     function renderRoom() {
       if (!me) {
         syncAdminVisibility();
@@ -3136,13 +3531,17 @@
       const rKey = kOf(me.room);
       const uKey = kOf(me.name);
       const mySt = stats[uKey] || { exp: 0, coins: 0 };
+      const myCurrentPfp = resolveUserPfp(me.name, me.av);
+
+      const topAvEl = document.getElementById("topPfpAv");
+      topAvEl.innerHTML = isImageVal(myCurrentPfp) ? `<img src="${esc(myCurrentPfp)}" alt="My PFP" />` : esc(myCurrentPfp);
+      document.getElementById("topPfpName").textContent = me.name;
 
       document.getElementById("roomHeading").textContent = me.room;
       document.getElementById("rankChip").textContent = rankOf(me);
       document.getElementById("myExp").textContent = mySt.exp || 0;
-      document.getElementById("myCoins").textContent = me.isAdmin ? "∞" : (mySt.coins || 0);
+      document.getElementById("myCoins").textContent = mySt.coins || 0;
 
-      // Mute Banner
       const muteInfo = getActiveMute(me.name);
       const muteBannerEl = document.getElementById("muteBanner");
       if (muteInfo) {
@@ -3152,7 +3551,6 @@
         muteBannerEl.classList.add("hidden");
       }
 
-      // Friend Request Badge
       const incCount = Object.values(friendRequests).filter(
         req => req && req.status === "pending" && kOf(req.to) === uKey
       ).length;
@@ -3160,7 +3558,23 @@
       reqBadgeEl.textContent = incCount;
       reqBadgeEl.classList.toggle("hidden", incCount === 0);
 
-      // Messages Feed
+      // Unread DM Indicator
+      let unreadDmCount = 0;
+      Object.values(dmThreads).forEach(tObj => {
+        if (!tObj || typeof tObj !== "object") return;
+        Object.values(tObj).forEach(m => {
+          if (m && String(m.to || "").toLowerCase() === me.name.toLowerCase() && !m.seen) {
+            unreadDmCount += 1;
+          }
+        });
+      });
+      const dmBadgeEl = document.getElementById("dmUnreadBadge");
+      const dmDotEl = document.getElementById("dmDot");
+      dmBadgeEl.textContent = unreadDmCount;
+      dmBadgeEl.classList.toggle("hidden", unreadDmCount === 0);
+      dmDotEl.classList.toggle("hidden", unreadDmCount === 0);
+
+      // Room Messages Feed
       const feedEl = document.getElementById("chatFeed");
       const atBottom = feedEl.scrollHeight - feedEl.scrollTop - feedEl.clientHeight < 90;
       const orderedMsgs = getOrderedRoomMessages(rKey);
@@ -3182,8 +3596,11 @@
         const senderLive = Object.values(users).find(
           u => u && u.name && u.name.toLowerCase() === String(m.sender || "").toLowerCase()
         );
-        const avSrc = (senderLive && senderLive.av) || getPfpLocal(m.sender) || m.av || "😎";
-        const roleLabel = senderLive ? rankOf(senderLive) : (m.role || "Member");
+        const avSrc = isMine
+          ? myCurrentPfp
+          : (getPfpLocal(m.sender) || (senderLive && (senderLive.pfp || senderLive.avatar || senderLive.av)) || m.pfp || m.avatar || m.av || "😎");
+
+        const roleLabel = senderLive ? rankOf(senderLive) : (m.role || "User");
         const roleCls = roleLabel === "Admin" ? "admin" : (VIP_PLUS.has(roleLabel) ? "vip" : "");
 
         const quoteHtml = m.quote
@@ -3279,7 +3696,7 @@
         feedEl.scrollTop = feedEl.scrollHeight;
       }
 
-      // Online Grouped Users Sidebar
+      // Online Users Grouped Sidebar
       const roomUsers = Object.values(users).filter(u => u && u.name && kOf(u.room || me.room) === rKey);
       document.getElementById("onlineCount").textContent = roomUsers.length;
 
@@ -3301,18 +3718,20 @@
           const st = stats[kOf(u.name)] || { exp: 0, coins: 0 };
           const card = document.createElement("div");
           card.className = "u-card";
+          const isSelf = u.name.toLowerCase() === me.name.toLowerCase();
+          const cardAv = isSelf ? myCurrentPfp : resolveUserPfp(u.name, u.pfp || u.avatar || u.av);
           const top = document.createElement("div");
           top.className = "u-row";
           top.innerHTML = `
-            ${renderAvHtml(resolveUserPfp(u.name, u.av), "msg-av")}
+            ${renderAvHtml(cardAv, "msg-av")}
             <div>
               <div class="u-name">${esc(u.name)}</div>
-              <div class="u-sub">${esc(rankOf(u))} • EXP ${st.exp || 0} • Coins ${u.isAdmin ? "∞" : (st.coins || 0)}</div>
+              <div class="u-sub">${esc(rankOf(u))} • EXP ${st.exp || 0} • Coins ${st.coins || 0}</div>
             </div>
           `;
           card.appendChild(top);
 
-          if (u.name.toLowerCase() !== me.name.toLowerCase()) {
+          if (!isSelf) {
             const acts = document.createElement("div");
             acts.className = "u-actions";
 
@@ -3374,10 +3793,10 @@
       document.getElementById("entryScreen").classList.remove("hidden");
     };
 
-    // Real-Time Sync Loop
+    // Real-Time Sync Loop with Timestamp-Guarded PFP Protection
     async function syncLoop() {
       const rKey = me ? kOf(me.room) : kOf(document.getElementById("roomSel").value);
-      const [u, b, r, s, acc, rm, dms, freq, frnd, mt, rp, cfgPass, cfgRules] = await Promise.all([
+      const [u, b, r, s, acc, rm, dms, typ, freq, frnd, mt, rp, cfgPass, cfgRules] = await Promise.all([
         dbGet("users"),
         dbGet("banned"),
         dbGet("ranks"),
@@ -3385,6 +3804,7 @@
         dbGet("accounts"),
         dbGet(`messages/${rKey}`),
         dbGet("dmThreads"),
+        dbGet("dmTyping"),
         dbGet("friendRequests"),
         dbGet("friends"),
         dbGet("mutes"),
@@ -3393,16 +3813,17 @@
         dbGet("config/rules")
       ]);
 
-      users = u || {};
-      banned = b || {};
-      ranks = r || {};
-      stats = s || {};
-      accounts = acc || {};
-      dmThreads = dms || {};
-      friendRequests = freq || {};
-      friendsMap = frnd || {};
-      mutes = mt || {};
-      reports = rp || {};
+      users = u || users || {};
+      banned = b || banned || {};
+      ranks = r || ranks || {};
+      stats = s || stats || {};
+      accounts = acc || accounts || {};
+      dmThreads = dms || dmThreads || {};
+      dmTyping = typ || dmTyping || {};
+      friendRequests = freq || friendRequests || {};
+      friendsMap = frnd || friendsMap || {};
+      mutes = mt || mutes || {};
+      reports = rp || reports || {};
 
       if (typeof cfgPass === "string" && cfgPass.trim()) {
         adminPass = cfgPass.trim();
@@ -3429,11 +3850,27 @@
             : "You were removed from the room.";
           return;
         }
+
         if (liveSelf) {
           me.name = liveSelf.name;
-          me.av = liveSelf.av || me.av;
           me.room = liveSelf.room || me.room;
           me.isAdmin = Boolean(liveSelf.isAdmin);
+
+          const localTs = getPfpTsLocal(me.name);
+          const remoteTs = Number(liveSelf.pfpUpdatedAt || 0);
+          const localVal = getPfpLocal(me.name);
+          const remoteVal = liveSelf.pfp || liveSelf.avatar || liveSelf.av;
+
+          if (localVal && (!remoteVal || localTs >= remoteTs)) {
+            me.av = localVal;
+            me.avatar = localVal;
+            me.pfp = localVal;
+          } else if (remoteVal && remoteTs > localTs) {
+            me.av = remoteVal;
+            me.avatar = remoteVal;
+            me.pfp = remoteVal;
+            persistPfpLocal(me.name, remoteVal, remoteTs);
+          }
         }
         renderRoom();
       } else {
