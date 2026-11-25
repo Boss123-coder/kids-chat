@@ -3,598 +3,3443 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SafeKids Chat — All-World GIFs, Stickers & Admin Room</title>
+  <title>SafeKids Chat Rooms</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-    body { height: 100vh; overflow: hidden; background: #0d0b14; color: #f3f4f6; }
-    .hidden { display: none !important; }
+    /* Design Tokens & Dark Purple/Neon Geometric Polygon Theme */
+    :root {
+      --bg-void: #090512;
+      --bg-panel: #120b22;
+      --bg-elevated: #1b1133;
+      --bg-card: #221640;
+      --border-dim: rgba(168, 85, 247, 0.24);
+      --border-bright: rgba(217, 70, 239, 0.55);
+      --text-main: #f5f3ff;
+      --text-muted: #b7a8d9;
+      --accent-purple: #9333ea;
+      --accent-pink: #ec4899;
+      --accent-cyan: #22d3ee;
+      --accent-gold: #fbbf24;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+    }
 
-    /* Entry Screen */
-    .entry-bg {
-      height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px;
-      background:
-        radial-gradient(circle at 25% 25%, rgba(168, 85, 247, 0.28), transparent 45%),
-        radial-gradient(circle at 80% 75%, rgba(236, 72, 153, 0.22), transparent 45%),
-        linear-gradient(135deg, #120d1d 0%, #1c132b 55%, #0c0a12 100%);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    .entry-box {
-      width: 100%; max-width: 390px;
-      background: rgba(24, 19, 36, 0.94); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 16px; padding: 20px; box-shadow: 0 24px 60px rgba(0,0,0,0.75);
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-void);
+      color: var(--text-main);
+      overflow-x: hidden;
     }
-    .entry-title { text-align: center; font-size: 21px; font-weight: 800; margin-bottom: 14px; }
-    .entry-title span { color: #c084fc; }
-    .lbl { display: block; font-size: 11px; font-weight: 700; color: #a1a1aa; text-transform: uppercase; margin: 10px 0 4px; }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Geometric Polygon Background Pattern */
+    .poly-bg {
+      background-color: #090512;
+      background-image:
+        linear-gradient(135deg, rgba(147, 51, 234, 0.16) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(236, 72, 153, 0.14) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(34, 211, 238, 0.08) 25%, transparent 25%),
+        linear-gradient(315deg, rgba(126, 34, 206, 0.18) 25%, #090512 25%);
+      background-position: 36px 0, 36px 0, 0 0, 0 0;
+      background-size: 72px 72px;
+      background-repeat: repeat;
+    }
+
+    /* Room Theme Variants */
+    body.theme-neon .chat-canvas {
+      background-color: #070917;
+      background-image:
+        linear-gradient(120deg, rgba(34, 211, 238, 0.14) 25%, transparent 25%),
+        linear-gradient(240deg, rgba(168, 85, 247, 0.16) 25%, transparent 25%),
+        linear-gradient(60deg, rgba(236, 72, 153, 0.1) 25%, #070917 25%);
+      background-size: 64px 64px;
+    }
+
+    body.theme-sunset .chat-canvas {
+      background-color: #140714;
+      background-image:
+        linear-gradient(135deg, rgba(244, 63, 94, 0.16) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(251, 191, 36, 0.12) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(168, 85, 247, 0.14) 25%, #140714 25%);
+      background-size: 68px 68px;
+    }
+
+    /* Entry / Login Screen */
+    .entry-wrap {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .entry-card {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(18, 11, 34, 0.94);
+      border: 1px solid var(--border-bright);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 28px rgba(147, 51, 234, 0.22);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-title span {
+      background: linear-gradient(90deg, #c084fc, #f472b6, #22d3ee);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .brand-sub {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      margin-bottom: 18px;
+    }
+
+    .lbl {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
     .inp, .sel {
-      width: 100%; padding: 9px 11px; border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.14); background: #110e1a; color: #fff; font-size: 13px; outline: none;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-dim);
+      background: #0d0719;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
-    .inp:focus, .sel:focus { border-color: #a855f7; }
-    .sel option { background: #181324; color: #fff; }
-    .avs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
-    .av {
-      padding: 7px 0; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12);
-      background: #110e1a; font-size: 18px; cursor: pointer;
-    }
-    .av.on { border-color: #a855f7; background: rgba(168,85,247,0.25); }
-    .adm-card {
-      margin-top: 12px; padding: 10px 12px; border-radius: 10px;
-      background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.35);
-    }
-    .adm-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #fbbf24; }
-    .go-btn {
-      width: 100%; margin-top: 14px; padding: 11px; border: none; border-radius: 9px;
-      background: linear-gradient(90deg, #9333ea, #db2777); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer;
-    }
-    .err { color: #f87171; font-size: 12px; margin-top: 8px; min-height: 16px; }
 
-    /* Main Chat Layout (Left Feed + Center Stage + Right Users) */
-    .room-shell { display: flex; flex-direction: column; height: 100vh; }
-    .top-bar {
-      height: 42px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 0 12px; background: #141020; border-bottom: 1px solid rgba(255,255,255,0.09); font-size: 12px;
+    .inp:focus, .sel:focus {
+      border-color: #d946ef;
+      box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.18);
     }
-    .chip {
-      padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+
+    .av-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-top: 4px;
     }
+
+    .av-btn {
+      height: 42px;
+      border-radius: 10px;
+      border: 1px solid var(--border-dim);
+      background: #170e2c;
+      color: var(--text-main);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    }
+
+    .av-btn:hover {
+      transform: translateY(-1px);
+      border-color: #c084fc;
+    }
+
+    .av-btn.active {
+      border-color: #f472b6;
+      background: rgba(168, 85, 247, 0.28);
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.35);
+    }
+
+    .adm-box {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(251, 191, 36, 0.32);
+      background: rgba(251, 191, 36, 0.06);
+    }
+
+    .adm-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fde68a;
+    }
+
+    .rules-agree {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .rules-agree input {
+      margin-top: 2px;
+      accent-color: #c084fc;
+      flex-shrink: 0;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: #67e8f9;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    .primary-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #9333ea, #ec4899);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(236, 72, 153, 0.32);
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .err-text {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #fca5a5;
+      min-height: 16px;
+      text-align: center;
+    }
+
+    /* Main Chat Room Shell */
+    .room-shell {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      min-height: 54px;
+      background: rgba(15, 9, 29, 0.96);
+      border-bottom: 1px solid var(--border-dim);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      z-index: 20;
+    }
+
+    .top-left, .top-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .room-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .stat-chip {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-dim);
+      font-size: 11px;
+      font-weight: 700;
+      color: #e9d5ff;
+    }
+
+    .stat-chip.gold {
+      border-color: rgba(251, 191, 36, 0.45);
+      color: #fde047;
+    }
+
     .tbtn {
-      padding: 4px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.07); color: #fff; font-size: 11px; font-weight: 600; cursor: pointer;
-    }
-    .tbtn.gold { border-color: #fbbf24; color: #fde68a; background: rgba(251,191,36,0.16); }
-    .tbtn.red { border-color: #f87171; color: #fca5a5; background: rgba(239,68,68,0.16); }
-    .tbtn.grn { border-color: #34d399; color: #6ee7b7; background: rgba(16,185,129,0.16); }
-
-    .grid-3 { flex: 1; display: grid; grid-template-columns: 270px 1fr 220px; min-height: 0; }
-    @media (max-width: 900px) {
-      .grid-3 { grid-template-columns: 1fr; }
-      .center-stage, .right-panel { display: none; }
-    }
-
-    /* Left Chat Panel */
-    .left-chat {
-      display: flex; flex-direction: column; min-height: 0; position: relative;
-      background: #171324; border-right: 1px solid rgba(255,255,255,0.09);
-    }
-    .feed { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-    .bubble-item {
-      background: #231d36; border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 10px; padding: 8px 10px; font-size: 12px;
-    }
-    .b-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 11px; }
-    .b-text { font-size: 13px; line-height: 1.35; word-break: break-word; }
-    .b-img { max-width: 190px; max-height: 150px; border-radius: 8px; margin-top: 6px; display: block; }
-    .b-yt { width: 100%; height: 155px; border: none; border-radius: 8px; margin-top: 6px; display: block; }
-
-    /* Center Geometric Stage */
-    .center-stage {
+      padding: 6px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border-dim);
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.15s ease, border-color 0.15s ease;
       position: relative;
-      background:
-        radial-gradient(circle at 22% 28%, rgba(168, 85, 247, 0.35), transparent 42%),
-        radial-gradient(circle at 78% 72%, rgba(236, 72, 153, 0.25), transparent 45%),
-        linear-gradient(135deg, #1b122b 0%, #2a163d 50%, #120d1d 100%);
-      display: flex; align-items: flex-end; justify-content: flex-end; padding: 14px;
-    }
-    .stage-tools { display: flex; gap: 6px; background: rgba(17,13,28,0.85); padding: 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); }
-
-    /* Right Users Panel */
-    .right-panel {
-      background: #141020; border-left: 1px solid rgba(255,255,255,0.09);
-      padding: 10px; overflow-y: auto; font-size: 12px;
-    }
-    .sec-hdr {
-      background: rgba(255,255,255,0.06); padding: 5px 8px; border-radius: 6px;
-      font-size: 11px; font-weight: 800; text-align: center; margin: 8px 0 6px; color: #e9d5ff;
-    }
-    .u-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 6px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 5px; }
-    .tiny { font-size: 10px; color: #9ca3af; word-break: break-all; }
-
-    /* Gifs / Stickers Popup (Matching Image 2) */
-    .gif-popup {
-      position: absolute; bottom: 52px; left: 8px; width: 295px; max-width: calc(100% - 16px);
-      background: #1b152b; border: 1px solid rgba(255,255,255,0.16);
-      border-radius: 12px; padding: 10px; box-shadow: 0 18px 40px rgba(0,0,0,0.8); z-index: 35;
-    }
-    .tabs-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .tab-btn {
-      padding: 5px 11px; border-radius: 7px; border: none; background: transparent;
-      color: #d1d5db; font-size: 12px; font-weight: 700; cursor: pointer;
-    }
-    .tab-btn.active { background: #2d2446; color: #fff; }
-    .search-gif {
-      width: 100%; padding: 8px 10px; border-radius: 8px;
-      border: 1px solid rgba(244,114,182,0.5); background: #241226; color: #fff; font-size: 12px; outline: none;
-    }
-    .gif-results {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
-      margin-top: 8px; max-height: 170px; overflow-y: auto;
-    }
-    .g-tile {
-      background: #120e1d; border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 7px; padding: 4px; text-align: center; font-size: 10px; cursor: pointer;
-    }
-    .g-tile img { width: 100%; height: 54px; object-fit: cover; border-radius: 5px; display: block; margin-bottom: 2px; }
-
-    /* Bottom Composer */
-    .composer-bar {
-      height: 46px; display: flex; align-items: center; gap: 6px;
-      padding: 0 8px; background: #120e1c; border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Admin Modal */
+    .tbtn:hover {
+      border-color: #c084fc;
+      background: #271849;
+    }
+
+    .tbtn.gold {
+      background: rgba(251, 191, 36, 0.16);
+      border-color: rgba(251, 191, 36, 0.5);
+      color: #fde68a;
+    }
+
+    .tbtn.grn {
+      background: rgba(34, 197, 94, 0.16);
+      border-color: rgba(34, 197, 94, 0.45);
+      color: #86efac;
+    }
+
+    .tbtn.red {
+      background: rgba(239, 68, 68, 0.16);
+      border-color: rgba(239, 68, 68, 0.45);
+      color: #fca5a5;
+    }
+
+    .count-badge {
+      background: #ec4899;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 999px;
+    }
+
+    /* Workspace Layout */
+    .workspace {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Far-Left Vertical Icon Rail */
+    .icon-rail {
+      width: 48px;
+      flex-shrink: 0;
+      background: #0e081c;
+      border-right: 1px solid var(--border-dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 4px;
+      gap: 6px;
+      overflow-y: auto;
+    }
+
+    .rail-ico {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .rail-ico:hover {
+      background: var(--bg-elevated);
+      border-color: var(--border-dim);
+    }
+
+    .rail-ico.active {
+      background: rgba(147, 51, 234, 0.28);
+      border-color: #c084fc;
+    }
+
+    .dm-dot {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22d3ee;
+    }
+
+    /* Center Chat Column */
+    .chat-col {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .chat-canvas {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sys-banner {
+      align-self: center;
+      background: rgba(24, 15, 46, 0.88);
+      border: 1px solid rgba(192, 132, 252, 0.25);
+      color: #e9d5ff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      text-align: center;
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      max-width: 88%;
+    }
+
+    .msg-row.mine {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .msg-av {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border-dim);
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .msg-av img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .msg-bubble {
+      background: rgba(28, 17, 54, 0.92);
+      border: 1px solid var(--border-dim);
+      border-radius: 14px;
+      padding: 9px 12px;
+      min-width: 120px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+    }
+
+    .msg-row.mine .msg-bubble {
+      background: rgba(88, 28, 135, 0.52);
+      border-color: rgba(236, 72, 153, 0.45);
+    }
+
+    .msg-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .msg-sender {
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .rank-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(168, 85, 247, 0.24);
+      color: #e9d5ff;
+    }
+
+    .rank-tag.admin {
+      background: rgba(239, 68, 68, 0.26);
+      color: #fecaca;
+    }
+
+    .rank-tag.vip {
+      background: rgba(251, 191, 36, 0.22);
+      color: #fde68a;
+    }
+
+    .msg-time {
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+
+    .msg-quote {
+      background: rgba(9, 5, 18, 0.55);
+      border-left: 3px solid #c084fc;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .msg-text {
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .msg-media {
+      margin-top: 6px;
+      max-width: 240px;
+      max-height: 200px;
+      border-radius: 10px;
+      display: block;
+      border: 1px solid var(--border-dim);
+      object-fit: cover;
+    }
+
+    .yt-box {
+      margin-top: 6px;
+      width: 260px;
+      max-width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-dim);
+    }
+
+    .yt-box iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .msg-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .react-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .react-chip {
+      background: rgba(15, 9, 29, 0.72);
+      border: 1px solid var(--border-dim);
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 11px;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .react-chip.active {
+      border-color: #f472b6;
+      background: rgba(236, 72, 153, 0.25);
+    }
+
+    .msg-acts {
+      display: flex;
+      gap: 4px;
+    }
+
+    .mini-act {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .mini-act:hover {
+      color: #fff;
+      border-color: var(--border-dim);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Reply & Mute Banners */
+    .reply-bar {
+      background: #180e2f;
+      border-top: 1px solid var(--border-dim);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .mute-banner {
+      background: rgba(239, 68, 68, 0.2);
+      border-top: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fecaca;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* Media Drawer (+ button) */
+    .media-drawer {
+      background: #140b28;
+      border-top: 1px solid var(--border-dim);
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+    }
+
+    .drawer-card {
+      background: #1c1038;
+      border: 1px solid var(--border-dim);
+      border-radius: 10px;
+      padding: 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .drawer-card strong {
+      font-size: 12px;
+      color: #f3e8ff;
+    }
+
+    /* Composer */
+    .composer {
+      background: #100920;
+      border-top: 1px solid var(--border-dim);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border-dim);
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      font-size: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-btn:hover {
+      border-color: #c084fc;
+    }
+
+    .msg-inp {
+      flex: 1;
+      min-width: 0;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-dim);
+      background: #190f31;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .msg-inp:focus {
+      border-color: #d946ef;
+    }
+
+    .send-btn {
+      width: 38px;
+      height: 36px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #9333ea, #ec4899);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Right Online Sidebar */
+    .users-side {
+      width: 245px;
+      flex-shrink: 0;
+      background: #0f091e;
+      border-left: 1px solid var(--border-dim);
+      padding: 12px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .side-top-head {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .group-hdr {
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    .group-hdr.admin {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .group-hdr.vip {
+      background: #7e22ce;
+      color: #fff;
+    }
+
+    .group-hdr.mem {
+      background: #271947;
+      color: #e9d5ff;
+    }
+
+    .u-card {
+      background: #170e2e;
+      border: 1px solid var(--border-dim);
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .u-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .u-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .u-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .u-actions {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    /* GIPHY Popup */
+    .gif-pop {
+      position: absolute;
+      left: 12px;
+      bottom: 58px;
+      width: min(430px, calc(100% - 24px));
+      max-height: 410px;
+      background: #160d2b;
+      border: 1px solid var(--border-bright);
+      border-radius: 14px;
+      padding: 12px;
+      z-index: 35;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.72);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .gif-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      overflow-y: auto;
+      max-height: 220px;
+    }
+
+    .gif-tile {
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0d0719;
+      cursor: pointer;
+      aspect-ratio: 1 / 1;
+      padding: 0;
+    }
+
+    .gif-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-dim);
+      background: #211440;
+      color: #e9d5ff;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .pill.active {
+      background: #9333ea;
+      border-color: #e879f9;
+      color: #fff;
+    }
+
+    /* Modals */
     .modal-bg {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-      display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 60;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 2, 12, 0.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      z-index: 60;
+      backdrop-filter: blur(4px);
     }
+
     .modal-box {
-      width: 100%; max-width: 480px; max-height: 82vh; overflow-y: auto;
-      background: #1b1629; border: 1px solid rgba(251,191,36,0.35); border-radius: 14px; padding: 16px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 86vh;
+      overflow-y: auto;
+      background: #150c29;
+      border: 1px solid var(--border-bright);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
     }
-    .mod-item {
-      display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap;
-      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 12px;
+
+    .adm-tabs {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .adm-tab.active {
+      background: rgba(168, 85, 247, 0.34);
+      border-color: #c084fc;
+      color: #fff;
+    }
+
+    .mod-row, .monitor-card, .rules-item {
+      background: #1d1138;
+      border: 1px solid var(--border-dim);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .mod-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .dm-feed {
+      max-height: 290px;
+      overflow-y: auto;
+      background: #0d0719;
+      border: 1px solid var(--border-dim);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 68px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #241447;
+      border: 1px solid #d946ef;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 90;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 820px) {
+      .users-side {
+        position: fixed;
+        top: 54px;
+        right: 0;
+        bottom: 0;
+        z-index: 40;
+        transform: translateX(100%);
+        transition: transform 0.2s ease;
+      }
+
+      .users-side.open {
+        transform: translateX(0);
+      }
+
+      .msg-row {
+        max-width: 95%;
+      }
     }
   </style>
 </head>
-<body>
+<body class="poly-bg">
+  <!-- ENTRY / AUTHENTICATION SCREEN -->
+  <div id="entryScreen" class="entry-wrap">
+    <div class="entry-card">
+      <div class="brand-title">SafeKids <span>Chat</span></div>
+      <div class="brand-sub">Under-18 Moderated Rooms • Unique Accounts • Live GIPHY</div>
 
-  <!-- ENTRY SCREEN -->
-  <div id="entryScreen" class="entry-bg">
-    <div class="entry-box">
-      <div class="entry-title">SafeKids <span>Chat</span></div>
+      <label class="lbl" for="nickInp">Unique Nickname</label>
+      <input id="nickInp" class="inp" type="text" maxlength="20" placeholder="Choose or enter your nickname..." />
 
-      <label class="lbl" for="nickInp">Nickname</label>
-      <input id="nickInp" class="inp" type="text" maxlength="20" placeholder="Enter nickname..." />
+      <label class="lbl" for="userPassInp">Account Password</label>
+      <input id="userPassInp" class="inp" type="password" maxlength="40" placeholder="Set or enter your account password..." autocomplete="off" />
+      <div id="authModeHint" class="u-sub" style="margin-top:4px;">Each username belongs to one account; new names register with your password.</div>
 
-      <label class="lbl">Avatar</label>
-      <div id="avGrid" class="avs"></div>
+      <label class="lbl">Avatar Preset</label>
+      <div id="avGrid" class="av-grid"></div>
 
       <label class="lbl" for="roomSel">Chat Room</label>
       <select id="roomSel" class="sel">
-        <option value="AllTeen Lounge">AllTeen Lounge</option>
+        <option value="AllTeen Chat">AllTeen Chat</option>
         <option value="Kids Lounge">Kids Lounge</option>
-        <option value="Memes & GIFs">Memes & GIFs</option>
+        <option value="Memes & GIFs">Memes &amp; GIFs</option>
       </select>
 
-      <div class="adm-card">
-        <div class="adm-row">
-          <span>Admin (Unlimited Coins)</span>
-          <label style="display:inline-flex; align-items:center; gap:5px; cursor:pointer; color:#fde68a;">
-            <input id="admToggle" type="checkbox" /> Claim Admin
+      <div class="adm-box">
+        <div class="adm-head">
+          <span>👑 Admin Access</span>
+          <label style="display:inline-flex; align-items:center; gap:5px; cursor:pointer; font-weight:700;">
+            <input id="admToggle" type="checkbox" style="accent-color:#fbbf24;" />
+            <span>Admin Login</span>
           </label>
         </div>
         <div id="admKeyWrap" class="hidden" style="margin-top:8px;">
-          <input id="admKeyInp" class="inp" type="password" placeholder="Secret Key: ADMIN123" />
+          <input id="admKeyInp" class="inp" type="password" placeholder="Enter admin password..." autocomplete="off" />
         </div>
       </div>
 
-      <button id="enterBtn" class="go-btn" type="button">Enter Chat</button>
-      <div id="entryErr" class="err"></div>
+      <label class="rules-agree">
+        <input id="under18Agree" type="checkbox" />
+        <span>
+          I confirm I am Under 18, will Respect Everyone, and follow the
+          <button id="entryRulesLink" class="link-btn" type="button">Under-18 &amp; Respect Rules</button>.
+        </span>
+      </label>
+
+      <button id="enterBtn" class="primary-btn" type="button">Enter Chat →</button>
+      <div id="entryErr" class="err-text"></div>
     </div>
   </div>
 
-  <!-- ROOM SCREEN -->
+  <!-- CHAT ROOM WORKSPACE -->
   <div id="roomScreen" class="room-shell hidden">
-    <header class="top-bar">
-      <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
-        <strong id="roomHeading">Room</strong>
-        <span id="rankChip" class="chip">Member</span>
-        <span class="chip">EXP: <span id="myExp">0</span></span>
-        <span class="chip">Coins: <span id="myCoins">0</span></span>
+    <header class="topbar">
+      <div class="top-left">
+        <span id="roomHeading" class="room-title">AllTeen Chat</span>
+        <span id="rankChip" class="stat-chip">Member</span>
+        <span class="stat-chip">EXP: <span id="myExp">0</span></span>
+        <span class="stat-chip gold">Coins: <span id="myCoins">0</span></span>
       </div>
-      <div style="display:flex; gap:6px;">
-        <button id="openAdmBtn" class="tbtn gold hidden" type="button">Admin Panel</button>
+      <div class="top-right">
+        <button id="openFriendsBtn" class="tbtn" type="button">
+          🤝 Friends <span id="reqBadge" class="count-badge hidden">0</span>
+        </button>
+        <button id="openDmTopBtn" class="tbtn" type="button">
+          ✉️ Personal Chat <span id="dmUnreadBadge" class="count-badge hidden">0</span>
+        </button>
+        <button id="openPfpBtn" class="tbtn" type="button">🖼️ PFP</button>
+        <button id="openReportBtn" class="tbtn red" type="button">🚨 Report</button>
+        <button id="openRulesBtn" class="tbtn" type="button">📜 Rules</button>
+        <button id="mobileUsersBtn" class="tbtn" type="button">👥 Users</button>
+        <button id="openAdmBtn" class="tbtn gold hidden" type="button">🛡️ Admin Panel</button>
         <button id="logoutBtn" class="tbtn" type="button">Logout</button>
       </div>
     </header>
 
-    <div class="grid-3">
-      <!-- Left Chat -->
-      <section class="left-chat">
-        <div id="chatFeed" class="feed"></div>
+    <div class="workspace">
+      <nav class="icon-rail" aria-label="Workspace Tools">
+        <button id="railChatBtn" class="rail-ico active" title="Chat Room" type="button">💬</button>
+        <button id="railGifBtn" class="rail-ico" title="GIPHY GIFs & Stickers" type="button">😄</button>
+        <button id="railMediaBtn" class="rail-ico" title="Photos, YouTube & Gifts" type="button">🎁</button>
+        <button id="railFriendsBtn" class="rail-ico" title="Friends & Requests" type="button">🤝</button>
+        <button id="railDmBtn" class="rail-ico" title="Personal Chat (DMs)" type="button">
+          ✉️<span id="dmDot" class="dm-dot hidden"></span>
+        </button>
+        <button id="railRollBtn" class="rail-ico" title="Roll Dice (/roll)" type="button">🎲</button>
+        <button id="railLeaderBtn" class="rail-ico" title="Leaderboard" type="button">🏆</button>
+        <button id="railSoundBtn" class="rail-ico" title="Toggle Sound FX" type="button">🔊</button>
+        <button id="railThemeBtn" class="rail-ico" title="Cycle Room Theme" type="button">🎨</button>
+        <button id="railRulesBtn" class="rail-ico" title="Under-18 Rules" type="button">📜</button>
+        <button id="railAdmBtn" class="rail-ico hidden" title="Admin Panel" type="button">🛡️</button>
+      </nav>
 
-        <!-- Gifs / Stickers Search Popup -->
-        <div id="gifPopup" class="gif-popup hidden">
-          <div class="tabs-top">
-            <div style="display:flex; gap:4px;">
-              <button id="tabGifs" class="tab-btn active" type="button">Gifs</button>
-              <button id="tabStickers" class="tab-btn" type="button">Stickers</button>
+      <main class="chat-col">
+        <div id="chatFeed" class="chat-canvas"></div>
+
+        <!-- GIPHY GIFs & Stickers Picker -->
+        <div id="gifPop" class="gif-pop hidden">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+            <div style="display:flex; gap:6px;">
+              <button id="gifTabBtn" class="pill active" type="button">GIFs</button>
+              <button id="stickerTabBtn" class="pill" type="button">Stickers</button>
             </div>
-            <button id="closeGifPopup" class="tbtn" type="button">✕</button>
+            <span id="gifQuotaInfo" class="u-sub">VIP+ Free</span>
+            <button id="closeGifBtn" class="mini-act" type="button">✕</button>
           </div>
-          <input id="gifSearchInp" class="search-gif" type="text" placeholder="Search" />
-          <div id="gifResults" class="gif-results"></div>
+          <div style="display:flex; gap:6px;">
+            <input id="gifSearchInp" class="inp" style="padding:7px 10px;" type="text" placeholder="Search GIPHY..." />
+            <button id="gifSearchBtn" class="tbtn" type="button">Search</button>
+          </div>
+          <div id="gifCats" class="pill-row"></div>
+          <div id="gifGrid" class="gif-grid"></div>
+          <button id="gifLoadMoreBtn" class="tbtn" style="justify-content:center;" type="button">Load More</button>
         </div>
 
-        <form id="msgForm" class="composer-bar">
-          <button id="openGifBtn" class="tbtn" type="button" title="Gifs & Stickers">+</button>
-          <input id="msgInp" class="inp" type="text" maxlength="300" placeholder="Type here..." autocomplete="off" />
-          <button class="tbtn grn" type="submit">Send</button>
+        <!-- Media Drawer: Photo Upload/URL, YouTube, Gift -->
+        <div id="mediaDrawer" class="media-drawer hidden">
+          <div class="drawer-card">
+            <strong>📷 Send Photo / Image</strong>
+            <input id="photoFileInp" type="file" accept="image/*" style="font-size:11px; color:var(--text-muted);" />
+            <div style="display:flex; gap:5px;">
+              <input id="photoUrlInp" class="inp" style="padding:6px 8px;" type="text" placeholder="Or paste image URL..." />
+              <button id="sendPhotoUrlBtn" class="tbtn grn" type="button">Send</button>
+            </div>
+          </div>
+          <div class="drawer-card">
+            <strong>▶️ Share YouTube Video</strong>
+            <div style="display:flex; gap:5px;">
+              <input id="ytInp" class="inp" style="padding:6px 8px;" type="text" placeholder="YouTube URL or 11-char ID..." />
+              <button id="sendYtBtn" class="tbtn" type="button">Embed</button>
+            </div>
+          </div>
+          <div class="drawer-card">
+            <strong>🎁 Send Rose Gift (20 Coins)</strong>
+            <span class="u-sub">Chat earn rate: +5 Coins &amp; +10 EXP per message.</span>
+            <button id="sendGiftBtn" class="tbtn gold" type="button">🌹 Send Rose Gift</button>
+          </div>
+        </div>
+
+        <!-- Reply Preview Bar -->
+        <div id="replyBar" class="reply-bar hidden">
+          <span>Replying to <strong id="replyToName"></strong>: <span id="replyToSnippet" class="u-sub"></span></span>
+          <button id="cancelReplyBtn" class="mini-act" type="button">✕</button>
+        </div>
+
+        <!-- Mute Status Banner -->
+        <div id="muteBanner" class="mute-banner hidden"></div>
+
+        <!-- Message Input Composer -->
+        <form id="composerForm" class="composer">
+          <button id="plusDrawerBtn" class="icon-btn" type="button" title="Photos, YouTube & Gifts">+</button>
+          <button id="gifOpenBtn" class="icon-btn" type="button" title="GIFs & Stickers">😄</button>
+          <input id="msgInp" class="msg-inp" type="text" maxlength="500" placeholder="Type a message (+10 EXP & +5 Coins) or /w user msg..." autocomplete="off" />
+          <button class="send-btn" type="submit" title="Send">➤</button>
         </form>
-      </section>
-
-      <!-- Center Stage with YouTube & Gift Controls -->
-      <main class="center-stage">
-        <div class="stage-tools">
-          <input id="ytUrlInp" class="inp" style="width:145px; padding:6px 8px;" type="text" placeholder="YouTube link/ID..." />
-          <button id="sendYtBtn" class="tbtn grn" type="button">▶ YT</button>
-          <input id="giftUserInp" class="inp" style="width:115px; padding:6px 8px;" type="text" placeholder="Gift user..." />
-          <button id="sendGiftBtn" class="tbtn gold" type="button">🎁 20</button>
-        </div>
       </main>
 
-      <!-- Right Online Users -->
-      <aside class="right-panel">
-        <div class="sec-hdr">Online</div>
-        <div id="onlineList"></div>
+      <!-- Online Users Sidebar -->
+      <aside id="usersSide" class="users-side">
+        <div class="side-top-head">Online <span id="onlineCount">0</span></div>
+        <div id="onlineGroups"></div>
       </aside>
     </div>
   </div>
 
-  <!-- ADMIN MODAL -->
-  <div id="admModal" class="modal-bg hidden">
+  <!-- PFP MODAL (Self Avatar Upload / URL / Preset; Username Restricted to Admin) -->
+  <div id="pfpModal" class="modal-bg hidden">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <strong>Admin Moderation</strong>
-        <button id="closeAdmModal" class="tbtn" type="button">✕</button>
+        <strong>🖼️ Change Your Profile Picture (PFP)</strong>
+        <button id="closePfpBtn" class="tbtn" type="button">✕</button>
       </div>
-      <div class="tiny" style="font-weight:700; margin-bottom:4px;">ACTIVE USERS</div>
-      <div id="admUserList"></div>
-      <div class="tiny" style="font-weight:700; margin-top:12px;">BANNED LIST</div>
-      <div id="admBanList"></div>
+      <div class="u-sub" style="margin-bottom:10px;">
+        You can update your PFP anytime. Usernames can only be changed by an Admin.
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <div id="pfpPreview" class="msg-av" style="width:52px; height:52px; font-size:24px;">😎</div>
+        <div>
+          <div id="pfpAcctName" style="font-weight:700; font-size:14px;"></div>
+          <div class="u-sub">Upload an image file, paste a link, or pick an emoji.</div>
+        </div>
+      </div>
+      <label class="lbl">Upload Image File</label>
+      <input id="pfpFileInp" type="file" accept="image/*" style="font-size:12px; color:var(--text-muted); margin-bottom:8px;" />
+
+      <label class="lbl">Or Image URL</label>
+      <input id="pfpUrlInp" class="inp" type="text" placeholder="https://example.com/avatar.png" />
+
+      <label class="lbl">Or Emoji Preset</label>
+      <div id="pfpPresetGrid" class="av-grid"></div>
+
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
+        <button id="savePfpBtn" class="tbtn grn" type="button">Save PFP</button>
+      </div>
     </div>
   </div>
 
-  <script>
-    const DB = "https://safekids-chat-default-rtdb.firebaseio.com";
-    const AVS = ["😎", "🦊", "🐼", "🚀", "👑", "⚡"];
-    const RANKS = ["Member", "Bronze", "Gold", "VIP", "Diamond", "Super VIP", "Moderator", "Room Manager"];
-    const VIP_OR_ABOVE = ["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
-    const ADMIN_KEY = "ADMIN123";
+  <!-- UNDER-18 & RESPECT EVERYONE RULES MODAL -->
+  <div id="rulesModal" class="modal-bg hidden">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>📜 SafeKids Chat — Under-18 &amp; Respect Rules</strong>
+        <button id="closeRulesBtn" class="tbtn" type="button">✕</button>
+      </div>
+      <div id="rulesContent"></div>
+    </div>
+  </div>
 
-    const STICKERS = [
-      { title: "Fire", url: "https://media.giphy.com/media/26AHONQ79FdWTrAIy/giphy.gif" },
-      { title: "Laugh", url: "https://media.giphy.com/media/JIX9t1j0ZtnJetCPas/giphy.gif" },
-      { title: "GG Win", url: "https://media.giphy.com/media/l0amJz5bNYuyn7Pxe/giphy.gif" },
-      { title: "Shock", url: "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" },
-      { title: "Pro", url: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" },
-      { title: "Nice", url: "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" }
+  <!-- ABUSE REPORT MODAL -->
+  <div id="reportModal" class="modal-bg hidden">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>🚨 Report Abuse to Admins</strong>
+        <button id="closeReportBtn" class="tbtn" type="button">✕</button>
+      </div>
+      <label class="lbl" for="repTargetInp">Username to Report</label>
+      <input id="repTargetInp" class="inp" type="text" placeholder="Enter abusive username..." />
+
+      <label class="lbl" for="repReasonSel">Reason</label>
+      <select id="repReasonSel" class="sel">
+        <option value="Abusing / Profanity">Abusing / Profanity</option>
+        <option value="Harassment / Bullying">Harassment / Bullying</option>
+        <option value="Under-18 Safety Violation">Under-18 Safety Violation</option>
+        <option value="Spam / Inappropriate Content">Spam / Inappropriate Content</option>
+      </select>
+
+      <label class="lbl" for="repDetailsInp">Details</label>
+      <input id="repDetailsInp" class="inp" type="text" placeholder="Describe what happened..." />
+
+      <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+        <button id="submitReportBtn" class="tbtn red" type="button">Submit Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRIENDS & FRIEND REQUESTS MODAL -->
+  <div id="friendsModal" class="modal-bg hidden">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>🤝 Friends &amp; Friend Requests</strong>
+        <button id="closeFriendsBtn" class="tbtn" type="button">✕</button>
+      </div>
+      <div style="display:flex; gap:6px; margin-bottom:12px;">
+        <input id="friendAddInp" class="inp" type="text" placeholder="Enter exact username to send friend request..." />
+        <button id="sendFriendReqBtn" class="tbtn grn" type="button">Add Friend</button>
+      </div>
+      <div class="lbl">Incoming Requests</div>
+      <div id="incomingReqsList"></div>
+      <div class="lbl">Outgoing Requests</div>
+      <div id="outgoingReqsList"></div>
+      <div class="lbl">Your Friends</div>
+      <div id="friendsListBox"></div>
+    </div>
+  </div>
+
+  <!-- PERSONAL CHAT (1-ON-1 DM) MODAL -->
+  <div id="dmModal" class="modal-bg hidden">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <strong>✉️ Personal Chat</strong>
+        <button id="closeDmBtn" class="tbtn" type="button">✕</button>
+      </div>
+      <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+        <select id="dmPeerSel" class="sel" style="flex:1; min-width:160px;"></select>
+        <button id="clearMyDmBtn" class="tbtn red" type="button">Clear Chat</button>
+      </div>
+      <div id="dmFeed" class="dm-feed"></div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <input id="dmPhotoInp" type="file" accept="image/*" style="max-width:120px; font-size:11px; color:var(--text-muted);" />
+        <input id="dmTextInp" class="msg-inp" type="text" maxlength="400" placeholder="Write a private message..." />
+        <button id="dmSendBtn" class="send-btn" type="button">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD MODAL -->
+  <div id="leaderModal" class="modal-bg hidden">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>🏆 Top EXP &amp; Coins Leaderboard</strong>
+        <button id="closeLeaderBtn" class="tbtn" type="button">✕</button>
+      </div>
+      <div id="leaderList"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN-ONLY CONTROL CENTER MODAL -->
+  <div id="admModal" class="modal-bg hidden">
+    <div class="modal-box" style="max-width:690px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>🛡️ Admin &amp; Moderation Control Center</strong>
+        <button id="closeAdmModal" class="tbtn" type="button">✕</button>
+      </div>
+
+      <div class="adm-tabs">
+        <button class="tbtn adm-tab active" data-atab="users" type="button">Users &amp; Ranks</button>
+        <button class="tbtn adm-tab" data-atab="reports" type="button">Reports (<span id="repBadge">0</span>)</button>
+        <button class="tbtn adm-tab" data-atab="bans" type="button">Banned &amp; Muted (<span id="banBadge">0</span>)</button>
+        <button class="tbtn adm-tab" data-atab="dmmonitor" type="button">Private Chats (<span id="dmMonBadge">0</span>)</button>
+        <button class="tbtn adm-tab" data-atab="tools" type="button">Fixes &amp; Password</button>
+      </div>
+
+      <div id="admTabUsers">
+        <div class="u-sub" style="margin-bottom:8px;">
+          Admin can change any user's unique username or password, assign any rank/Moderator, set custom mute minutes, kick, or ban.
+        </div>
+        <div id="admUserList"></div>
+      </div>
+
+      <div id="admTabReports" class="hidden">
+        <div id="admReportList"></div>
+      </div>
+
+      <div id="admTabBans" class="hidden">
+        <div class="lbl">Banned Users &amp; Devices</div>
+        <div id="admBanList"></div>
+        <div class="lbl">Muted Users</div>
+        <div id="admMuteList"></div>
+      </div>
+
+      <div id="admTabDmMonitor" class="hidden">
+        <div class="u-sub" style="margin-bottom:8px;">
+          Safety monitor: Admin can inspect 1-on-1 personal chats across the platform and mute or ban rule violators.
+        </div>
+        <div id="admDmMonitorList"></div>
+      </div>
+
+      <div id="admTabTools" class="hidden">
+        <div class="rules-item">
+          <strong style="font-size:12px; display:block; margin-bottom:6px;">🔑 Change Admin Password</strong>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <input id="newAdmPassInp" class="inp" style="flex:1; min-width:160px; padding:7px 10px;" type="password" placeholder="New admin password (4+ chars)..." />
+            <button id="saveAdmPassBtn" class="tbtn grn" type="button">Update Password</button>
+          </div>
+        </div>
+
+        <div class="rules-item">
+          <strong style="font-size:12px; display:block; margin-bottom:6px;">🛠️ Room &amp; Sync Fixes</strong>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button id="clearRoomBtn" class="tbtn red" type="button">Clear Room Chat</button>
+            <button id="syncFixBtn" class="tbtn gold" type="button">Force Sync &amp; Clean Stale Sessions</button>
+          </div>
+        </div>
+
+        <div class="rules-item">
+          <strong style="font-size:12px; display:block; margin-bottom:6px;">📜 Edit Under-18 &amp; Respect Rules</strong>
+          <textarea id="rulesEditorInp" class="inp" rows="4" style="resize:vertical; margin-bottom:6px;"></textarea>
+          <button id="saveRulesBtn" class="tbtn grn" type="button">Save Rules</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastEl" class="toast hidden"></div>
+
+  <script>
+    // Firebase Realtime Database Configuration & Helpers
+    const DB_URL = "https://safekids-chat-default-rtdb.firebaseio.com";
+    const GIPHY_KEY = "MuD5UfvhOF5BJ1Bb6SDlvsUzjUCEKM9s";
+    const AVS = ["😎", "🦊", "🐼", "🚀", "👑", "⚡"];
+    const RANKS = ["Member", "Bronze", "Gold", "VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"];
+    const VIP_PLUS = new Set(["VIP", "Diamond", "Super VIP", "Moderator", "Room Manager", "Admin"]);
+    const DEFAULT_RULES = [
+      "This platform is strictly for Under-18 users in a safe, moderated environment.",
+      "Respect Everyone: zero abuse, bullying, hate speech, or harassment in public rooms or personal chats.",
+      "Never share personal contact details, real addresses, or account passwords with others.",
+      "Admins monitor safety reports and private chats to protect younger members and may mute, kick, or ban violators."
     ];
 
-    let devId = localStorage.getItem("skc_dev_clean3");
-    if (!devId) {
-      devId = "DEV-" + Math.random().toString(36).slice(2, 7).toUpperCase();
-      localStorage.setItem("skc_dev_clean3", devId);
+    // Persistent Local Device ID
+    const devId = (() => {
+      try {
+        let id = localStorage.getItem("sk_dev_id");
+        if (!id) {
+          id = "DEV_" + Math.random().toString(36).slice(2, 10) + "_" + Date.now().toString(36);
+          localStorage.setItem("sk_dev_id", id);
+        }
+        return id;
+      } catch (_) {
+        return "DEV_FALLBACK";
+      }
+    })();
+
+    // Application State
+    let me = null;
+    let chosenAv = AVS[0];
+    let selectedPfpValue = AVS[0];
+    let adminPass = "ADMIN123";
+    let roomRules = DEFAULT_RULES.slice();
+    let users = {};
+    let banned = {};
+    let ranks = {};
+    let stats = {};
+    let accounts = {};
+    let mutes = {};
+    let reports = {};
+    let friendRequests = {};
+    let friendsMap = {};
+    let dmThreads = {};
+    let activeDmPeer = "";
+    let replyDraft = null;
+    let soundEnabled = true;
+    let themeIdx = 0;
+    const THEMES = ["", "theme-neon", "theme-sunset"];
+
+    // Message Persistence Stores (Confirmed + Pending + Local Room Mirror)
+    const confirmedMsgs = {};
+    const pendingMsgs = {};
+    const clearedRoomsAt = {};
+    let lastAnnouncedRoomKey = "";
+
+    // GIPHY State
+    let gifMediaType = "gifs";
+    let gifOffset = 0;
+    let gifCurrentQuery = "";
+    const GIF_CATS = ["Trending", "Funny", "Gaming", "Reaction", "Cute", "Dance"];
+
+    // Safe Firebase REST Wrappers
+    async function dbGet(path) {
+      try {
+        const res = await fetch(`${DB_URL}/${path}.json`, { cache: "no-store" });
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (_) {
+        return null;
+      }
     }
 
-    let chosenAv = AVS[0], me = null, activeTab = "gifs";
-    let users = {}, banned = {}, ranks = {}, stats = {}, msgs = {};
+    async function dbPut(path, data) {
+      try {
+        const res = await fetch(`${DB_URL}/${path}.json`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        return res.ok;
+      } catch (_) {
+        return false;
+      }
+    }
 
-    const avGrid = document.getElementById("avGrid");
-    AVS.forEach((em, idx) => {
-      const b = document.createElement("button");
-      b.type = "button"; b.className = "av" + (idx === 0 ? " on" : ""); b.textContent = em;
-      b.onclick = () => {
-        chosenAv = em;
-        document.querySelectorAll(".av").forEach(x => x.classList.remove("on"));
-        b.classList.add("on");
-      };
-      avGrid.appendChild(b);
-    });
+    async function dbDel(path) {
+      try {
+        const res = await fetch(`${DB_URL}/${path}.json`, { method: "DELETE" });
+        return res.ok;
+      } catch (_) {
+        return false;
+      }
+    }
 
-    const admToggle = document.getElementById("admToggle");
-    const admKeyWrap = document.getElementById("admKeyWrap");
-    function toggleAdmKey() { admKeyWrap.classList.toggle("hidden", !admToggle.checked); }
-    admToggle.addEventListener("change", toggleAdmKey);
-    admToggle.addEventListener("click", toggleAdmKey);
+    // Utility Helpers
+    function kOf(str) {
+      return String(str || "").trim().toLowerCase().replace(/[.#$/[\]]/g, "_");
+    }
 
-    const kOf = s => encodeURIComponent(String(s || "").toLowerCase().trim());
-    const rankOf = u => !u ? "Member" : (u.isAdmin ? "Admin" : (ranks[kOf(u.name)] || "Member"));
+    function esc(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
 
-    async function dbGet(p) { const r = await fetch(`${DB}/${p}.json`); return r.ok ? await r.json() : null; }
-    async function dbPut(p, d) { await fetch(`${DB}/${p}.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) }); }
-    async function dbDel(p) { await fetch(`${DB}/${p}.json`, { method: "DELETE" }); }
+    function hashPassword(raw) {
+      const text = String(raw || "");
+      let h1 = 0x811c9dc5;
+      let h2 = 0x01000193;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text.charCodeAt(i);
+        h1 ^= ch;
+        h1 = Math.imul(h1, 0x01000193);
+        h2 = Math.imul(h2 ^ ch, 16777619) >>> 0;
+      }
+      return `H_${(h1 >>> 0).toString(16)}_${h2.toString(16)}_${text.length}`;
+    }
 
-    function paintMediaTiles(items) {
-      const box = document.getElementById("gifResults");
-      box.innerHTML = "";
-      items.forEach(item => {
-        const tile = document.createElement("div");
-        tile.className = "g-tile";
-        tile.innerHTML = `<img src="${item.url}" alt="" /><div>${item.title}</div>`;
-        tile.onclick = async () => {
-          if (!me || !VIP_OR_ABOVE.includes(rankOf(me))) {
-            return alert("GIFs aur Stickers free sirf VIP ya usse upar ke rank par send hote hain.");
-          }
-          document.getElementById("gifPopup").classList.add("hidden");
-          await sendMessage({ text: item.title, img: item.url }, false);
+    function showToast(msg) {
+      const el = document.getElementById("toastEl");
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove("hidden");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => el.classList.add("hidden"), 2800);
+    }
+
+    function playTone(freq = 560, dur = 0.09) {
+      if (!soundEnabled) return;
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        const ctx = new Ctx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+      } catch (_) {}
+    }
+
+    function rankOf(userObj) {
+      if (!userObj) return "Member";
+      if (userObj.isAdmin) return "Admin";
+      const r = ranks[kOf(userObj.name)];
+      return r && r !== "Admin" ? r : "Member";
+    }
+
+    function isImageVal(val) {
+      return typeof val === "string" && (val.startsWith("data:image/") || /^https?:\/\//i.test(val));
+    }
+
+    function renderAvHtml(avVal, cls = "msg-av") {
+      if (isImageVal(avVal)) {
+        return `<div class="${cls}"><img src="${esc(avVal)}" alt="Avatar" /></div>`;
+      }
+      return `<div class="${cls}">${esc(avVal || "😎")}</div>`;
+    }
+
+    function savePfpLocal(uname, val) {
+      try {
+        localStorage.setItem("sk_pfp_" + kOf(uname), val);
+      } catch (_) {}
+    }
+
+    function getPfpLocal(uname) {
+      try {
+        return localStorage.getItem("sk_pfp_" + kOf(uname)) || "";
+      } catch (_) {
+        return "";
+      }
+    }
+
+    function resolveUserPfp(uname, fallback = "😎") {
+      const local = getPfpLocal(uname);
+      if (local) return local;
+      const liveUser = Object.values(users).find(u => u && u.name && u.name.toLowerCase() === String(uname || "").toLowerCase());
+      if (liveUser && liveUser.av) return liveUser.av;
+      return fallback;
+    }
+
+    function compressImageFile(file, maxSide = 360, quality = 0.78) {
+      return new Promise((resolve, reject) => {
+        if (!file || !file.type.startsWith("image/")) {
+          reject(new Error("Select a valid image file."));
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = Math.min(1, maxSide / Math.max(img.width || 1, img.height || 1));
+            const w = Math.max(1, Math.round((img.width || 1) * scale));
+            const h = Math.max(1, Math.round((img.height || 1) * scale));
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+          img.onerror = () => reject(new Error("Could not read image."));
+          img.src = reader.result;
         };
-        box.appendChild(tile);
+        reader.onerror = () => reject(new Error("File read failed."));
+        reader.readAsDataURL(file);
       });
     }
 
-    async function loadMedia(query = "") {
-      const q = query.trim();
-      if (activeTab === "stickers") {
-        const t = q.toLowerCase();
-        const list = STICKERS.filter(x => !t || x.title.toLowerCase().includes(t));
-        paintMediaTiles(list.length ? list : STICKERS);
-        return;
+    function getActiveMute(uname) {
+      const m = mutes[kOf(uname)];
+      if (!m) return null;
+      if (m.permanent) {
+        return { permanent: true, remainingText: "Permanent" };
       }
-      try {
-        const url = q
-          ? `https://g.tenor.com/v1/search?q=${encodeURIComponent(q + " meme gif")}&key=LIVDSRZULELA&limit=12`
-          : `https://g.tenor.com/v1/trending?key=LIVDSRZULELA&limit=12`;
-        const res = await fetch(url);
-        const data = await res.json();
-        const list = (data.results || []).map(x => {
-          const g = x.media && x.media[0] && (x.media[0].tinygif || x.media[0].gif);
-          return g ? { title: x.content_description || q || "GIF", url: g.url } : null;
-        }).filter(Boolean);
-        if (list.length) return paintMediaTiles(list);
-      } catch (_) {}
-      paintMediaTiles(STICKERS);
+      const remMs = Number(m.until || 0) - Date.now();
+      if (remMs <= 0) return null;
+      const mins = Math.max(1, Math.ceil(remMs / 60000));
+      return { permanent: false, remainingText: `${mins} min(s) left` };
     }
 
-    loadMedia("");
+    // Strict Admin-Only UI Visibility
+    function syncAdminVisibility() {
+      const isAdm = Boolean(me && me.isAdmin);
+      const topAdmBtn = document.getElementById("openAdmBtn");
+      const railAdmBtn = document.getElementById("railAdmBtn");
+      const admModal = document.getElementById("admModal");
 
-    document.getElementById("tabGifs").onclick = () => {
-      activeTab = "gifs";
-      document.getElementById("tabGifs").classList.add("active");
-      document.getElementById("tabStickers").classList.remove("active");
-      loadMedia(document.getElementById("gifSearchInp").value);
-    };
-    document.getElementById("tabStickers").onclick = () => {
-      activeTab = "stickers";
-      document.getElementById("tabStickers").classList.add("active");
-      document.getElementById("tabGifs").classList.remove("active");
-      loadMedia(document.getElementById("gifSearchInp").value);
-    };
-    document.getElementById("gifSearchInp").addEventListener("input", e => loadMedia(e.target.value));
-    document.getElementById("openGifBtn").onclick = () => document.getElementById("gifPopup").classList.toggle("hidden");
-    document.getElementById("closeGifPopup").onclick = () => document.getElementById("gifPopup").classList.add("hidden");
+      if (topAdmBtn) topAdmBtn.classList.toggle("hidden", !isAdm);
+      if (railAdmBtn) railAdmBtn.classList.toggle("hidden", !isAdm);
+      if (!isAdm && admModal) admModal.classList.add("hidden");
+    }
 
-    function getYtId(val) {
-      const s = (val || "").trim();
+    // Room Message Persistence Helpers
+    function loadLocalRoomMirror(rKey) {
+      try {
+        const raw = localStorage.getItem("sk_room_msgs_" + rKey);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === "object" ? parsed : {};
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveLocalRoomMirror(rKey) {
+      try {
+        const merged = Object.assign({}, confirmedMsgs[rKey] || {}, pendingMsgs[rKey] || {});
+        localStorage.setItem("sk_room_msgs_" + rKey, JSON.stringify(merged));
+      } catch (_) {}
+    }
+
+    function mergeRoomMessages(rKey, remoteObj) {
+      confirmedMsgs[rKey] = confirmedMsgs[rKey] || {};
+      pendingMsgs[rKey] = pendingMsgs[rKey] || {};
+      const clearedAt = Number(clearedRoomsAt[rKey] || 0);
+
+      if (remoteObj && typeof remoteObj === "object") {
+        for (const [mid, m] of Object.entries(remoteObj)) {
+          if (!m) continue;
+          const ts = Number(m.ts || 0);
+          if (clearedAt && ts && ts <= clearedAt) continue;
+          confirmedMsgs[rKey][mid] = m;
+          if (pendingMsgs[rKey][mid]) {
+            delete pendingMsgs[rKey][mid];
+          }
+        }
+      }
+
+      const localMirror = loadLocalRoomMirror(rKey);
+      for (const [mid, m] of Object.entries(localMirror)) {
+        if (!m) continue;
+        const ts = Number(m.ts || 0);
+        if (clearedAt && ts && ts <= clearedAt) continue;
+        if (!confirmedMsgs[rKey][mid]) {
+          pendingMsgs[rKey][mid] = m;
+        }
+      }
+
+      saveLocalRoomMirror(rKey);
+    }
+
+    function getOrderedRoomMessages(rKey) {
+      const map = Object.assign({}, confirmedMsgs[rKey] || {}, pendingMsgs[rKey] || {});
+      return Object.values(map)
+        .filter(Boolean)
+        .sort((a, b) => Number(a.ts || 0) - Number(b.ts || 0));
+    }
+
+    async function postSystemNotice(roomName, text) {
+      const rKey = kOf(roomName);
+      const now = Date.now();
+      const id = `MSG_${now}_SYS_${Math.random().toString(36).slice(2, 6)}`;
+      const msg = {
+        id,
+        ts: now,
+        sender: "System",
+        av: "🛡️",
+        role: "System",
+        text,
+        sysNotice: true,
+        time: new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      };
+      confirmedMsgs[rKey] = confirmedMsgs[rKey] || {};
+      confirmedMsgs[rKey][id] = msg;
+      saveLocalRoomMirror(rKey);
+      await dbPut(`messages/${rKey}/${id}`, msg);
+    }
+
+    // Build Entry Avatar Grid & Listeners
+    const avGridEl = document.getElementById("avGrid");
+    AVS.forEach((emo, idx) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "av-btn" + (idx === 0 ? " active" : "");
+      btn.textContent = emo;
+      btn.onclick = () => {
+        chosenAv = emo;
+        avGridEl.querySelectorAll(".av-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      };
+      avGridEl.appendChild(btn);
+    });
+
+    const admToggleEl = document.getElementById("admToggle");
+    const admKeyWrapEl = document.getElementById("admKeyWrap");
+    admToggleEl.onchange = () => {
+      admKeyWrapEl.classList.toggle("hidden", !admToggleEl.checked);
+      if (admToggleEl.checked) {
+        document.getElementById("admKeyInp").focus();
+      } else {
+        document.getElementById("admKeyInp").value = "";
+      }
+    };
+
+    // Live Nickname Availability Hint
+    const nickInpEl = document.getElementById("nickInp");
+    const authModeHintEl = document.getElementById("authModeHint");
+    async function updateAuthHint() {
+      const raw = nickInpEl.value.trim();
+      if (!raw) {
+        authModeHintEl.textContent = "Each username belongs to one account; new names register with your password.";
+        return;
+      }
+      if (!Object.keys(accounts).length) {
+        const fetched = await dbGet("accounts");
+        if (fetched && typeof fetched === "object") accounts = fetched;
+      }
+      const existing = accounts[kOf(raw)];
+      if (existing) {
+        authModeHintEl.textContent = `"${existing.name}" is already registered — enter its password to log in.`;
+      } else {
+        authModeHintEl.textContent = `"${raw}" is available — set a password (4+ chars) to claim this unique username.`;
+      }
+    }
+    nickInpEl.addEventListener("input", updateAuthHint);
+    nickInpEl.addEventListener("blur", updateAuthHint);
+
+    // Login / Enter Chat Handler
+    document.getElementById("enterBtn").onclick = async () => {
+      const nick = document.getElementById("nickInp").value.trim();
+      const userPass = document.getElementById("userPassInp").value;
+      const room = document.getElementById("roomSel").value;
+      const errEl = document.getElementById("entryErr");
+      errEl.textContent = "";
+
+      if (!nick) {
+        errEl.textContent = "Please enter a unique nickname.";
+        return;
+      }
+      if (!userPass || userPass.trim().length < 4) {
+        errEl.textContent = "Please enter an account password (at least 4 characters).";
+        return;
+      }
+      if (!document.getElementById("under18Agree").checked) {
+        errEl.textContent = "Please confirm you are Under 18 and agree to Respect Everyone.";
+        return;
+      }
+
+      const [b, u, r, s, acc, cfgPass, cfgRules, roomRemote] = await Promise.all([
+        dbGet("banned"),
+        dbGet("users"),
+        dbGet("ranks"),
+        dbGet("stats"),
+        dbGet("accounts"),
+        dbGet("config/adminPass"),
+        dbGet("config/rules"),
+        dbGet(`messages/${kOf(room)}`)
+      ]);
+
+      banned = b || {};
+      users = u || {};
+      ranks = r || {};
+      stats = s || {};
+      accounts = acc || {};
+      if (typeof cfgPass === "string" && cfgPass.trim()) {
+        adminPass = cfgPass.trim();
+      }
+      if (Array.isArray(cfgRules) && cfgRules.length) {
+        roomRules = cfgRules;
+      }
+
+      let isAdmin = false;
+      if (admToggleEl.checked) {
+        const typedAdminPass = document.getElementById("admKeyInp").value;
+        if (typedAdminPass !== adminPass) {
+          errEl.textContent = "Invalid Admin password.";
+          return;
+        }
+        isAdmin = true;
+      }
+
+      const isBanned = Object.values(banned).some(
+        item => item && (item.devId === devId || (item.name && item.name.toLowerCase() === nick.toLowerCase()))
+      );
+      if (isBanned && !isAdmin) {
+        errEl.textContent = "This account or device has been banned by Admin.";
+        return;
+      }
+
+      // Unique Username Ownership & Password Verification
+      const accKey = kOf(nick);
+      const passHash = hashPassword(userPass);
+      const existingAcc = accounts[accKey];
+      let finalName = nick;
+
+      if (existingAcc) {
+        if (existingAcc.passHash !== passHash && !(isAdmin && userPass === adminPass)) {
+          errEl.textContent = `Username "${existingAcc.name}" belongs to another account. Enter its password to log in.`;
+          return;
+        }
+        finalName = existingAcc.name;
+      } else {
+        const newAccount = {
+          name: nick,
+          passHash,
+          createdAt: Date.now()
+        };
+        accounts[accKey] = newAccount;
+        await dbPut("accounts/" + accKey, newAccount);
+      }
+
+      // One-Account-Per-Device Lock (unless Admin)
+      const activeOtherOnDevice = Object.values(users).find(
+        item => item && item.devId === devId && item.name && item.name.toLowerCase() !== finalName.toLowerCase()
+      );
+      if (!isAdmin && activeOtherOnDevice) {
+        errEl.textContent = `Only 1 account per device is allowed (${activeOtherOnDevice.name} is active).`;
+        return;
+      }
+
+      // Remove duplicate sessions for the same username
+      for (const [uk, uv] of Object.entries(users)) {
+        if (uv && uv.name && uv.name.toLowerCase() === finalName.toLowerCase() && uk !== devId) {
+          await dbDel("users/" + uk);
+        }
+      }
+
+      const finalKey = kOf(finalName);
+      const userPfp = resolveUserPfp(finalName, chosenAv);
+      const assignedRank = isAdmin
+        ? "Admin"
+        : (ranks[finalKey] && ranks[finalKey] !== "Admin" ? ranks[finalKey] : "Member");
+
+      await dbPut("ranks/" + finalKey, assignedRank);
+      if (!stats[finalKey]) {
+        stats[finalKey] = { exp: 0, coins: 0 };
+        await dbPut("stats/" + finalKey, stats[finalKey]);
+      }
+
+      me = { name: finalName, av: userPfp, room, isAdmin, devId };
+      users[devId] = me;
+      savePfpLocal(finalName, userPfp);
+      await dbPut("users/" + devId, me);
+
+      const rKey = kOf(room);
+      mergeRoomMessages(rKey, roomRemote);
+      if (lastAnnouncedRoomKey !== rKey) {
+        lastAnnouncedRoomKey = rKey;
+        await postSystemNotice(room, `${finalName} joined the room`);
+      }
+
+      document.getElementById("userPassInp").value = "";
+      document.getElementById("admKeyInp").value = "";
+      document.getElementById("entryScreen").classList.add("hidden");
+      document.getElementById("roomScreen").classList.remove("hidden");
+      syncAdminVisibility();
+      playTone(620, 0.09);
+      renderRoom();
+    };
+
+    // Room Message Sending (+10 EXP & +5 Coins; Admin has ∞ Coins)
+    async function sendChatMessage({ text = "", img = "", ytId = "", giftText = "", quote = null }) {
+      if (!me) return;
+      const muteInfo = getActiveMute(me.name);
+      if (muteInfo) {
+        showToast(`You are muted (${muteInfo.remainingText}).`);
+        return;
+      }
+
+      const cleanText = String(text || "").trim();
+      if (!cleanText && !img && !ytId && !giftText) return;
+
+      // Slash Commands: /w <user> <message> and /roll
+      if (!img && !ytId && !giftText && cleanText.startsWith("/")) {
+        const parts = cleanText.split(/\s+/);
+        const cmd = parts[0].toLowerCase();
+        if (cmd === "/roll") {
+          const rolled = Math.floor(Math.random() * 100) + 1;
+          await sendChatMessage({ text: `🎲 rolled ${rolled} (1-100)` });
+          return;
+        }
+        if (cmd === "/w") {
+          const targetName = parts[1];
+          const whisperBody = parts.slice(2).join(" ").trim();
+          if (!targetName || !whisperBody) {
+            showToast("Usage: /w username your message");
+            return;
+          }
+          const tKey = kOf(targetName);
+          const now = Date.now();
+          const wId = `W_${now}_${Math.random().toString(36).slice(2, 6)}`;
+          const wObj = {
+            id: wId,
+            ts: now,
+            from: me.name,
+            to: targetName,
+            text: whisperBody,
+            time: new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          };
+          await dbPut(`whispers/${tKey}/${wId}`, wObj);
+          showToast(`Whisper sent to ${targetName}`);
+          return;
+        }
+      }
+
+      const rKey = kOf(me.room);
+      const now = Date.now();
+      const msgId = `MSG_${now}_${Math.random().toString(36).slice(2, 6)}`;
+      const msgObj = {
+        id: msgId,
+        ts: now,
+        sender: me.name,
+        av: resolveUserPfp(me.name, me.av),
+        role: rankOf(me),
+        text: cleanText,
+        img: img || "",
+        ytId: ytId || "",
+        giftText: giftText || "",
+        quote: quote || null,
+        reactions: {},
+        time: new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      };
+
+      // Optimistic Persistence into Pending + Local Mirror
+      pendingMsgs[rKey] = pendingMsgs[rKey] || {};
+      pendingMsgs[rKey][msgId] = msgObj;
+      saveLocalRoomMirror(rKey);
+
+      // Update EXP (+10) & Coins (+5; Admin keeps ∞)
+      const uKey = kOf(me.name);
+      const curSt = stats[uKey] || { exp: 0, coins: 0 };
+      const nextSt = {
+        exp: Number(curSt.exp || 0) + 10,
+        coins: me.isAdmin ? 999999 : Number(curSt.coins || 0) + 5
+      };
+      stats[uKey] = nextSt;
+
+      renderRoom();
+      playTone(540, 0.06);
+
+      await Promise.all([
+        dbPut(`messages/${rKey}/${msgId}`, msgObj),
+        dbPut("stats/" + uKey, nextSt)
+      ]);
+    }
+
+    document.getElementById("composerForm").onsubmit = async (e) => {
+      e.preventDefault();
+      if (!me) return;
+      const inp = document.getElementById("msgInp");
+      const val = inp.value;
+      if (!val.trim()) return;
+      const q = replyDraft;
+      replyDraft = null;
+      document.getElementById("replyBar").classList.add("hidden");
+      inp.value = "";
+      await sendChatMessage({ text: val, quote: q });
+    };
+
+    document.getElementById("cancelReplyBtn").onclick = () => {
+      replyDraft = null;
+      document.getElementById("replyBar").classList.add("hidden");
+    };
+
+    // Media Drawer Controls (Photo Upload/URL, YouTube, Gift)
+    const mediaDrawerEl = document.getElementById("mediaDrawer");
+    document.getElementById("plusDrawerBtn").onclick = () => {
+      mediaDrawerEl.classList.toggle("hidden");
+    };
+
+    document.getElementById("photoFileInp").onchange = async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const dataUrl = await compressImageFile(file, 480, 0.8);
+        e.target.value = "";
+        mediaDrawerEl.classList.add("hidden");
+        await sendChatMessage({ img: dataUrl });
+      } catch (err) {
+        showToast(err.message || "Could not load photo.");
+      }
+    };
+
+    document.getElementById("sendPhotoUrlBtn").onclick = async () => {
+      const url = document.getElementById("photoUrlInp").value.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        showToast("Enter a valid http/https image URL.");
+        return;
+      }
+      document.getElementById("photoUrlInp").value = "";
+      mediaDrawerEl.classList.add("hidden");
+      await sendChatMessage({ img: url });
+    };
+
+    function extractYouTubeId(input) {
+      const s = String(input || "").trim();
       if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
-      const m = s.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
-      return m ? m[1] : null;
+      const m = s.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+      return m ? m[1] : "";
     }
 
     document.getElementById("sendYtBtn").onclick = async () => {
-      const id = getYtId(document.getElementById("ytUrlInp").value);
-      if (!id) return alert("Valid YouTube link ya 11-char ID dein.");
-      document.getElementById("ytUrlInp").value = "";
-      await sendMessage({ text: "YouTube Video", yt: id }, false);
+      const id = extractYouTubeId(document.getElementById("ytInp").value);
+      if (!id) {
+        showToast("Enter a valid YouTube link or 11-character video ID.");
+        return;
+      }
+      document.getElementById("ytInp").value = "";
+      mediaDrawerEl.classList.add("hidden");
+      await sendChatMessage({ ytId: id });
     };
 
     document.getElementById("sendGiftBtn").onclick = async () => {
       if (!me) return;
-      const to = document.getElementById("giftUserInp").value.trim();
-      if (!to) return;
-      const cost = 20;
-      const myK = kOf(me.name);
-      const mySt = stats[myK] || { exp: 0, coins: 0 };
-
+      const uKey = kOf(me.name);
+      const st = stats[uKey] || { exp: 0, coins: 0 };
+      if (!me.isAdmin && Number(st.coins || 0) < 20) {
+        showToast("Need 20 Coins to send a Rose Gift (chat to earn +5 Coins/msg).");
+        return;
+      }
       if (!me.isAdmin) {
-        if (Number(mySt.coins || 0) < cost) return alert("Coins kam hain. Chat karke coins kamayein.");
-        await dbPut(`stats/${myK}`, { exp: Number(mySt.exp || 0), coins: Number(mySt.coins || 0) - cost });
+        st.coins = Number(st.coins || 0) - 20;
+        stats[uKey] = st;
+        await dbPut("stats/" + uKey, st);
       }
-
-      const toK = kOf(to);
-      const toSt = stats[toK] || { exp: 0, coins: 0 };
-      await dbPut(`stats/${toK}`, { exp: Number(toSt.exp || 0) + 10, coins: Number(toSt.coins || 0) + cost });
-
-      document.getElementById("giftUserInp").value = "";
-      await sendMessage({ text: `🎁 Sent 20 Coins Gift to ${to}` }, false);
+      mediaDrawerEl.classList.add("hidden");
+      await sendChatMessage({ giftText: "sent a special 🌹 Rose Gift!" });
     };
 
-    async function syncLoop() {
-      const [u, b, r, s, m] = await Promise.all([
-        dbGet("users"), dbGet("banned"), dbGet("ranks"), dbGet("stats"), dbGet("messages")
-      ]);
-      users = u || {}; banned = b || {}; ranks = r || {}; stats = s || {}; msgs = m || {};
+    // GIPHY Real-Time Search (GIFs & Stickers, VIP+ Free, Load More + Proxy Fallback)
+    const gifPopEl = document.getElementById("gifPop");
+    const gifGridEl = document.getElementById("gifGrid");
+    const gifCatsEl = document.getElementById("gifCats");
 
-      if (me && !me.isAdmin) {
-        const isBan = Object.values(banned).some(x => x && (x.devId === devId || (x.name && x.name.toLowerCase() === me.name.toLowerCase())));
-        const isAct = Object.values(users).some(x => x && x.name === me.name && x.devId === devId);
-        if (isBan || !isAct) {
-          me = null;
-          document.getElementById("roomScreen").classList.add("hidden");
-          document.getElementById("entryScreen").classList.remove("hidden");
-          document.getElementById("entryErr").textContent = isBan ? "Banned by Admin." : "Kicked by Admin.";
-        }
-      }
-      renderRoom();
+    GIF_CATS.forEach((cat, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "pill" + (i === 0 ? " active" : "");
+      b.textContent = cat;
+      b.onclick = () => {
+        gifCatsEl.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+        b.classList.add("active");
+        gifCurrentQuery = cat === "Trending" ? "" : cat;
+        document.getElementById("gifSearchInp").value = gifCurrentQuery;
+        gifOffset = 0;
+        loadGiphyMedia(false);
+      };
+      gifCatsEl.appendChild(b);
+    });
+
+    async function fetchJsonWithFallback(url) {
+      try {
+        const r = await fetch(url);
+        if (r.ok) return await r.json();
+      } catch (_) {}
+      try {
+        const proxy = "https://corsproxy.io/?" + encodeURIComponent(url);
+        const r2 = await fetch(proxy);
+        if (r2.ok) return await r2.json();
+      } catch (_) {}
+      return null;
     }
 
-    document.getElementById("enterBtn").onclick = async () => {
-      const name = document.getElementById("nickInp").value.trim();
-      const room = document.getElementById("roomSel").value;
-      const err = document.getElementById("entryErr");
-      err.textContent = "";
-      if (!name) return (err.textContent = "Nickname likhein.");
+    async function loadGiphyMedia(append = false) {
+      const endpoint = gifMediaType === "stickers" ? "stickers" : "gifs";
+      const mode = gifCurrentQuery.trim() ? "search" : "trending";
+      const qParam = gifCurrentQuery.trim() ? `&q=${encodeURIComponent(gifCurrentQuery.trim())}` : "";
+      const url = `https://api.giphy.com/v1/${endpoint}/${mode}?api_key=${GIPHY_KEY}&limit=12&offset=${gifOffset}&rating=pg${qParam}`;
 
-      const [b, u, r, s] = await Promise.all([dbGet("banned"), dbGet("users"), dbGet("ranks"), dbGet("stats")]);
-      banned = b || {}; users = u || {}; ranks = r || {}; stats = s || {};
-
-      const isBan = Object.values(banned).some(x => x && (x.devId === devId || (x.name && x.name.toLowerCase() === name.toLowerCase())));
-      if (isBan && !admToggle.checked) return (err.textContent = "Banned.");
-
-      let isAdmin = false;
-      if (admToggle.checked) {
-        if (document.getElementById("admKeyInp").value !== ADMIN_KEY) return (err.textContent = "Wrong key (ADMIN123).");
-        isAdmin = true;
+      if (!append) {
+        gifGridEl.innerHTML = `<div class="u-sub" style="grid-column:1/-1; text-align:center; padding:12px;">Loading GIPHY...</div>`;
       }
 
-      const otherOnDev = Object.values(users).find(x => x && x.devId === devId && x.name.toLowerCase() !== name.toLowerCase());
-      if (!isAdmin && otherOnDev) return (err.textContent = `1 device = 1 account (${otherOnDev.name} active).`);
+      const data = await fetchJsonWithFallback(url);
+      if (!append) gifGridEl.innerHTML = "";
 
-      for (const [key, val] of Object.entries(users)) {
-        if (val && val.name && val.name.toLowerCase() === name.toLowerCase() && key !== devId) {
-          await dbDel("users/" + key);
+      const items = data && Array.isArray(data.data) ? data.data : [];
+      if (!items.length && !append) {
+        gifGridEl.innerHTML = `<div class="u-sub" style="grid-column:1/-1; text-align:center; padding:12px;">No ${gifMediaType} found.</div>`;
+        return;
+      }
+
+      items.forEach(item => {
+        const imgs = item.images || {};
+        const thumb = (imgs.fixed_width_small && imgs.fixed_width_small.url) ||
+          (imgs.fixed_height_small && imgs.fixed_height_small.url) ||
+          (imgs.downsized && imgs.downsized.url) || "";
+        const full = (imgs.downsized && imgs.downsized.url) ||
+          (imgs.fixed_height && imgs.fixed_height.url) || thumb;
+        if (!thumb || !full) return;
+
+        const tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = "gif-tile";
+        tile.innerHTML = `<img src="${esc(thumb)}" alt="GIPHY" loading="lazy" />`;
+        tile.onclick = async () => {
+          const curRank = rankOf(me);
+          if (!VIP_PLUS.has(curRank)) {
+            showToast("GIFs & Stickers are free for VIP and above ranks.");
+            return;
+          }
+          gifPopEl.classList.add("hidden");
+          await sendChatMessage({ img: full });
+        };
+        gifGridEl.appendChild(tile);
+      });
+    }
+
+    function openGifPicker() {
+      const curRank = rankOf(me);
+      document.getElementById("gifQuotaInfo").textContent = VIP_PLUS.has(curRank)
+        ? `${curRank}: Free GIFs & Stickers`
+        : "VIP+ Required for Free GIFs";
+      gifPopEl.classList.toggle("hidden");
+      if (!gifPopEl.classList.contains("hidden") && !gifGridEl.children.length) {
+        gifOffset = 0;
+        loadGiphyMedia(false);
+      }
+    }
+
+    document.getElementById("gifOpenBtn").onclick = openGifPicker;
+    document.getElementById("railGifBtn").onclick = openGifPicker;
+    document.getElementById("closeGifBtn").onclick = () => gifPopEl.classList.add("hidden");
+
+    document.getElementById("gifTabBtn").onclick = () => {
+      gifMediaType = "gifs";
+      document.getElementById("gifTabBtn").classList.add("active");
+      document.getElementById("stickerTabBtn").classList.remove("active");
+      gifOffset = 0;
+      loadGiphyMedia(false);
+    };
+
+    document.getElementById("stickerTabBtn").onclick = () => {
+      gifMediaType = "stickers";
+      document.getElementById("stickerTabBtn").classList.add("active");
+      document.getElementById("gifTabBtn").classList.remove("active");
+      gifOffset = 0;
+      loadGiphyMedia(false);
+    };
+
+    document.getElementById("gifSearchBtn").onclick = () => {
+      gifCurrentQuery = document.getElementById("gifSearchInp").value.trim();
+      gifOffset = 0;
+      loadGiphyMedia(false);
+    };
+
+    document.getElementById("gifSearchInp").onkeydown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        gifCurrentQuery = document.getElementById("gifSearchInp").value.trim();
+        gifOffset = 0;
+        loadGiphyMedia(false);
+      }
+    };
+
+    document.getElementById("gifLoadMoreBtn").onclick = () => {
+      gifOffset += 12;
+      loadGiphyMedia(true);
+    };
+
+    // Self PFP Modal (Username Change Reserved for Admin Only)
+    const pfpModalEl = document.getElementById("pfpModal");
+    const pfpPresetGridEl = document.getElementById("pfpPresetGrid");
+
+    function renderPfpModal() {
+      if (!me) return;
+      selectedPfpValue = resolveUserPfp(me.name, me.av);
+      document.getElementById("pfpAcctName").textContent = `${me.name} (${rankOf(me)})`;
+      document.getElementById("pfpUrlInp").value = isImageVal(selectedPfpValue) && !selectedPfpValue.startsWith("data:") ? selectedPfpValue : "";
+      const prev = document.getElementById("pfpPreview");
+      prev.innerHTML = isImageVal(selectedPfpValue)
+        ? `<img src="${esc(selectedPfpValue)}" alt="Preview" />`
+        : esc(selectedPfpValue);
+
+      pfpPresetGridEl.innerHTML = "";
+      AVS.forEach(emo => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "av-btn" + (selectedPfpValue === emo ? " active" : "");
+        b.textContent = emo;
+        b.onclick = () => {
+          selectedPfpValue = emo;
+          renderPfpModal();
+        };
+        pfpPresetGridEl.appendChild(b);
+      });
+    }
+
+    document.getElementById("openPfpBtn").onclick = () => {
+      renderPfpModal();
+      pfpModalEl.classList.remove("hidden");
+    };
+    document.getElementById("closePfpBtn").onclick = () => pfpModalEl.classList.add("hidden");
+
+    document.getElementById("pfpFileInp").onchange = async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        selectedPfpValue = await compressImageFile(file, 260, 0.78);
+        e.target.value = "";
+        renderPfpModal();
+      } catch (err) {
+        showToast(err.message || "Invalid image file.");
+      }
+    };
+
+    document.getElementById("savePfpBtn").onclick = async () => {
+      if (!me) return;
+      const urlTyped = document.getElementById("pfpUrlInp").value.trim();
+      if (urlTyped) {
+        if (!/^https?:\/\//i.test(urlTyped)) {
+          showToast("Enter a valid http/https image URL.");
+          return;
         }
+        selectedPfpValue = urlTyped;
       }
-
-      const rk = isAdmin ? "Admin" : (ranks[kOf(name)] && ranks[kOf(name)] !== "Admin" ? ranks[kOf(name)] : "Member");
-      await dbPut("ranks/" + kOf(name), rk);
-      if (!stats[kOf(name)]) await dbPut("stats/" + kOf(name), { exp: 0, coins: 0 });
-
-      me = { name, av: chosenAv, room, isAdmin, devId };
-      await dbPut("users/" + devId, me);
-
-      document.getElementById("entryScreen").classList.add("hidden");
-      document.getElementById("roomScreen").classList.remove("hidden");
+      me.av = selectedPfpValue;
+      users[devId] = me;
+      savePfpLocal(me.name, selectedPfpValue);
+      await dbPut(`users/${devId}/av`, selectedPfpValue);
+      pfpModalEl.classList.add("hidden");
+      showToast("Your PFP has been updated!");
       renderRoom();
     };
 
-    function renderRoom() {
-      if (!me) return;
-      const mySt = stats[kOf(me.name)] || { exp: 0, coins: 0 };
-      document.getElementById("roomHeading").textContent = `${me.av} ${me.name} — ${me.room}`;
-      document.getElementById("rankChip").textContent = rankOf(me);
-      document.getElementById("myExp").textContent = mySt.exp || 0;
-      document.getElementById("myCoins").textContent = me.isAdmin ? "∞" : (mySt.coins || 0);
-      document.getElementById("openAdmBtn").classList.toggle("hidden", !me.isAdmin);
-
-      const uBox = document.getElementById("onlineList");
-      uBox.innerHTML = "";
-      Object.values(users).forEach(u => {
-        if (!u) return;
-        const st = stats[kOf(u.name)] || { exp: 0, coins: 0 };
-        const div = document.createElement("div");
-        div.className = "u-row";
-        div.innerHTML = `
-          <div>
-            <strong>${u.av} ${u.name}</strong> <span class="chip">${rankOf(u)}</span>
-            <div class="tiny">EXP ${st.exp || 0} • Coins ${u.isAdmin ? "∞" : (st.coins || 0)}</div>
-          </div>
-        `;
-        uBox.appendChild(div);
-      });
-
-      const feed = document.getElementById("chatFeed");
-      feed.innerHTML = "";
-      Object.values(msgs[kOf(me.room)] || {}).forEach(m => {
-        if (!m) return;
-        const item = document.createElement("div");
-        item.className = "bubble-item";
-        const img = m.img ? `<img class="b-img" src="${m.img}" alt="" />` : "";
-        const yt = m.yt ? `<iframe class="b-yt" src="https://www.youtube.com/embed/${m.yt}" allowfullscreen></iframe>` : "";
-        item.innerHTML = `
-          <div class="b-meta"><strong>${m.av} ${m.sender}</strong><span class="chip">${m.role}</span><span class="tiny">${m.time || ""}</span></div>
-          <div class="b-text">${m.text || ""}</div>${img}${yt}
-        `;
-        feed.appendChild(item);
-      });
-      feed.scrollTop = feed.scrollHeight;
-
-      if (!document.getElementById("admModal").classList.contains("hidden")) renderAdmModal();
+    // Under-18 & Respect Everyone Rules Modal
+    const rulesModalEl = document.getElementById("rulesModal");
+    function openRulesModal() {
+      const box = document.getElementById("rulesContent");
+      box.innerHTML = roomRules.map((line, idx) =>
+        `<div class="rules-item"><strong>Rule ${idx + 1}:</strong> ${esc(line)}</div>`
+      ).join("");
+      rulesModalEl.classList.remove("hidden");
     }
 
-    async function sendMessage({ text = "", img = "", yt = "" }, earnChat = true) {
+    document.getElementById("openRulesBtn").onclick = openRulesModal;
+    document.getElementById("railRulesBtn").onclick = openRulesModal;
+    document.getElementById("closeRulesBtn").onclick = () => rulesModalEl.classList.add("hidden");
+    document.getElementById("entryRulesLink").onclick = async () => {
+      const r = await dbGet("config/rules");
+      if (Array.isArray(r) && r.length) roomRules = r;
+      openRulesModal();
+    };
+
+    // Abuse Report Modal
+    const reportModalEl = document.getElementById("reportModal");
+    function openReportModal(prefillTarget = "") {
+      document.getElementById("repTargetInp").value = prefillTarget;
+      document.getElementById("repDetailsInp").value = "";
+      reportModalEl.classList.remove("hidden");
+    }
+
+    document.getElementById("openReportBtn").onclick = () => openReportModal("");
+    document.getElementById("closeReportBtn").onclick = () => reportModalEl.classList.add("hidden");
+
+    document.getElementById("submitReportBtn").onclick = async () => {
       if (!me) return;
-      const k = kOf(me.name);
-      if (earnChat) {
-        const prev = stats[k] || { exp: 0, coins: 0 };
-        const next = { exp: Number(prev.exp || 0) + 10, coins: me.isAdmin ? "∞" : Number(prev.coins || 0) + 5 };
-        stats[k] = next;
-        await dbPut("stats/" + k, next);
+      const target = document.getElementById("repTargetInp").value.trim();
+      const reason = document.getElementById("repReasonSel").value;
+      const details = document.getElementById("repDetailsInp").value.trim();
+      if (!target) {
+        showToast("Please enter the username to report.");
+        return;
       }
-      const id = "MSG_" + Date.now();
-      const payload = {
-        sender: me.name, av: me.av, role: rankOf(me), text, img, yt,
+      const id = `REP_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+      const repObj = {
+        id,
+        by: me.name,
+        target,
+        reason,
+        details,
+        room: me.room,
+        status: "open",
         time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
-      msgs[kOf(me.room)] = msgs[kOf(me.room)] || {};
-      msgs[kOf(me.room)][id] = payload;
-      await dbPut(`messages/${kOf(me.room)}/${id}`, payload);
-      renderRoom();
-    }
-
-    document.getElementById("msgForm").onsubmit = async e => {
-      e.preventDefault();
-      const inp = document.getElementById("msgInp");
-      const val = inp.value.trim();
-      if (!val) return;
-      inp.value = "";
-      await sendMessage({ text: val }, true);
+      reports[id] = repObj;
+      await dbPut("reports/" + id, repObj);
+      reportModalEl.classList.add("hidden");
+      showToast(`Report against ${target} sent to Admins.`);
     };
 
-    const admModal = document.getElementById("admModal");
-    document.getElementById("openAdmBtn").onclick = () => { renderAdmModal(); admModal.classList.remove("hidden"); };
-    document.getElementById("closeAdmModal").onclick = () => admModal.classList.add("hidden");
+    // Friends & Friend Requests Modal
+    const friendsModalEl = document.getElementById("friendsModal");
+    function renderFriendsModal() {
+      if (!me) return;
+      const myKey = kOf(me.name);
+      const incEl = document.getElementById("incomingReqsList");
+      const outEl = document.getElementById("outgoingReqsList");
+      const fListEl = document.getElementById("friendsListBox");
 
-    function renderAdmModal() {
-      const uList = document.getElementById("admUserList");
-      const bList = document.getElementById("admBanList");
-      uList.innerHTML = ""; bList.innerHTML = "";
+      const myInc = Object.entries(friendRequests).filter(([, req]) =>
+        req && req.status === "pending" && kOf(req.to) === myKey
+      );
+      const myOut = Object.entries(friendRequests).filter(([, req]) =>
+        req && req.status === "pending" && kOf(req.from) === myKey
+      );
+      const myFriends = Object.keys((friendsMap && friendsMap[myKey]) || {}).filter(fk => friendsMap[myKey][fk]);
 
-      const others = Object.entries(users).filter(([k, u]) => u && k !== devId);
-      if (!others.length) uList.innerHTML = `<div class="tiny">No other users.</div>`;
-      others.forEach(([key, u]) => {
-        const row = document.createElement("div"); row.className = "mod-item";
-        row.innerHTML = `<div><strong>${u.name}</strong><div class="tiny">${key}</div></div>`;
-        const acts = document.createElement("div"); acts.style.display = "flex"; acts.style.gap = "4px";
+      incEl.innerHTML = myInc.length ? "" : `<div class="u-sub">No incoming requests.</div>`;
+      myInc.forEach(([reqId, req]) => {
+        const row = document.createElement("div");
+        row.className = "mod-row";
+        row.innerHTML = `<span><strong>${esc(req.from)}</strong> wants to be friends</span>`;
+        const btns = document.createElement("div");
+        btns.style.display = "flex";
+        btns.style.gap = "4px";
 
-        const sel = document.createElement("select"); sel.className = "sel"; sel.style.width = "110px"; sel.style.padding = "4px";
-        RANKS.forEach(r => { const o = document.createElement("option"); o.value = r; o.textContent = r; if ((ranks[kOf(u.name)] || "Member") === r) o.selected = true; sel.appendChild(o); });
-        sel.onchange = async () => { await dbPut("ranks/" + kOf(u.name), sel.value); syncLoop(); };
-
-        const kick = document.createElement("button"); kick.type = "button"; kick.className = "tbtn gold"; kick.textContent = "Kick";
-        kick.onclick = async () => { await dbDel("users/" + key); delete users[key]; renderRoom(); };
-
-        const ban = document.createElement("button"); ban.type = "button"; ban.className = "tbtn red"; ban.textContent = "Ban";
-        ban.onclick = async () => {
-          await dbDel("users/" + key); delete users[key];
-          const bObj = { name: u.name, devId: u.devId || key };
-          banned[key] = bObj;
-          await dbPut("banned/" + key, bObj);
+        const accBtn = document.createElement("button");
+        accBtn.type = "button";
+        accBtn.className = "tbtn grn";
+        accBtn.textContent = "Accept";
+        accBtn.onclick = async () => {
+          const otherKey = kOf(req.from);
+          friendsMap[myKey] = friendsMap[myKey] || {};
+          friendsMap[otherKey] = friendsMap[otherKey] || {};
+          friendsMap[myKey][otherKey] = req.from;
+          friendsMap[otherKey][myKey] = me.name;
+          friendRequests[reqId].status = "accepted";
+          await Promise.all([
+            dbPut(`friends/${myKey}/${otherKey}`, req.from),
+            dbPut(`friends/${otherKey}/${myKey}`, me.name),
+            dbPut(`friendRequests/${reqId}/status`, "accepted")
+          ]);
+          showToast(`You are now friends with ${req.from}!`);
+          renderFriendsModal();
           renderRoom();
         };
 
-        acts.append(sel, kick, ban); row.appendChild(acts); uList.appendChild(row);
+        const decBtn = document.createElement("button");
+        decBtn.type = "button";
+        decBtn.className = "tbtn red";
+        decBtn.textContent = "Decline";
+        decBtn.onclick = async () => {
+          friendRequests[reqId].status = "declined";
+          await dbPut(`friendRequests/${reqId}/status`, "declined");
+          renderFriendsModal();
+          renderRoom();
+        };
+
+        btns.append(accBtn, decBtn);
+        row.appendChild(btns);
+        incEl.appendChild(row);
       });
 
-      const bEnt = Object.entries(banned);
-      if (!bEnt.length) bList.innerHTML = `<div class="tiny">No banned users.</div>`;
-      bEnt.forEach(([k, b]) => {
-        if (!b) return;
-        const row = document.createElement("div"); row.className = "mod-item";
-        row.innerHTML = `<div><strong>${b.name}</strong> <span class="tiny">(${b.devId})</span></div>`;
-        const unban = document.createElement("button"); unban.type = "button"; unban.className = "tbtn grn"; unban.textContent = "Unban";
-        unban.onclick = async () => { await dbDel("banned/" + k); delete banned[k]; renderAdmModal(); };
-        row.appendChild(unban); bList.appendChild(row);
+      outEl.innerHTML = myOut.length ? "" : `<div class="u-sub">No outgoing requests.</div>`;
+      myOut.forEach(([, req]) => {
+        const row = document.createElement("div");
+        row.className = "mod-row";
+        row.innerHTML = `<span>Pending request to <strong>${esc(req.to)}</strong></span><span class="pill">Pending</span>`;
+        outEl.appendChild(row);
+      });
+
+      fListEl.innerHTML = myFriends.length ? "" : `<div class="u-sub">No friends added yet.</div>`;
+      myFriends.forEach(fk => {
+        const fname = friendsMap[myKey][fk] || fk;
+        const row = document.createElement("div");
+        row.className = "mod-row";
+        row.innerHTML = `<strong>${esc(fname)}</strong>`;
+        const btns = document.createElement("div");
+        btns.style.display = "flex";
+        btns.style.gap = "4px";
+
+        const chatBtn = document.createElement("button");
+        chatBtn.type = "button";
+        chatBtn.className = "tbtn";
+        chatBtn.textContent = "Personal Chat";
+        chatBtn.onclick = () => {
+          friendsModalEl.classList.add("hidden");
+          openDmModal(fname);
+        };
+
+        const remBtn = document.createElement("button");
+        remBtn.type = "button";
+        remBtn.className = "tbtn red";
+        remBtn.textContent = "Remove";
+        remBtn.onclick = async () => {
+          delete friendsMap[myKey][fk];
+          if (friendsMap[fk]) delete friendsMap[fk][myKey];
+          await Promise.all([
+            dbDel(`friends/${myKey}/${fk}`),
+            dbDel(`friends/${fk}/${myKey}`)
+          ]);
+          renderFriendsModal();
+        };
+
+        btns.append(chatBtn, remBtn);
+        row.appendChild(btns);
+        fListEl.appendChild(row);
       });
     }
 
+    function openFriendsModal() {
+      renderFriendsModal();
+      friendsModalEl.classList.remove("hidden");
+    }
+
+    document.getElementById("openFriendsBtn").onclick = openFriendsModal;
+    document.getElementById("railFriendsBtn").onclick = openFriendsModal;
+    document.getElementById("closeFriendsBtn").onclick = () => friendsModalEl.classList.add("hidden");
+
+    async function sendFriendRequestTo(targetName) {
+      if (!me) return;
+      const clean = String(targetName || "").trim();
+      if (!clean) {
+        showToast("Enter a username.");
+        return;
+      }
+      if (clean.toLowerCase() === me.name.toLowerCase()) {
+        showToast("You cannot add yourself.");
+        return;
+      }
+      const reqId = `FREQ_${kOf(me.name)}_${kOf(clean)}`;
+      const reqObj = {
+        id: reqId,
+        from: me.name,
+        to: clean,
+        status: "pending",
+        ts: Date.now()
+      };
+      friendRequests[reqId] = reqObj;
+      await dbPut("friendRequests/" + reqId, reqObj);
+      showToast(`Friend request sent to ${clean}!`);
+      renderFriendsModal();
+    }
+
+    document.getElementById("sendFriendReqBtn").onclick = async () => {
+      const inp = document.getElementById("friendAddInp");
+      await sendFriendRequestTo(inp.value);
+      inp.value = "";
+    };
+
+    // Personal Chat (1-on-1 DM) Modal
+    const dmModalEl = document.getElementById("dmModal");
+    function dmThreadKey(a, b) {
+      const pair = [String(a || "").trim(), String(b || "").trim()].sort((x, y) => x.toLowerCase().localeCompare(y.toLowerCase()));
+      return encodeURIComponent(`${pair[0]}__${pair[1]}`);
+    }
+
+    function collectDmCandidates() {
+      const names = new Set();
+      Object.values(users).forEach(u => {
+        if (u && u.name && u.name.toLowerCase() !== me.name.toLowerCase()) names.add(u.name);
+      });
+      Object.values(accounts).forEach(a => {
+        if (a && a.name && a.name.toLowerCase() !== me.name.toLowerCase()) names.add(a.name);
+      });
+      if (me) {
+        const myFriends = (friendsMap && friendsMap[kOf(me.name)]) || {};
+        Object.values(myFriends).forEach(fn => {
+          if (fn && fn.toLowerCase() !== me.name.toLowerCase()) names.add(fn);
+        });
+      }
+      return Array.from(names);
+    }
+
+    function renderDmFeed() {
+      if (!me) return;
+      const sel = document.getElementById("dmPeerSel");
+      const candidates = collectDmCandidates();
+      const prevVal = activeDmPeer || sel.value || candidates[0] || "";
+      sel.innerHTML = "";
+      if (!candidates.length) {
+        sel.innerHTML = `<option value="">No users available</option>`;
+        document.getElementById("dmFeed").innerHTML = `<div class="u-sub">No personal chat messages yet.</div>`;
+        return;
+      }
+      candidates.forEach(cName => {
+        const opt = document.createElement("option");
+        opt.value = cName;
+        opt.textContent = cName;
+        if (cName.toLowerCase() === prevVal.toLowerCase()) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      activeDmPeer = sel.value || candidates[0];
+
+      const tKey = dmThreadKey(me.name, activeDmPeer);
+      const rawThread = dmThreads[tKey] || {};
+      const list = Object.values(rawThread)
+        .filter(Boolean)
+        .sort((a, b) => Number(a.ts || 0) - Number(b.ts || 0));
+
+      const feed = document.getElementById("dmFeed");
+      feed.innerHTML = "";
+      if (!list.length) {
+        feed.innerHTML = `<div class="u-sub">Start a private conversation with ${esc(activeDmPeer)}.</div>`;
+        return;
+      }
+
+      list.forEach(m => {
+        const mine = String(m.from || "").toLowerCase() === me.name.toLowerCase();
+        const row = document.createElement("div");
+        row.className = "msg-row" + (mine ? " mine" : "");
+        const imgHtml = m.img ? `<img class="msg-media" src="${esc(m.img)}" alt="DM Image" />` : "";
+        row.innerHTML = `
+          <div class="msg-bubble">
+            <div class="msg-meta">
+              <span class="msg-sender">${esc(m.from)}</span>
+              <span class="msg-time">${esc(m.time || "")}</span>
+            </div>
+            ${m.text ? `<div class="msg-text">${esc(m.text)}</div>` : ""}
+            ${imgHtml}
+          </div>
+        `;
+        feed.appendChild(row);
+      });
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function openDmModal(peerName = "") {
+      if (peerName) activeDmPeer = peerName;
+      renderDmFeed();
+      dmModalEl.classList.remove("hidden");
+    }
+
+    document.getElementById("openDmTopBtn").onclick = () => openDmModal("");
+    document.getElementById("railDmBtn").onclick = () => openDmModal("");
+    document.getElementById("closeDmBtn").onclick = () => dmModalEl.classList.add("hidden");
+    document.getElementById("dmPeerSel").onchange = (e) => {
+      activeDmPeer = e.target.value;
+      renderDmFeed();
+    };
+
+    document.getElementById("clearMyDmBtn").onclick = async () => {
+      if (!me || !activeDmPeer) return;
+      const tKey = dmThreadKey(me.name, activeDmPeer);
+      delete dmThreads[tKey];
+      await dbDel("dmThreads/" + tKey);
+      renderDmFeed();
+      showToast("Personal chat cleared.");
+    };
+
+    async function sendPersonalMessage(text = "", img = "") {
+      if (!me || !activeDmPeer) {
+        showToast("Choose someone to message.");
+        return;
+      }
+      const muteInfo = getActiveMute(me.name);
+      if (muteInfo) {
+        showToast(`You are muted (${muteInfo.remainingText}).`);
+        return;
+      }
+      const clean = String(text || "").trim();
+      if (!clean && !img) return;
+
+      const tKey = dmThreadKey(me.name, activeDmPeer);
+      const now = Date.now();
+      const mid = `DM_${now}_${Math.random().toString(36).slice(2, 6)}`;
+      const dObj = {
+        id: mid,
+        ts: now,
+        from: me.name,
+        to: activeDmPeer,
+        text: clean,
+        img: img || "",
+        time: new Date(now).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      };
+      dmThreads[tKey] = dmThreads[tKey] || {};
+      dmThreads[tKey][mid] = dObj;
+      renderDmFeed();
+      await dbPut(`dmThreads/${tKey}/${mid}`, dObj);
+    }
+
+    document.getElementById("dmSendBtn").onclick = async () => {
+      const inp = document.getElementById("dmTextInp");
+      const txt = inp.value;
+      if (!txt.trim()) return;
+      inp.value = "";
+      await sendPersonalMessage(txt, "");
+    };
+
+    document.getElementById("dmTextInp").onkeydown = async (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const inp = document.getElementById("dmTextInp");
+        const txt = inp.value;
+        if (!txt.trim()) return;
+        inp.value = "";
+        await sendPersonalMessage(txt, "");
+      }
+    };
+
+    document.getElementById("dmPhotoInp").onchange = async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const dataUrl = await compressImageFile(file, 420, 0.78);
+        e.target.value = "";
+        await sendPersonalMessage("", dataUrl);
+      } catch (err) {
+        showToast(err.message || "Could not attach photo.");
+      }
+    };
+
+    // Leaderboard, Roll, Sound & Theme Buttons
+    const leaderModalEl = document.getElementById("leaderModal");
+    function openLeaderboard() {
+      const listEl = document.getElementById("leaderList");
+      const rows = Object.entries(stats)
+        .map(([uk, st]) => ({
+          name: (accounts[uk] && accounts[uk].name) || uk,
+          exp: Number((st && st.exp) || 0),
+          coins: Number((st && st.coins) || 0)
+        }))
+        .sort((a, b) => b.exp - a.exp)
+        .slice(0, 10);
+
+      listEl.innerHTML = rows.length
+        ? rows.map((r, i) =>
+          `<div class="mod-row"><div><strong>#${i + 1} ${esc(r.name)}</strong></div><div class="stat-chip">EXP ${r.exp} • Coins ${r.coins}</div></div>`
+        ).join("")
+        : `<div class="u-sub">No stats yet.</div>`;
+      leaderModalEl.classList.remove("hidden");
+    }
+
+    document.getElementById("railLeaderBtn").onclick = openLeaderboard;
+    document.getElementById("closeLeaderBtn").onclick = () => leaderModalEl.classList.add("hidden");
+
+    document.getElementById("railRollBtn").onclick = () => sendChatMessage({ text: `🎲 rolled ${Math.floor(Math.random() * 100) + 1} (1-100)` });
+
+    document.getElementById("railSoundBtn").onclick = (e) => {
+      soundEnabled = !soundEnabled;
+      e.currentTarget.textContent = soundEnabled ? "🔊" : "🔇";
+      showToast(soundEnabled ? "Sound FX enabled" : "Sound FX muted");
+    };
+
+    document.getElementById("railThemeBtn").onclick = () => {
+      THEMES.forEach(t => { if (t) document.body.classList.remove(t); });
+      themeIdx = (themeIdx + 1) % THEMES.length;
+      if (THEMES[themeIdx]) document.body.classList.add(THEMES[themeIdx]);
+      showToast("Room theme changed!");
+    };
+
+    document.getElementById("mobileUsersBtn").onclick = () => {
+      document.getElementById("usersSide").classList.toggle("open");
+    };
+
+    // Admin Panel Logic (Strictly Admin-Only)
+    const admModalEl = document.getElementById("admModal");
+
+    function openAdmModal() {
+      if (!me || !me.isAdmin) {
+        syncAdminVisibility();
+        return;
+      }
+      admModalEl.classList.remove("hidden");
+      renderAdmModal();
+    }
+
+    document.getElementById("openAdmBtn").onclick = openAdmModal;
+    document.getElementById("railAdmBtn").onclick = openAdmModal;
+    document.getElementById("closeAdmModal").onclick = () => admModalEl.classList.add("hidden");
+
+    admModalEl.querySelectorAll(".adm-tab").forEach(tabBtn => {
+      tabBtn.onclick = () => {
+        if (!me || !me.isAdmin) return;
+        admModalEl.querySelectorAll(".adm-tab").forEach(b => b.classList.remove("active"));
+        tabBtn.classList.add("active");
+        const tab = tabBtn.getAttribute("data-atab");
+        document.getElementById("admTabUsers").classList.toggle("hidden", tab !== "users");
+        document.getElementById("admTabReports").classList.toggle("hidden", tab !== "reports");
+        document.getElementById("admTabBans").classList.toggle("hidden", tab !== "bans");
+        document.getElementById("admTabDmMonitor").classList.toggle("hidden", tab !== "dmmonitor");
+        document.getElementById("admTabTools").classList.toggle("hidden", tab !== "tools");
+        if (tab === "tools") {
+          document.getElementById("rulesEditorInp").value = roomRules.join("\n");
+        }
+        renderAdmModal();
+      };
+    });
+
+    async function setUserMuteMinutes(targetName, minsOrPerm) {
+      if (!me || !me.isAdmin) return;
+      const key = kOf(targetName);
+      if (Number(minsOrPerm) === 0) {
+        delete mutes[key];
+        await dbDel("mutes/" + key);
+        showToast(`Unmuted ${targetName}`);
+      } else if (minsOrPerm === "perm") {
+        mutes[key] = { name: targetName, permanent: true };
+        await dbPut("mutes/" + key, mutes[key]);
+        showToast(`Permanently muted ${targetName}`);
+      } else {
+        const mins = Math.max(1, Number(minsOrPerm) || 10);
+        mutes[key] = { name: targetName, permanent: false, until: Date.now() + mins * 60000 };
+        await dbPut("mutes/" + key, mutes[key]);
+        showToast(`Muted ${targetName} for ${mins} minute(s)`);
+      }
+      renderRoom();
+    }
+
+    function renderAdmModal() {
+      if (!me || !me.isAdmin) {
+        syncAdminVisibility();
+        return;
+      }
+
+      const openReps = Object.values(reports).filter(r => r && r.status === "open");
+      const activeMutes = Object.entries(mutes).filter(([, m]) => m && getActiveMute(m.name));
+      const activeBans = Object.entries(banned).filter(([, b]) => Boolean(b));
+      const dmEntries = Object.entries(dmThreads).filter(([, msgsObj]) => msgsObj && Object.keys(msgsObj).length > 0);
+
+      document.getElementById("repBadge").textContent = openReps.length;
+      document.getElementById("banBadge").textContent = activeBans.length + activeMutes.length;
+      document.getElementById("dmMonBadge").textContent = dmEntries.length;
+
+      // Users & Ranks Tab (Change Username, Change Password, Assign Rank/Moderator, Custom Mute, Kick, Ban)
+      const uList = document.getElementById("admUserList");
+      uList.innerHTML = "";
+      const dirMap = new Map();
+
+      Object.entries(users).forEach(([uk, uv]) => {
+        if (!uv || !uv.name || uk === devId) return;
+        const lk = kOf(uv.name);
+        dirMap.set(lk, {
+          userKey: lk,
+          sessionKey: uk,
+          name: uv.name,
+          online: true,
+          devId: uv.devId || uk
+        });
+      });
+
+      Object.entries(accounts).forEach(([ak, avObj]) => {
+        if (!avObj || !avObj.name) return;
+        if (avObj.name.toLowerCase() === me.name.toLowerCase()) return;
+        if (!dirMap.has(ak)) {
+          dirMap.set(ak, {
+            userKey: ak,
+            sessionKey: null,
+            name: avObj.name,
+            online: false,
+            devId: ak
+          });
+        }
+      });
+
+      const allManaged = Array.from(dirMap.values());
+      if (!allManaged.length) {
+        uList.innerHTML = `<div class="u-sub">No other registered or online users yet.</div>`;
+      }
+
+      allManaged.forEach(entry => {
+        const row = document.createElement("div");
+        row.className = "mod-row";
+        const curRank = ranks[entry.userKey] || "Member";
+        const muteAct = getActiveMute(entry.name);
+
+        row.innerHTML = `
+          <div>
+            <strong>${esc(entry.name)}</strong>
+            <span class="pill">${esc(curRank)}</span>
+            <span class="u-sub">${entry.online ? "🟢 Online" : "⚫ Offline"}</span>
+            ${muteAct ? `<div class="u-sub">Muted: ${esc(muteAct.remainingText)}</div>` : ""}
+          </div>
+        `;
+
+        const controls = document.createElement("div");
+        controls.style.display = "flex";
+        controls.style.gap = "5px";
+        controls.style.flexWrap = "wrap";
+
+        // Admin Change User's Unique Username
+        const nameInp = document.createElement("input");
+        nameInp.className = "inp";
+        nameInp.style.width = "102px";
+        nameInp.style.padding = "4px 6px";
+        nameInp.placeholder = "New username...";
+
+        const setNameBtn = document.createElement("button");
+        setNameBtn.type = "button";
+        setNameBtn.className = "tbtn";
+        setNameBtn.textContent = "Rename";
+        setNameBtn.onclick = async () => {
+          const nextName = nameInp.value.trim();
+          if (!nextName || nextName.toLowerCase() === entry.name.toLowerCase()) return;
+          const nextKey = kOf(nextName);
+          if (accounts[nextKey] && accounts[nextKey].name.toLowerCase() !== entry.name.toLowerCase()) {
+            showToast(`Username "${nextName}" is already in use.`);
+            return;
+          }
+          const oldName = entry.name;
+          const oldKey = entry.userKey;
+          const prevAcc = accounts[oldKey] || { name: oldName, passHash: hashPassword("1234"), createdAt: Date.now() };
+          const updatedAcc = Object.assign({}, prevAcc, { name: nextName });
+
+          accounts[nextKey] = updatedAcc;
+          delete accounts[oldKey];
+          ranks[nextKey] = ranks[oldKey] || "Member";
+          delete ranks[oldKey];
+          stats[nextKey] = stats[oldKey] || { exp: 0, coins: 0 };
+          delete stats[oldKey];
+
+          const pfpVal = resolveUserPfp(oldName, AVS[0]);
+          savePfpLocal(nextName, pfpVal);
+
+          await Promise.all([
+            dbPut("accounts/" + nextKey, updatedAcc),
+            dbDel("accounts/" + oldKey),
+            dbPut("ranks/" + nextKey, ranks[nextKey]),
+            dbDel("ranks/" + oldKey),
+            dbPut("stats/" + nextKey, stats[nextKey]),
+            dbDel("stats/" + oldKey)
+          ]);
+
+          if (entry.sessionKey && users[entry.sessionKey]) {
+            users[entry.sessionKey].name = nextName;
+            await dbPut("users/" + entry.sessionKey, users[entry.sessionKey]);
+          }
+
+          await postSystemNotice(me.room, `Admin renamed ${oldName} to ${nextName}`);
+          nameInp.value = "";
+          showToast(`Renamed ${oldName} to ${nextName}`);
+          renderRoom();
+        };
+
+        // Admin Change User's Password
+        const passInp = document.createElement("input");
+        passInp.type = "password";
+        passInp.className = "inp";
+        passInp.style.width = "102px";
+        passInp.style.padding = "4px 6px";
+        passInp.placeholder = "New pass...";
+
+        const setPassBtn = document.createElement("button");
+        setPassBtn.type = "button";
+        setPassBtn.className = "tbtn grn";
+        setPassBtn.textContent = "Set Pass";
+        setPassBtn.onclick = async () => {
+          const nextPw = passInp.value.trim();
+          if (!nextPw || nextPw.length < 4) {
+            showToast("Enter a password with at least 4 characters.");
+            return;
+          }
+          const existing = accounts[entry.userKey] || { name: entry.name, createdAt: Date.now() };
+          const updated = Object.assign({}, existing, {
+            name: entry.name,
+            passHash: hashPassword(nextPw)
+          });
+          accounts[entry.userKey] = updated;
+          await dbPut("accounts/" + entry.userKey, updated);
+          passInp.value = "";
+          showToast(`Password updated for ${entry.name}`);
+        };
+
+        // Admin Rank / Moderator Selector
+        const rankSel = document.createElement("select");
+        rankSel.className = "sel";
+        rankSel.style.width = "114px";
+        rankSel.style.padding = "4px";
+        RANKS.forEach(rk => {
+          const op = document.createElement("option");
+          op.value = rk;
+          op.textContent = rk;
+          if (curRank === rk) op.selected = true;
+          rankSel.appendChild(op);
+        });
+        rankSel.onchange = async () => {
+          ranks[entry.userKey] = rankSel.value;
+          await dbPut("ranks/" + entry.userKey, rankSel.value);
+          showToast(`Set ${entry.name} rank to ${rankSel.value}`);
+          renderRoom();
+        };
+
+        // Custom-Duration Mute Controls
+        const muteSel = document.createElement("select");
+        muteSel.className = "sel";
+        muteSel.style.width = "104px";
+        muteSel.style.padding = "4px";
+
+        const customMinsInp = document.createElement("input");
+        customMinsInp.type = "number";
+        customMinsInp.min = "1";
+        customMinsInp.max = "10080";
+        customMinsInp.placeholder = "Mins";
+        customMinsInp.className = "inp hidden";
+        customMinsInp.style.width = "64px";
+        customMinsInp.style.padding = "4px 6px";
+
+        const customMinsBtn = document.createElement("button");
+        customMinsBtn.type = "button";
+        customMinsBtn.className = "tbtn grn hidden";
+        customMinsBtn.textContent = "Mute";
+        customMinsBtn.onclick = async () => {
+          const mins = parseInt(customMinsInp.value, 10);
+          if (!mins || mins < 1) {
+            showToast("Enter valid minutes.");
+            return;
+          }
+          await setUserMuteMinutes(entry.name, mins);
+          customMinsInp.classList.add("hidden");
+          customMinsBtn.classList.add("hidden");
+          customMinsInp.value = "";
+          muteSel.value = "";
+        };
+
+        [
+          { v: "", l: "Mute..." },
+          { v: "5", l: "5 Mins" },
+          { v: "15", l: "15 Mins" },
+          { v: "60", l: "1 Hour" },
+          { v: "custom", l: "Custom Min" },
+          { v: "perm", l: "Permanent" },
+          { v: "0", l: "Unmute" }
+        ].forEach(o => {
+          const opt = document.createElement("option");
+          opt.value = o.v;
+          opt.textContent = o.l;
+          muteSel.appendChild(opt);
+        });
+
+        muteSel.onchange = async () => {
+          if (!muteSel.value) return;
+          if (muteSel.value === "custom") {
+            customMinsInp.classList.remove("hidden");
+            customMinsBtn.classList.remove("hidden");
+            customMinsInp.focus();
+          } else {
+            customMinsInp.classList.add("hidden");
+            customMinsBtn.classList.add("hidden");
+            await setUserMuteMinutes(entry.name, muteSel.value);
+            muteSel.value = "";
+          }
+        };
+
+        const kickBtn = document.createElement("button");
+        kickBtn.type = "button";
+        kickBtn.className = "tbtn gold";
+        kickBtn.textContent = "Kick";
+        kickBtn.onclick = async () => {
+          if (entry.sessionKey) {
+            await dbDel("users/" + entry.sessionKey);
+            delete users[entry.sessionKey];
+          }
+          showToast(`Kicked ${entry.name}`);
+          renderRoom();
+        };
+
+        const banBtn = document.createElement("button");
+        banBtn.type = "button";
+        banBtn.className = "tbtn red";
+        banBtn.textContent = "Ban";
+        banBtn.onclick = async () => {
+          if (entry.sessionKey) {
+            await dbDel("users/" + entry.sessionKey);
+            delete users[entry.sessionKey];
+          }
+          const bObj = { name: entry.name, devId: entry.devId };
+          banned[entry.userKey] = bObj;
+          await dbPut("banned/" + entry.userKey, bObj);
+          showToast(`Banned ${entry.name}`);
+          renderRoom();
+        };
+
+        controls.append(nameInp, setNameBtn, passInp, setPassBtn, rankSel, muteSel, customMinsInp, customMinsBtn, kickBtn, banBtn);
+        row.appendChild(controls);
+        uList.appendChild(row);
+      });
+
+      // Reports Tab
+      const repList = document.getElementById("admReportList");
+      repList.innerHTML = openReps.length ? "" : `<div class="u-sub">No open abuse reports.</div>`;
+      openReps.forEach(rep => {
+        const row = document.createElement("div");
+        row.className = "mod-row";
+        row.innerHTML = `
+          <div>
+            <strong>🚨 ${esc(rep.target)}</strong> <span class="u-sub">reported by ${esc(rep.by)} (${esc(rep.room)})</span>
+            <div style="color:#fca5a5; font-size:12px;">Reason: ${esc(rep.reason)}</div>
+            <div class="u-sub">${esc(rep.details || "")} • ${esc(rep.time || "")}</div>
+          </div>
+        `;
+        const btns = document.createElement("div");
+        btns.style.display = "flex";
+        btns.style.gap = "4px";
+
+        const m15 = document.createElement("button");
+        m15.type = "button";
+        m15.className = "tbtn gold";
+        m15.textContent = "Mute 15m";
+        m15.onclick = async () => {
+          await setUserMuteMinutes(rep.target, 15);
+          reports[rep.id].status = "resolved";
+          await dbPut(`reports/${rep.id}/status`, "resolved");
+          renderAdmModal();
+        };
+
+        const bBtn = document.createElement("button");
+        bBtn.type = "button";
+        bBtn.className = "tbtn red";
+        bBtn.textContent = "Ban";
+        bBtn.onclick = async () => {
+          const bk = kOf(rep.target);
+          banned[bk] = { name: rep.target, devId: bk };
+          await dbPut("banned/" + bk, banned[bk]);
+          reports[rep.id].status = "resolved";
+          await dbPut(`reports/${rep.id}/status`, "resolved");
+          showToast(`Banned ${rep.target}`);
+          renderAdmModal();
+        };
+
+        const disBtn = document.createElement("button");
+        disBtn.type = "button";
+        disBtn.className = "tbtn grn";
+        disBtn.textContent = "Dismiss";
+        disBtn.onclick = async () => {
+          reports[rep.id].status = "dismissed";
+          await dbPut(`reports/${rep.id}/status`, "dismissed");
+          renderAdmModal();
+        };
+
+        btns.append(m15, bBtn, disBtn);
+        row.appendChild(btns);
+        repList.appendChild(row);
+      });
+
+      // Banned & Muted Tab
+      const bList = document.getElementById("admBanList");
+      bList.innerHTML = activeBans.length ? "" : `<div class="u-sub">No banned users.</div>`;
+      activeBans.forEach(([k, b]) => {
+        const row = document.createElement("div");
+        row.className = "mod-row";
+        row.innerHTML = `<div><strong>${esc(b.name)}</strong> <span class="u-sub">(${esc(b.devId)})</span></div>`;
+        const unbanBtn = document.createElement("button");
+        unbanBtn.type = "button";
+        unbanBtn.className = "tbtn grn";
+        unbanBtn.textContent = "Unban";
+        unbanBtn.onclick = async () => {
+          delete banned[k];
+          await dbDel("banned/" + k);
+          showToast(`Unbanned ${b.name}`);
+          renderAdmModal();
+        };
+        row.appendChild(unbanBtn);
+        bList.appendChild(row);
+      });
+
+      const mList = document.getElementById("admMuteList");
+      mList.innerHTML = activeMutes.length ? "" : `<div class="u-sub">No muted users.</div>`;
+      activeMutes.forEach(([k, m]) => {
+        const info = getActiveMute(m.name);
+        const row = document.createElement("div");
+        row.className = "mod-row";
+        row.innerHTML = `<div><strong>${esc(m.name)}</strong> <span class="u-sub">(${esc(info ? info.remainingText : "")})</span></div>`;
+        const unmuteBtn = document.createElement("button");
+        unmuteBtn.type = "button";
+        unmuteBtn.className = "tbtn grn";
+        unmuteBtn.textContent = "Unmute";
+        unmuteBtn.onclick = async () => {
+          await setUserMuteMinutes(m.name, 0);
+          renderAdmModal();
+        };
+        row.appendChild(unmuteBtn);
+        mList.appendChild(row);
+      });
+
+      // Private Chats Safety Monitor Tab
+      const monBox = document.getElementById("admDmMonitorList");
+      monBox.innerHTML = dmEntries.length ? "" : `<div class="u-sub">No 1-on-1 personal chats recorded yet.</div>`;
+      dmEntries.forEach(([tKey, tObj]) => {
+        const parts = decodeURIComponent(tKey).split("__");
+        const p1 = parts[0] || "User A";
+        const p2 = parts[1] || "User B";
+        const ordered = Object.values(tObj).filter(Boolean).sort((a, b) => Number(a.ts || 0) - Number(b.ts || 0));
+
+        const card = document.createElement("div");
+        card.className = "monitor-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong>🔒 ${esc(p1)} ↔ ${esc(p2)}</strong>
+            <span class="pill">${ordered.length} msg(s)</span>
+          </div>
+          <div style="max-height:140px; overflow-y:auto; background:#0c0618; padding:6px; border-radius:8px;">
+            ${ordered.map(m =>
+              `<div style="font-size:11px; margin-bottom:4px;"><strong>${esc(m.from)} → ${esc(m.to)}</strong> (${esc(m.time || "")}): ${esc(m.text || "")}${m.img ? `<img class="msg-media" src="${esc(m.img)}" alt="DM Media" />` : ""}</div>`
+            ).join("")}
+          </div>
+        `;
+
+        const modBar = document.createElement("div");
+        modBar.style.display = "flex";
+        modBar.style.gap = "5px";
+        modBar.style.flexWrap = "wrap";
+        modBar.style.marginTop = "6px";
+
+        [p1, p2].forEach(uname => {
+          const mb = document.createElement("button");
+          mb.type = "button";
+          mb.className = "tbtn gold";
+          mb.textContent = `Mute ${uname} (15m)`;
+          mb.onclick = () => setUserMuteMinutes(uname, 15);
+
+          const bb = document.createElement("button");
+          bb.type = "button";
+          bb.className = "tbtn red";
+          bb.textContent = `Ban ${uname}`;
+          bb.onclick = async () => {
+            const bk = kOf(uname);
+            banned[bk] = { name: uname, devId: bk };
+            await dbPut("banned/" + bk, banned[bk]);
+            showToast(`Banned ${uname}`);
+            renderAdmModal();
+          };
+          modBar.append(mb, bb);
+        });
+
+        card.appendChild(modBar);
+        monBox.appendChild(card);
+      });
+    }
+
+    // Fixes & Password Tab Handlers
+    document.getElementById("saveAdmPassBtn").onclick = async () => {
+      if (!me || !me.isAdmin) return;
+      const nextPass = document.getElementById("newAdmPassInp").value.trim();
+      if (!nextPass || nextPass.length < 4) {
+        showToast("Enter an admin password with at least 4 characters.");
+        return;
+      }
+      adminPass = nextPass;
+      await dbPut("config/adminPass", nextPass);
+      document.getElementById("newAdmPassInp").value = "";
+      showToast("Admin password updated!");
+    };
+
+    document.getElementById("clearRoomBtn").onclick = async () => {
+      if (!me || !me.isAdmin) return;
+      const rKey = kOf(me.room);
+      clearedRoomsAt[rKey] = Date.now();
+      confirmedMsgs[rKey] = {};
+      pendingMsgs[rKey] = {};
+      saveLocalRoomMirror(rKey);
+      await dbDel(`messages/${rKey}`);
+      await postSystemNotice(me.room, `Room chat cleared by ${me.name}`);
+      renderRoom();
+      showToast("Room chat cleared!");
+    };
+
+    document.getElementById("syncFixBtn").onclick = async () => {
+      if (!me || !me.isAdmin) return;
+      await syncLoop();
+      showToast("Synced database & refreshed room!");
+    };
+
+    document.getElementById("saveRulesBtn").onclick = async () => {
+      if (!me || !me.isAdmin) return;
+      const lines = document.getElementById("rulesEditorInp").value
+        .split("\n")
+        .map(s => s.trim())
+        .filter(Boolean);
+      if (!lines.length) return;
+      roomRules = lines;
+      await dbPut("config/rules", lines);
+      showToast("Under-18 & Respect rules updated!");
+    };
+
+    // Render Room Messages, Badges & Online Users
+    function renderRoom() {
+      if (!me) {
+        syncAdminVisibility();
+        return;
+      }
+      syncAdminVisibility();
+
+      const rKey = kOf(me.room);
+      const uKey = kOf(me.name);
+      const mySt = stats[uKey] || { exp: 0, coins: 0 };
+
+      document.getElementById("roomHeading").textContent = me.room;
+      document.getElementById("rankChip").textContent = rankOf(me);
+      document.getElementById("myExp").textContent = mySt.exp || 0;
+      document.getElementById("myCoins").textContent = me.isAdmin ? "∞" : (mySt.coins || 0);
+
+      // Mute Banner
+      const muteInfo = getActiveMute(me.name);
+      const muteBannerEl = document.getElementById("muteBanner");
+      if (muteInfo) {
+        muteBannerEl.textContent = `🔇 You are muted (${muteInfo.remainingText}).`;
+        muteBannerEl.classList.remove("hidden");
+      } else {
+        muteBannerEl.classList.add("hidden");
+      }
+
+      // Friend Request Badge
+      const incCount = Object.values(friendRequests).filter(
+        req => req && req.status === "pending" && kOf(req.to) === uKey
+      ).length;
+      const reqBadgeEl = document.getElementById("reqBadge");
+      reqBadgeEl.textContent = incCount;
+      reqBadgeEl.classList.toggle("hidden", incCount === 0);
+
+      // Messages Feed
+      const feedEl = document.getElementById("chatFeed");
+      const atBottom = feedEl.scrollHeight - feedEl.scrollTop - feedEl.clientHeight < 90;
+      const orderedMsgs = getOrderedRoomMessages(rKey);
+      feedEl.innerHTML = "";
+
+      orderedMsgs.forEach(m => {
+        if (m.sysNotice) {
+          const sysEl = document.createElement("div");
+          sysEl.className = "sys-banner";
+          sysEl.textContent = m.text;
+          feedEl.appendChild(sysEl);
+          return;
+        }
+
+        const isMine = String(m.sender || "").toLowerCase() === me.name.toLowerCase();
+        const row = document.createElement("div");
+        row.className = "msg-row" + (isMine ? " mine" : "");
+
+        const senderLive = Object.values(users).find(
+          u => u && u.name && u.name.toLowerCase() === String(m.sender || "").toLowerCase()
+        );
+        const avSrc = (senderLive && senderLive.av) || getPfpLocal(m.sender) || m.av || "😎";
+        const roleLabel = senderLive ? rankOf(senderLive) : (m.role || "Member");
+        const roleCls = roleLabel === "Admin" ? "admin" : (VIP_PLUS.has(roleLabel) ? "vip" : "");
+
+        const quoteHtml = m.quote
+          ? `<div class="msg-quote"><strong>${esc(m.quote.sender)}:</strong> ${esc(m.quote.text)}</div>`
+          : "";
+
+        const giftHtml = m.giftText
+          ? `<div class="msg-text"><strong>${esc(m.sender)}</strong> ${esc(m.giftText)}</div>`
+          : "";
+
+        const bodyTextHtml = m.text
+          ? `<div class="msg-text">${esc(m.text)}</div>`
+          : "";
+
+        const imgHtml = m.img
+          ? `<img class="msg-media" src="${esc(m.img)}" alt="Shared Media" loading="lazy" />`
+          : "";
+
+        const ytHtml = m.ytId
+          ? `<div class="yt-box"><iframe src="https://www.youtube.com/embed/${esc(m.ytId)}" allowfullscreen></iframe></div>`
+          : "";
+
+        const reactions = m.reactions || {};
+        const reactChipsHtml = ["👍", "❤️", "😂", "🔥"].map(emo => {
+          const usersList = Array.isArray(reactions[emo]) ? reactions[emo] : [];
+          const active = usersList.includes(me.name);
+          return `<button type="button" class="react-chip${active ? " active" : ""}" data-react="${emo}">${emo}${usersList.length ? " " + usersList.length : ""}</button>`;
+        }).join("");
+
+        row.innerHTML = `
+          ${renderAvHtml(avSrc, "msg-av")}
+          <div class="msg-bubble">
+            <div class="msg-meta">
+              <span class="msg-sender">${esc(m.sender)}</span>
+              <span class="rank-tag ${roleCls}">${esc(roleLabel)}</span>
+              <span class="msg-time">${esc(m.time || "")}</span>
+            </div>
+            ${quoteHtml}
+            ${giftHtml}
+            ${bodyTextHtml}
+            ${imgHtml}
+            ${ytHtml}
+            <div class="msg-footer">
+              <div class="react-bar">${reactChipsHtml}</div>
+              <div class="msg-acts">
+                <button type="button" class="mini-act act-reply">↩ Reply</button>
+                ${!isMine ? `<button type="button" class="mini-act act-rep">🚨 Report</button>` : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        row.querySelectorAll(".react-chip").forEach(chip => {
+          chip.onclick = async () => {
+            const emo = chip.getAttribute("data-react");
+            const curArr = Array.isArray(reactions[emo]) ? reactions[emo].slice() : [];
+            const idx = curArr.indexOf(me.name);
+            if (idx >= 0) curArr.splice(idx, 1);
+            else curArr.push(me.name);
+            reactions[emo] = curArr;
+            m.reactions = reactions;
+            if (confirmedMsgs[rKey] && confirmedMsgs[rKey][m.id]) confirmedMsgs[rKey][m.id].reactions = reactions;
+            if (pendingMsgs[rKey] && pendingMsgs[rKey][m.id]) pendingMsgs[rKey][m.id].reactions = reactions;
+            saveLocalRoomMirror(rKey);
+            renderRoom();
+            await dbPut(`messages/${rKey}/${m.id}/reactions`, reactions);
+          };
+        });
+
+        const repBtn = row.querySelector(".act-reply");
+        if (repBtn) {
+          repBtn.onclick = () => {
+            replyDraft = {
+              sender: m.sender,
+              text: m.text || (m.img ? "[Image]" : (m.ytId ? "[YouTube Video]" : "[Gift]"))
+            };
+            document.getElementById("replyToName").textContent = replyDraft.sender;
+            document.getElementById("replyToSnippet").textContent = replyDraft.text;
+            document.getElementById("replyBar").classList.remove("hidden");
+            document.getElementById("msgInp").focus();
+          };
+        }
+
+        const abuseBtn = row.querySelector(".act-rep");
+        if (abuseBtn) {
+          abuseBtn.onclick = () => openReportModal(m.sender);
+        }
+
+        feedEl.appendChild(row);
+      });
+
+      if (atBottom) {
+        feedEl.scrollTop = feedEl.scrollHeight;
+      }
+
+      // Online Grouped Users Sidebar
+      const roomUsers = Object.values(users).filter(u => u && u.name && kOf(u.room || me.room) === rKey);
+      document.getElementById("onlineCount").textContent = roomUsers.length;
+
+      const admGroup = roomUsers.filter(u => rankOf(u) === "Admin");
+      const vipGroup = roomUsers.filter(u => rankOf(u) !== "Admin" && VIP_PLUS.has(rankOf(u)));
+      const memGroup = roomUsers.filter(u => rankOf(u) !== "Admin" && !VIP_PLUS.has(rankOf(u)));
+
+      const groupsBox = document.getElementById("onlineGroups");
+      groupsBox.innerHTML = "";
+
+      function appendGroup(title, cls, arr) {
+        if (!arr.length) return;
+        const hdr = document.createElement("div");
+        hdr.className = `group-hdr ${cls}`;
+        hdr.textContent = title;
+        groupsBox.appendChild(hdr);
+
+        arr.forEach(u => {
+          const st = stats[kOf(u.name)] || { exp: 0, coins: 0 };
+          const card = document.createElement("div");
+          card.className = "u-card";
+          const top = document.createElement("div");
+          top.className = "u-row";
+          top.innerHTML = `
+            ${renderAvHtml(resolveUserPfp(u.name, u.av), "msg-av")}
+            <div>
+              <div class="u-name">${esc(u.name)}</div>
+              <div class="u-sub">${esc(rankOf(u))} • EXP ${st.exp || 0} • Coins ${u.isAdmin ? "∞" : (st.coins || 0)}</div>
+            </div>
+          `;
+          card.appendChild(top);
+
+          if (u.name.toLowerCase() !== me.name.toLowerCase()) {
+            const acts = document.createElement("div");
+            acts.className = "u-actions";
+
+            const dmBtn = document.createElement("button");
+            dmBtn.type = "button";
+            dmBtn.className = "tbtn";
+            dmBtn.style.padding = "3px 7px";
+            dmBtn.style.fontSize = "11px";
+            dmBtn.textContent = "✉️ DM";
+            dmBtn.onclick = () => openDmModal(u.name);
+
+            const frBtn = document.createElement("button");
+            frBtn.type = "button";
+            frBtn.className = "tbtn grn";
+            frBtn.style.padding = "3px 7px";
+            frBtn.style.fontSize = "11px";
+            frBtn.textContent = "+ Friend";
+            frBtn.onclick = () => sendFriendRequestTo(u.name);
+
+            const rpBtn = document.createElement("button");
+            rpBtn.type = "button";
+            rpBtn.className = "tbtn red";
+            rpBtn.style.padding = "3px 7px";
+            rpBtn.style.fontSize = "11px";
+            rpBtn.textContent = "🚨";
+            rpBtn.title = "Report User";
+            rpBtn.onclick = () => openReportModal(u.name);
+
+            acts.append(dmBtn, frBtn, rpBtn);
+            card.appendChild(acts);
+          }
+
+          groupsBox.appendChild(card);
+        });
+      }
+
+      appendGroup("★ Admin ★", "admin", admGroup);
+      appendGroup("★ VIP & Staff ★", "vip", vipGroup);
+      appendGroup("Members", "mem", memGroup);
+
+      if (!dmModalEl.classList.contains("hidden")) {
+        renderDmFeed();
+      }
+      if (me.isAdmin && !admModalEl.classList.contains("hidden")) {
+        renderAdmModal();
+      }
+    }
+
+    // Logout Handler
     document.getElementById("logoutBtn").onclick = async () => {
-      if (me) { await dbDel("users/" + devId); delete users[devId]; }
+      if (me) {
+        await dbDel("users/" + devId);
+        delete users[devId];
+      }
       me = null;
+      lastAnnouncedRoomKey = "";
+      syncAdminVisibility();
       document.getElementById("roomScreen").classList.add("hidden");
       document.getElementById("entryScreen").classList.remove("hidden");
     };
+
+    // Real-Time Sync Loop
+    async function syncLoop() {
+      const rKey = me ? kOf(me.room) : kOf(document.getElementById("roomSel").value);
+      const [u, b, r, s, acc, rm, dms, freq, frnd, mt, rp, cfgPass, cfgRules] = await Promise.all([
+        dbGet("users"),
+        dbGet("banned"),
+        dbGet("ranks"),
+        dbGet("stats"),
+        dbGet("accounts"),
+        dbGet(`messages/${rKey}`),
+        dbGet("dmThreads"),
+        dbGet("friendRequests"),
+        dbGet("friends"),
+        dbGet("mutes"),
+        dbGet("reports"),
+        dbGet("config/adminPass"),
+        dbGet("config/rules")
+      ]);
+
+      users = u || {};
+      banned = b || {};
+      ranks = r || {};
+      stats = s || {};
+      accounts = acc || {};
+      dmThreads = dms || {};
+      friendRequests = freq || {};
+      friendsMap = frnd || {};
+      mutes = mt || {};
+      reports = rp || {};
+
+      if (typeof cfgPass === "string" && cfgPass.trim()) {
+        adminPass = cfgPass.trim();
+      }
+      if (Array.isArray(cfgRules) && cfgRules.length) {
+        roomRules = cfgRules;
+      }
+
+      mergeRoomMessages(rKey, rm);
+
+      if (me) {
+        const liveSelf = users[devId];
+        const isBan = Object.values(banned).some(
+          item => item && (item.devId === devId || (item.name && item.name.toLowerCase() === me.name.toLowerCase()))
+        );
+        if ((isBan || !liveSelf) && !me.isAdmin) {
+          me = null;
+          lastAnnouncedRoomKey = "";
+          syncAdminVisibility();
+          document.getElementById("roomScreen").classList.add("hidden");
+          document.getElementById("entryScreen").classList.remove("hidden");
+          document.getElementById("entryErr").textContent = isBan
+            ? "You have been banned by Admin."
+            : "You were removed from the room.";
+          return;
+        }
+        if (liveSelf) {
+          me.name = liveSelf.name;
+          me.av = liveSelf.av || me.av;
+          me.room = liveSelf.room || me.room;
+          me.isAdmin = Boolean(liveSelf.isAdmin);
+        }
+        renderRoom();
+      } else {
+        syncAdminVisibility();
+      }
+    }
 
     setInterval(syncLoop, 2500);
   </script>
